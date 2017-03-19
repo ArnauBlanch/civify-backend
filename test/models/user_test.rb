@@ -1,5 +1,6 @@
 require 'test_helper'
 
+# Tests the User model
 class UserTest < ActiveSupport::TestCase
   def setup
     @user = User.new(username: 'ivan1234', email: 'ivan1234@example.com',
