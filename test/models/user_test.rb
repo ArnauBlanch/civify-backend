@@ -40,16 +40,36 @@ class UserTest < ActiveSupport::TestCase
 
   test 'email should be unique' do
     duplicate_user = @user.dup
+    @user.save
+    assert_not duplicate_user.valid?
+  end
+
+  test 'username shouldn\'t be case sensitive (case 1)' do
+    duplicate_user = @user.dup
+    duplicate_user.username = duplicate_user.username.upcase
+    @user.save
+    assert_not duplicate_user.valid?
+  end
+
+  test 'username shouldn\'t be case sensitive (case 2)' do
+    duplicate_user = @user.dup
+    @user.username = @user.username.upcase
+    @user.save
+    assert_not duplicate_user.valid?
+  end
+
+  test 'email shouldn\'t be case sensitive (case 1)' do
+    duplicate_user = @user.dup
     duplicate_user.email = duplicate_user.email.upcase
     @user.save
     assert_not duplicate_user.valid?
   end
 
-  test 'email should be saved as lowercase' do
-    example_email = 'IVan1234@EXamPLE.COm'
-    @user.email = example_email
+  test 'email shouldn\'t be case sensitive (case 2)' do
+    duplicate_user = @user.dup
+    @user.email = @user.email.upcase
     @user.save
-    assert_equal example_email.downcase, @user.reload.email
+    assert_not duplicate_user.valid?
   end
 
   test 'password should be present and non-blank' do
