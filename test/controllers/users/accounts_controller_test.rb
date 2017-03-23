@@ -34,9 +34,6 @@ class Users::AccountsControllerTest < ActionDispatch::IntegrationTest
     get '/users/accounts', params: { find_by: 'username', value: 'foo' }
     # test status code
     assert_response :ok
-    # test response body
-    body = JSON.parse(response.body)
-    assert_equal 'foo', body['username']
     teardown
   end
 
@@ -52,9 +49,6 @@ class Users::AccountsControllerTest < ActionDispatch::IntegrationTest
                                      value: 'foo@bar.com' }
     # test status code
     assert_response :ok
-    # test response body
-    body = JSON.parse(response.body)
-    assert_equal 'foo@bar.com', body['email']
     teardown
   end
 
