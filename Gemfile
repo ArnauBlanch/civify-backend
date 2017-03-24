@@ -18,6 +18,10 @@ gem 'puma', '~> 3.0'
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
+# Encoding and decoding JSON Web Tokens (JWT)
+gem 'jwt'
+# Create services facilitating the connection between the controller and the models
+gem 'simple_command'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
