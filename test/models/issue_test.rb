@@ -3,19 +3,19 @@ require 'test_helper'
 class IssueTest < ActiveSupport::TestCase
   def setup
     @user = users(:Lorem)
-    @issue = @user.issues.build(name: 'sample issue', latitude: 76.4,
+    @issue = @user.issues.build(title: 'sample issue', latitude: 76.4,
                                 longitude: 38.2, category: 'arbolada',
                                 picture: 'path', description: 'desc',
-                                risk: true, solved: true, supports: 23,
-                                reports: 23)
+                                risk: true, resolved_votes: 564,
+                                confirm_votes: 23, reports: 23)
   end
 
   test 'should be valid' do
     assert @issue.valid?
   end
 
-  test 'name should be present' do
-    @issue.name = '     '
+  test 'title should be present' do
+    @issue.title = '     '
     assert_not @issue.valid?
   end
 
@@ -49,13 +49,13 @@ class IssueTest < ActiveSupport::TestCase
     assert_not @issue.valid?
   end
 
-  test 'solved should be present' do
-    @issue.solved = nil
+  test 'resolved_votes should be present' do
+    @issue.resolved_votes = nil
     assert_not @issue.valid?
   end
 
-  test 'supports should be present' do
-    @issue.supports = nil
+  test 'confirm_votes should be present' do
+    @issue.confirm_votes = nil
     assert_not @issue.valid?
   end
 
