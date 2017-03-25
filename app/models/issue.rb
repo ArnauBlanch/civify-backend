@@ -1,3 +1,4 @@
+# Issue model with validations and foreign key in schema with user
 class Issue < ApplicationRecord
   belongs_to :user
   validates :user_id, presence: true
