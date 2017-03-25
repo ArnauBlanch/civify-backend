@@ -1,3 +1,4 @@
+# Migration file of Issues table creation
 class CreateIssues < ActiveRecord::Migration[5.0]
   def change
     create_table :issues do |t|
