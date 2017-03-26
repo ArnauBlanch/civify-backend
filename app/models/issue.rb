@@ -28,12 +28,12 @@ class Issue < ApplicationRecord
   end
 
   def picture_hash
-    { picture: { picture_file_name: picture_file_name,
-                 picture_content_type: picture_content_type,
-                 picture_file_size: picture_file_size,
-                 picture_updated_at: picture_updated_at,
-                 picture_small_url: picture.url(:small),
-                 picture_med_url: picture.url(:med),
-                 picture_large_url: picture.url(:large) } }
+    { picture: { file_name: picture_file_name,
+                 content_type: picture_content_type,
+                 file_size: picture_file_size,
+                 updated_at: picture_updated_at,
+                 small_url: picture.url(:small),
+                 med_url: picture.url(:med),
+                 large_url: picture.url(:large) } }
   end
 end
