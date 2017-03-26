@@ -76,4 +76,9 @@ class UserTest < ActiveSupport::TestCase
     @user.password = @user.password_confirmation = ' '
     assert_not @user.valid?
   end
+
+  test 'user token is not null' do
+    @user.save
+    assert_not_nil @user.user_auth_token
+  end
 end
