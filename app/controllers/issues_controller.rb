@@ -16,7 +16,13 @@ class IssuesController < ApplicationController
   end
 
   def update
-    @issue.update(issue_params)
+    @issue.update!(issue_params)
+    # 200 or 204 for update
+    json_response(@issue)
+  end
+
+  def destroy
+    @issue.destroy
     head :no_content
   end
 
