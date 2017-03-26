@@ -28,11 +28,11 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:name)
+    params.permit(:id, :name)
   end
 
   def set_user
-    @user = User.find(params[:id])
+    @user = User.find_by!(user_auth_token: params[:user_auth_token])
   end
 
 

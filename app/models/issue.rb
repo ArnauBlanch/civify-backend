@@ -1,6 +1,7 @@
 # Issue model with validations and foreign key in schema with user
 class Issue < ApplicationRecord
   belongs_to :user
+  has_secure_token :issue_auth_token
   validates :user_id, presence: true
   validates :title, presence: true
   validates :latitude, presence: true

@@ -29,6 +29,7 @@ class IssuesController < ApplicationController
   private
 
   def issue_params
+    # maybe :id is not necessary
     params.permit(:id, :user_id, :title, :latitude, :longitude,
                   :category, :picture, :description,
                   :risk, :resolved_votes, :confirm_votes,
@@ -36,10 +37,10 @@ class IssuesController < ApplicationController
   end
 
   def set_user
-    @user = User.find(params[:user_id])
+    @user = User.find_by!(user_auth_token: params[:user_auth_token])
   end
 
   def set_user_issue
-    @issue = @user.issues.find_by!(id: params[:id]) if @user
+    @issue = @user.issues.find_by!(issue_auth_token: params[:issue_auth_token]) if @user
   end
 end

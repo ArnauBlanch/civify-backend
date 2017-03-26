@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170325184018) do
+ActiveRecord::Schema.define(version: 20170326015701) do
 
   create_table "issues", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
-    t.float    "latitude",       limit: 24
-    t.float    "longitude",      limit: 24
+    t.float    "latitude",         limit: 24
+    t.float    "longitude",        limit: 24
     t.string   "category"
     t.string   "picture"
     t.string   "description"
@@ -23,16 +23,20 @@ ActiveRecord::Schema.define(version: 20170325184018) do
     t.integer  "reports"
     t.integer  "confirm_votes"
     t.integer  "user_id"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.integer  "resolved_votes"
+    t.string   "issue_auth_token"
+    t.index ["issue_auth_token"], name: "index_issues_on_issue_auth_token", unique: true, using: :btree
     t.index ["user_id"], name: "index_issues_on_user_id", using: :btree
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
     t.string   "name"
+    t.string   "user_auth_token"
+    t.index ["user_auth_token"], name: "index_users_on_user_auth_token", unique: true, using: :btree
   end
 
   add_foreign_key "issues", "users"
