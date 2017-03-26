@@ -2,6 +2,11 @@
 class Issue < ApplicationRecord
   belongs_to :user
   has_secure_token :issue_auth_token
+  has_attached_file :picture, styles: { small: '64x64', med: '100x100', large: '200x200' }
+  validates_attachment_content_type :picture,
+                                    content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
+  validates_attachment :picture, size: { in: 0..5.megabytes }
+  validates :picture, attachment_presence: true
   validates :user_id, presence: true
   validates :title, presence: true
   validates :latitude, presence: true
@@ -13,4 +18,22 @@ class Issue < ApplicationRecord
   validates :resolved_votes, presence: true
   validates :confirm_votes, presence: true
   validates :reports, presence: true
+
+  def as_json(options = nil)
+    super(options.merge(except: [:id, :user_id, :picture_file_name,
+                                 :picture_content_type,
+                                 :picture_file_size,
+                                 :picture_updated_at]))
+      .merge(user_auth_token: user.user_auth_token).merge(picture_hash)
+  end
+
+  def picture_hash
+    { picture: { picture_file_name: picture_file_name,
+                 picture_content_type: picture_content_type,
+                 picture_file_size: picture_file_size,
+                 picture_updated_at: picture_updated_at,
+                 picture_small_url: picture.url(:small),
+                 picture_med_url: picture.url(:med),
+                 picture_large_url: picture.url(:large) } }
+  end
 end

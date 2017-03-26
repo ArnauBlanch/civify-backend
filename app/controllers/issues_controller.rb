@@ -1,6 +1,8 @@
 class IssuesController < ApplicationController
   before_action :set_user
   before_action :set_user_issue, only: [:show, :update, :destroy]
+  before_action :fetch_picture, only: [:create, :update]
+  after_action  :clean_tempfile, only: [:create, :update]
 
   def index
     json_response(@user.issues)
@@ -11,11 +13,14 @@ class IssuesController < ApplicationController
   end
 
   def create
-    @issue_created = @user.issues.create!(issue_params)
-    json_response(@issue_created, :created)
+    @issue = @user.issues.build(issue_params)
+    @issue.picture = @picture
+    @issue.save!
+    json_response(@issue, :created)
   end
 
   def update
+    @issue.picture = @picture
     @issue.update!(issue_params)
     # 200 or 204 for update
     json_response(@issue)
@@ -42,5 +47,29 @@ class IssuesController < ApplicationController
 
   def set_user_issue
     @issue = @user.issues.find_by!(issue_auth_token: params[:issue_auth_token]) if @user
+  end
+
+  def fetch_picture
+    @picture = parse_image_data(params[:picture]) if params[:picture]
+  end
+
+  def parse_image_data(image_data)
+    @tempfile = Tempfile.new('item_image')
+    @tempfile.binmode
+    @tempfile.write Base64.decode64(image_data[:content])
+    @tempfile.rewind
+
+    uploaded_file = ActionDispatch::Http
+    ::UploadedFile.new(tempfile: @tempfile, filename: image_data[:filename])
+
+    uploaded_file.content_type = image_data[:content_type]
+    uploaded_file
+  end
+
+  def clean_tempfile
+    if @tempfile
+      @tempfile.close
+      @tempfile.unlink
+    end
   end
 end
