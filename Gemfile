@@ -19,6 +19,8 @@ gem 'puma', '~> 3.0'
 gem 'bcrypt', '~> 3.1.7'
 # Code coverage
 gem 'simplecov', :require => false, :group => :test
+# Secure token
+gem 'has_secure_token'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

@@ -7,4 +7,5 @@ class User < ApplicationRecord
   has_secure_password # method to implement the secure password
   validates :password, presence: true
   validates :password_confirmation, presence: true
+  has_secure_token :user_auth_token
 end
