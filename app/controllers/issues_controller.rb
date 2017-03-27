@@ -2,7 +2,6 @@ class IssuesController < ApplicationController
   before_action :set_user
   before_action :set_user_issue, only: [:show, :update, :destroy]
   before_action :fetch_picture, only: [:create, :update]
-  after_action  :clean_tempfile, only: [:create, :update]
 
   def index
     json_response(@user.issues)
@@ -20,7 +19,7 @@ class IssuesController < ApplicationController
   end
 
   def update
-    @issue.picture = @picture
+    @issue.picture = @picture if @picture
     @issue.update!(issue_params)
     # 200 or 204 for update
     json_response(@issue)
@@ -54,22 +53,9 @@ class IssuesController < ApplicationController
   end
 
   def parse_image_data(image_data)
-    @tempfile = Tempfile.new('item_image')
-    @tempfile.binmode
-    @tempfile.write Base64.decode64(image_data[:content])
-    @tempfile.rewind
-
-    uploaded_file = ActionDispatch::Http
-    ::UploadedFile.new(tempfile: @tempfile, filename: image_data[:filename])
-
-    uploaded_file.content_type = image_data[:content_type]
-    uploaded_file
-  end
-
-  def clean_tempfile
-    if @tempfile
-      @tempfile.close
-      @tempfile.unlink
-    end
+    content_type = image_data[:content_type]
+    image_file = Paperclip.io_adapters.for("data:#{content_type};base64,#{image_data[:content]}")
+    image_file.original_filename = image_data[:filename]
+    image_file
   end
 end

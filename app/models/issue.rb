@@ -6,7 +6,7 @@ class Issue < ApplicationRecord
   validates_attachment_content_type :picture,
                                     content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
   validates_attachment :picture, size: { in: 0..5.megabytes }
-  validates :picture, attachment_presence: true
+  validates :picture, attachment_presence: false
   validates :user_id, presence: true
   validates :title, presence: true
   validates :latitude, presence: true
@@ -20,7 +20,7 @@ class Issue < ApplicationRecord
   validates :reports, presence: true
 
   def as_json(options = nil)
-    super(options.merge(except: [:id, :user_id, :picture_file_name,
+    super(options.reverse_merge(except: [:id, :user_id, :picture_file_name,
                                  :picture_content_type,
                                  :picture_file_size,
                                  :picture_updated_at]))
