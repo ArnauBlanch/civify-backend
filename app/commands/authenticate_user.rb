@@ -1,10 +1,11 @@
+# Authentication User (login user)
 class AuthenticateUser
   prepend SimpleCommand
 
-  def initialize(username = nil, email = nil, password)
+  def initialize(password, username = nil, email = nil)
+    @password = password
     @username = username
     @email = email
-    @password = password
   end
 
   def call

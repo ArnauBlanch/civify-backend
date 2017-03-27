@@ -1,16 +1,29 @@
+# Authentication Controller (login controller)
 class AuthenticationController < ApplicationController
   skip_before_action :authenticate_request
 
   def login
-    command = AuthenticateUser.call(params[:username], params[:email], params[:password])
+    auth_command = AuthenticateUser.call(
+      params[:password],
+      params[:username],
+      params[:email]
+    )
 
-    if command.success?
-      render json: { auth_token: command.result }
+    if auth_command.success?
+      render json: { auth_token: auth_command.result }
     else
-      error_status = Rack::Utils::SYMBOL_TO_STATUS_CODE[:unauthorized] if command.errors[:invalid_credentials]
-      error_status ||= Rack::Utils::SYMBOL_TO_STATUS_CODE[:not_found] if command.errors[:not_found]
-      error_status ||= Rack::Utils::SYMBOL_TO_STATUS_CODE[:bad_request]
-      render json: { error: command.errors }, status: error_status
+      render_login_error auth_command.errors
     end
+  end
+
+  def render_login_error(errors)
+    error_status = if errors[:invalid_credentials]
+                     :unauthorized
+                   elsif errors[:not_found]
+                     :not_found
+                   else
+                     :bad_request
+                   end
+    render json: { error: errors.values[0].first }, status: error_status
   end
 end
