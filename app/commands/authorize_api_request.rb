@@ -1,3 +1,4 @@
+# Authorizes a request via an authentication token (provided at login user)
 class AuthorizeApiRequest
   prepend SimpleCommand
 
@@ -14,13 +15,15 @@ class AuthorizeApiRequest
   attr_reader :headers
 
   def http_auth_header
-    return headers['Authorization'].split(' ').last if headers['Authorization'].present?
+    auth_header = headers['Authorization']
+    return auth_header.split(' ').last if auth_header.present?
     errors.add(:missing_token, 'Missing Authorization Token')
     nil
   end
 
   def decode_auth_token
-    @decoded_auth_token ||= JsonWebToken.decode(http_auth_header)
+    token = http_auth_header
+    @decoded_auth_token = JsonWebToken.decode(token) if token
   end
 
   def user
