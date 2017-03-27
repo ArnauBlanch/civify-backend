@@ -7,53 +7,58 @@ class AuthenticateUserTest < ActiveSupport::TestCase
                         password_digest: '1234')
   end
 
+  test 'login existing user with all parameters succeeds' do
+    assert authenticate.success?
+  end
+
   test 'login existing user with username succeeds' do
-    auth_command = AuthenticateUser.call @user.password_digest, @user.username
+    auth_command = authenticate @user.password_digest, @user.username, nil
     assert auth_command.success?
   end
 
   test 'login existing user with email succeeds' do
-    auth_command = AuthenticateUser.call @user.password_digest, nil, @user.email
+    auth_command = authenticate @user.password_digest, nil, @user.email
     assert auth_command.success?
   end
 
   test 'login fails when existing user by username has invalid credentials' do
-    auth_command = AuthenticateUser.call 'invalid_password', @user.username
-    assert_not auth_command.success?
-    assert_equal 'Invalid credentials',
-                 auth_command.errors[:invalid_credentials][0]
+    auth_command = authenticate 'invalid_password', @user.username, nil
+    assert_error auth_command, :invalid_credentials, 'Invalid credentials'
   end
 
   test 'login fails when existing user by email has invalid credentials' do
-    auth_command = AuthenticateUser.call 'invalid_password', nil, @user.email
-    assert_not auth_command.success?
-    assert_equal 'Invalid credentials',
-                 auth_command.errors[:invalid_credentials][0]
+    auth_command = authenticate 'invalid_password', nil, @user.email
+    assert_error auth_command, :invalid_credentials, 'Invalid credentials'
   end
 
   test 'login fails when user by username not exits' do
-    auth_command = AuthenticateUser.call @user.password_digest, 'unknown'
-    assert_not auth_command.success?
-    assert_equal 'User not exists', auth_command.errors[:not_found][0]
+    auth_command = authenticate @user.password_digest, 'unknown', nil
+    assert_error auth_command, :not_found, 'User not exists'
   end
 
   test 'login fails when user by email not exits' do
-    auth_command = AuthenticateUser.call @user.password_digest, nil, 'unknown'
-    assert_not auth_command.success?
-    assert_equal 'User not exists', auth_command.errors[:not_found][0]
+    auth_command = authenticate @user.password_digest, nil, 'unknown'
+    assert_error auth_command, :not_found, 'User not exists'
   end
 
   test 'login fails when password is not provided' do
-    auth_command = AuthenticateUser.call nil, @user.username
-    assert_not auth_command.success?
-    assert_equal 'password must be provided',
-                 auth_command.errors[:missing_parameters][0]
+    auth_command = authenticate nil
+    assert_error auth_command, :missing_parameters, 'password must be provided'
   end
 
   test 'login fails when username nor email are provided' do
-    auth_command = AuthenticateUser.call @user.password_digest
+    auth_command = authenticate @user.password_digest, nil, nil
+    assert_error auth_command, :missing_parameters, 'username or email must be provided'
+  end
+
+  def authenticate(password = @user.password_digest,
+                   username = @user.username,
+                   email = @user.email)
+    AuthenticateUser.call password, username, email
+  end
+
+  def assert_error(auth_command, error, msg)
     assert_not auth_command.success?
-    assert_equal 'username or email must be provided',
-                 auth_command.errors[:missing_parameters][0]
+    assert_equal msg,auth_command.errors[error][0]
   end
 end
