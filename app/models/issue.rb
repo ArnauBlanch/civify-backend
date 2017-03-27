@@ -24,7 +24,8 @@ class Issue < ApplicationRecord
                                  :picture_content_type,
                                  :picture_file_size,
                                  :picture_updated_at]))
-      .merge(user_auth_token: user.user_auth_token).merge(picture_hash)
+      .merge(user_auth_token:user.user_auth_token).merge(picture_hash)
+
   end
 
   def picture_hash
