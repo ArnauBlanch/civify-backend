@@ -4,7 +4,7 @@ module ExceptionHandler
 
   included do
     rescue_from ActiveRecord::RecordNotFound do |e|
-      render json: { message: e.message }, status: :not_found
+      render json: { message: "Doesn't exists record" }, status: :not_found
     end
 
     rescue_from ActiveRecord::RecordInvalid do |e|
