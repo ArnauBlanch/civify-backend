@@ -10,8 +10,6 @@ class AuthorizeApiRequestTest < ActionDispatch::IntegrationTest
   end
 
   test 'request authorized with valid token' do
-    auth_user = AuthenticateUser.call @user.password_digest, @user.username
-    auth_token = auth_user.result
     get '/me', headers: { authorization: auth_token }
     assert_response :ok
     assert_equal @user.to_json(except: [:id, :password_digest]), response.body
@@ -31,5 +29,10 @@ class AuthorizeApiRequestTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
     expected_response = { error: msg }.to_json
     assert_equal expected_response, response.body
+  end
+
+  def auth_token
+    auth_user = AuthenticateUser.call @user.password_digest, @user.username
+    auth_user.result
   end
 end
