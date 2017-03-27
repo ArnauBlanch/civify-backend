@@ -6,7 +6,7 @@ class Issue < ApplicationRecord
   validates_attachment_content_type :picture,
                                     content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
   validates_attachment :picture, size: { in: 0..5.megabytes }
-  validates :picture, attachment_presence: false
+  validates :picture, attachment_presence: true
   validates :user_id, presence: true
   validates :title, presence: true
   validates :latitude, presence: true
