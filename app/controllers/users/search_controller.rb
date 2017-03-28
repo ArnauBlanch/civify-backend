@@ -1,13 +1,14 @@
 # Search users by username or email controller
 class Users::SearchController < ApplicationController
+  skip_before_action :authenticate_request
+
   def create
     body = JSON.parse(request.raw_post)
     if body['username']
       if User.find_by(username: body['username'])
         render json: { message: 'User exists' }, status: :ok
       else
-        render json: { message: 'User not exists' },
-               status: :not_found
+        render json: { message: 'User not exists' }, status: :not_found
       end
     elsif body['email']
       if User.find_by(email: body['email'])
