@@ -21,6 +21,11 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'simplecov', :require => false, :group => :test
 # Secure token
 gem 'has_secure_token'
+# Encoding and decoding JSON Web Tokens (JWT)
+gem 'jwt'
+# Create services facilitating the connection
+# between the controller and the models
+gem 'simple_command'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
