@@ -10,5 +10,3 @@ class User < ApplicationRecord
   validates :password_confirmation, presence: true
   has_secure_token :user_auth_token
 end
-
-  
