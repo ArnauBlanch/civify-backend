@@ -19,8 +19,6 @@ gem 'paperclip'
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
-# Code coverage
-gem 'simplecov', :require => false, :group => :test
 # Secure token
 gem 'has_secure_token'
 # Encoding and decoding JSON Web Tokens (JWT)
