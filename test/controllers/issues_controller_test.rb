@@ -4,7 +4,7 @@ require "rack/test"
 class IssuesControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    @user = User.create(name: 'user')
+    @user = User.create(username: 'user')
     @picture = sample_file
     @issue = @user.issues.create!(title: 'issue', latitude: 76.4,
                                   longitude: 38.2, category: 'arbolada',
