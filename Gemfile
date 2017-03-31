@@ -9,8 +9,6 @@ end
 gem 'rails', '~> 5.0.2'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.3.18', '< 0.5'
-# Use Puma as the app server
-gem 'puma', '~> 3.0'
 
 # Gem for image uploading (install ImageMagick tool first)
 gem 'paperclip'
@@ -49,8 +47,14 @@ group :development, :test do
 end
 
 group :development do
-  gem 'capistrano', '~> 3.8'
+  gem 'capistrano',         require: false
+  gem 'capistrano-rvm',     require: false
+  gem 'capistrano-rails',   require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano3-puma',   require: false
 end
+
+gem 'puma'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
