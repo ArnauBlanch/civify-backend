@@ -1,5 +1,6 @@
 # ActiveRecord that represents users in the database
 class User < ApplicationRecord
+  has_many :issues
   validates :username, presence: true, uniqueness: { case_sensitive: false }
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :first_name, presence: true
@@ -9,3 +10,5 @@ class User < ApplicationRecord
   validates :password_confirmation, presence: true
   has_secure_token :user_auth_token
 end
+
+  
