@@ -18,7 +18,7 @@ gem 'paperclip'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
-gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', platforms: :ruby
 # Secure token
 gem 'has_secure_token'
 # Encoding and decoding JSON Web Tokens (JWT)
@@ -40,8 +40,6 @@ group :development, :test do
   gem 'byebug', platform: :mri
   # gem to see code coverage
   gem 'simplecov', :require => false
-
-  gem 'factory_girl_rails', '~> 4.0'
 end
 
 group :development do
@@ -52,6 +50,7 @@ group :development do
   gem 'capistrano3-puma',   require: false
 end
 
+gem 'nokogiri', '~> 1.6.6.4', platforms: :ruby
 gem 'puma'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
