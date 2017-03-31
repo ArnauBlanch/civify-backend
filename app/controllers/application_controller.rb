@@ -1,5 +1,7 @@
 # ApplicationController global controller configurations
 class ApplicationController < ActionController::API
+  include ExceptionHandler
+  include Response
   # Requires authentication token before requesting resources
   before_action :authenticate_request
 

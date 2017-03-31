@@ -43,9 +43,17 @@ GEM
     bcrypt (3.1.11-x64-mingw32)
     builder (3.2.3)
     byebug (9.0.6)
+    climate_control (0.1.0)
+    cocaine (0.5.8)
+      climate_control (>= 0.0.3, < 1.0)
     concurrent-ruby (1.0.5)
     docile (1.1.5)
     erubis (2.7.0)
+    factory_girl (4.8.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.8.0)
+      factory_girl (~> 4.8.0)
+      railties (>= 3.0.0)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     has_secure_token (1.0.0)
@@ -61,6 +69,7 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
+    mimemagic (0.3.2)
     mini_portile2 (2.1.0)
     minitest (5.10.1)
     mysql2 (0.4.5)
@@ -70,6 +79,12 @@ GEM
       mini_portile2 (~> 2.1.0)
     nokogiri (1.7.1-x64-mingw32)
       mini_portile2 (~> 2.1.0)
+    paperclip (5.1.0)
+      activemodel (>= 4.2.0)
+      activesupport (>= 4.2.0)
+      cocaine (~> 0.5.5)
+      mime-types
+      mimemagic (~> 0.3.0)
     puma (3.8.2)
     rack (2.0.1)
     rack-test (0.6.3)
@@ -128,9 +143,11 @@ PLATFORMS
 DEPENDENCIES
   bcrypt (~> 3.1.7)
   byebug
+  factory_girl_rails (~> 4.0)
   has_secure_token
   jwt
   mysql2 (>= 0.3.18, < 0.5)
+  paperclip
   puma (~> 3.0)
   rails (~> 5.0.2)
   simple_command
