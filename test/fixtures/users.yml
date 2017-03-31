@@ -5,9 +5,9 @@
 # below each fixture, per the syntax in the comments below
 #
 Lorem:
-  name: Lorem
+  username: Lorem
 # column: value
 #
 two:
-  name: MyString
+  username: MyString
 # column: value
