@@ -11,4 +11,9 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+  def auth_token(password, username)
+    auth_user = AuthenticateUser.call password, username
+    assert auth_user.success?
+    auth_user.result
+  end
 end
