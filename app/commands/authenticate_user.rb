@@ -11,7 +11,7 @@ class AuthenticateUser
   def call
     if password
       if username || email
-        JsonWebToken.encode(user_id: user.id) if user
+        JsonWebToken.encode(user_id: @user.id) if user
       else
         errors.add :missing_parameters, 'username or email must be provided'
       end
@@ -24,10 +24,10 @@ class AuthenticateUser
   attr_accessor :username, :email, :password
 
   def user
-    user = User.find_by_username(username) if username
-    user ||= User.find_by_email(email)
-    if user
-      return user if user.authenticate(password)
+    @user = User.find_by_username(username) if username
+    @user = User.find_by_email(email) if email
+    if @user
+      return @user if @user.authenticate(password)
       errors.add :invalid_credentials, 'Invalid credentials'
     else
       errors.add :not_found, 'User not exists'
