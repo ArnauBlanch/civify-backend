@@ -151,7 +151,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
   end
 
   def sample_image_hash
-    content = Base64.strict_encode64(File.binread@picture)
+    content = Base64.strict_encode64(File.binread @picture)
     { filename: 'image.gif', content: content, content_type: 'image/gif' }
   end
 
