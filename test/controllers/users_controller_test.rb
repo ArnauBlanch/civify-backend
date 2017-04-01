@@ -3,8 +3,8 @@ require 'test_helper'
 # Tests user controller
 class UsersControllerTest < ActionDispatch::IntegrationTest
   test 'get all users' do
-    set_up
-    get '/users'
+    setup_user
+    get '/users', headers: authorization_header(@password, @user.username)
     assert_response :ok
     assert_equal response.body, User.all.to_json(except: [:id,
                                                           :password_digest,
@@ -12,9 +12,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'get user by auth token' do
-    set_up
+    setup_user
     token = @user.user_auth_token
-    get '/users/' + token
+    get '/users/' + token, headers: authorization_header(@password, @user.username)
     assert_response :ok
     assert_equal response.body,
                  @user.to_json(except: [:id, :password_digest, :updated_at])
@@ -44,9 +44,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'valid destroy request' do
-    set_up
+    setup_user
     token = @user.user_auth_token
-    delete '/users/' + token
+    delete '/users/' + token, headers: authorization_header(@password, @user.username)
     assert_response :ok
     assert_nil User.find_by(user_auth_token: token)
     body = JSON.parse(response.body)
@@ -54,15 +54,10 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'invalid destroy request' do
-    delete '/users/123'
+    setup_user
+    delete '/users/123', headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
     assert_equal 'User not found', body['message']
-  end
-
-  def set_up
-    @user = User.create(username: 'foo', email: 'foo@bar.com',
-                        first_name: 'Foo', last_name: 'Bar',
-                        password: 'mypass', password_confirmation: 'mypass')
   end
 end

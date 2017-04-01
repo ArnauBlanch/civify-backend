@@ -2,14 +2,13 @@ require 'test_helper'
 
 class IssueTest < ActiveSupport::TestCase
   def setup
-    @user = users(:Lorem)
+    setup_user
     @issue = @user.issues.build(title: 'sample issue', latitude: 76.4,
                                 longitude: 38.2, category: 'arbolada',
                                 description: 'desc',
                                 risk: true, resolved_votes: 564,
                                 confirm_votes: 23, reports: 23)
     @issue.picture = sample_file
-
   end
 
   test 'should be valid' do

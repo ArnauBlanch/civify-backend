@@ -3,9 +3,7 @@ require 'test_helper'
 # Login is state-less (no sessions, no logouts)
 class AuthenticationControllerTest < ActionDispatch::IntegrationTest
   def setup
-    @user = User.create(username: 'test',
-                        email: 'test@test.com',
-                        password_digest: '1234')
+    setup_user
   end
 
   test 'login existing user with username succeeds' do
@@ -41,9 +39,11 @@ class AuthenticationControllerTest < ActionDispatch::IntegrationTest
   test 'multiple accounts logged in simultaneously' do
     login
     auth_token1 = assert_login_succeeds
+    @password = '4321'
     @user = User.create(username: 'test2',
                         email: 'test2@test.com',
-                        password_digest: '4321')
+                        first_name: 'test2', last_name: 'test2',
+                        password: @password, password_confirmation: @password)
     login
     auth_token2 = assert_login_succeeds
     assert_not_equal auth_token1, auth_token2
@@ -51,7 +51,7 @@ class AuthenticationControllerTest < ActionDispatch::IntegrationTest
 
   def login(username = @user.username,
             email = @user.email,
-            password = @user.password_digest)
+            password = @password)
     post '/login', params: {
       username: username,
       email: email,
@@ -61,7 +61,7 @@ class AuthenticationControllerTest < ActionDispatch::IntegrationTest
 
   def assert_login_succeeds
     assert_response :ok
-    auth_command = AuthenticateUser.call @user.password_digest, @user.username
+    auth_command = AuthenticateUser.call @password, @user.username
     auth_token = auth_command.result
     expected_response = { auth_token: auth_token }.to_json
     assert_equal expected_response, response.body

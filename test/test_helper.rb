@@ -16,4 +16,19 @@ class ActiveSupport::TestCase
     assert auth_user.success?
     auth_user.result
   end
+
+  def authorization_header(password, username)
+    { authorization: auth_token(password, username) }
+  end
+
+  attr_reader :user, :password
+
+  def setup_user
+    @password = '1234'
+    @user = User.create(username: 'test',
+                        email: 'test@test.com',
+                        first_name: 'test', last_name: 'test',
+                        password: @password, password_confirmation: @password)
+    assert @user.valid?
+  end
 end

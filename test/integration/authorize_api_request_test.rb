@@ -3,17 +3,13 @@ require 'test_helper'
 # Testing authorized requests via tokens
 # AuthorizeApiRequest and ApplicationController integration
 class AuthorizeApiRequestTest < ActionDispatch::IntegrationTest
+
   def setup
-    @password = '1234'
-    @user = User.create(username: 'test',
-                        email: 'test@test.com',
-                        first_name: 'test', last_name: 'test',
-                        password: @password, password_confirmation: @password)
-    assert @user.valid?
+    setup_user
   end
 
   test 'request authorized with valid token' do
-    get '/me', headers: { authorization: auth_token(@password, @user.username) }
+    get '/me', headers: authorization_header(@password, @user.username)
     assert_response :ok
     assert_equal @user.to_json(except: [:id, :password_digest]), response.body
   end
