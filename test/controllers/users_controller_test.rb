@@ -1,0 +1,63 @@
+require 'test_helper'
+
+# Tests user controller
+class UsersControllerTest < ActionDispatch::IntegrationTest
+  test 'get all users' do
+    setup_user
+    get '/users', headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    assert_equal response.body, User.all.to_json(except: [:id,
+                                                          :password_digest,
+                                                          :updated_at])
+  end
+
+  test 'get user by auth token' do
+    setup_user
+    token = @user.user_auth_token
+    get '/users/' + token, headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    assert_equal response.body,
+                 @user.to_json(except: [:id, :password_digest, :updated_at])
+  end
+
+  test 'valid create request' do
+    post '/users', params: {
+      username: 'foo', email: 'foo@bar.com',
+      first_name: 'Foo', last_name: 'Bar',
+      password: 'mypass', password_confirmation: 'mypass'
+    }, as: :json
+    assert_response :created # test status code
+    assert_not_nil User.find_by(username: 'foo') # test user creation
+    body = JSON.parse(response.body)
+    assert_equal 'User created', body['message']
+  end
+
+  test 'invalid create request' do
+    post '/users', params: {
+      email: 'foo@bar.com',
+      first_name: 'Foo', last_name: 'Bar',
+      password: 'mypass', password_confirmation: 'mypass'
+    }, as: :json
+    assert_response :bad_request # test status code
+    body = JSON.parse(response.body)
+    assert_equal 'User not created', body['message'] # test response body
+  end
+
+  test 'valid destroy request' do
+    setup_user
+    token = @user.user_auth_token
+    delete '/users/' + token, headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    assert_nil User.find_by(user_auth_token: token)
+    body = JSON.parse(response.body)
+    assert_equal 'User deleted', body['message']
+  end
+
+  test 'invalid destroy request' do
+    setup_user
+    delete '/users/123', headers: authorization_header(@password, @user.username)
+    assert_response :not_found
+    body = JSON.parse(response.body)
+    assert_equal 'User not found', body['message']
+  end
+end
