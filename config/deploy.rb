@@ -4,7 +4,7 @@ server '10.4.41.152', port: 3000, roles: [:web, :app, :db], primary:
 
 set :repo_url,        'git@github.com:ArnauBlanch/civify-backend.git'
 set :application,     'civify-backend'
-set :user,            'alumne'
+set :user,            'deploy'
 set :puma_threads,    [4, 16]
 set :puma_workers,    0
 
