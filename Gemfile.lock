@@ -53,20 +53,14 @@ GEM
     capistrano-bundler (1.2.0)
       capistrano (~> 3.1)
       sshkit (~> 1.2)
+    capistrano-puma (0.2.3)
+      capistrano (>= 3.0)
     capistrano-rails (1.2.3)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
-    capistrano-upload-config (0.7.0)
-      capistrano (>= 3.0)
-    capistrano3-nginx (2.1.6)
-      capistrano (>= 3.0.0)
-    capistrano3-puma (3.1.0)
-      capistrano (~> 3.7)
-      capistrano-bundler
-      puma (~> 3.4)
     climate_control (0.1.0)
     cocaine (0.5.8)
       climate_control (>= 0.0.3, < 1.0)
@@ -107,7 +101,6 @@ GEM
       cocaine (~> 0.5.5)
       mime-types
       mimemagic (~> 0.3.0)
-    puma (3.8.2)
     rack (2.0.1)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -168,12 +161,11 @@ PLATFORMS
 DEPENDENCIES
   bcrypt
   byebug
-  capistrano (~> 3.6)
-  capistrano-rails (~> 1.1)
+  capistrano (~> 3.8.0)
+  capistrano-bundler
+  capistrano-puma
+  capistrano-rails
   capistrano-rvm
-  capistrano-upload-config
-  capistrano3-nginx
-  capistrano3-puma
   has_secure_token
   jwt
   mysql2 (>= 0.3.18, < 0.5)
