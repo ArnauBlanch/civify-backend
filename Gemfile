@@ -43,13 +43,15 @@ group :development, :test do
 end
 
 group :development do
-  gem 'capistrano', '~> 3.6'
-  gem 'capistrano-rails', '~> 1.1'
+  gem 'capistrano'
+  gem 'capistrano-rails'
   gem 'capistrano-rvm'
   gem 'capistrano3-puma'
   gem 'capistrano3-nginx'
   gem 'capistrano-upload-config'
 end
+
+gem 'puma'
 
 gem 'nokogiri', '~> 1.6.6.4', platforms: :ruby
 
