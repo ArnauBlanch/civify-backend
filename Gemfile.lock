@@ -169,7 +169,7 @@ DEPENDENCIES
   has_secure_token
   jwt
   mysql2 (>= 0.3.18, < 0.5)
-  nokogiri (~> 1.6.6.4)
+  nokogiri
   paperclip
   rails (~> 5.0.2)
   simple_command
