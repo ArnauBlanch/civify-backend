@@ -46,7 +46,7 @@ class ConfirmationTest < ActiveSupport::TestCase
     assert_equal @user.confirmations.first, Confirmation.find_by(user_id: @user.id)
   end
 
-  test 'created issues is not confirmed issues' do
+  test 'created issue is not confirmed issue' do
     @user.confirmations.create!(issue: @another_issue)
     assert_equal @another_issue, @user.confirmed_issues.find_by(title: 'anotherissue')
     assert_not_equal @issue, @user.confirmed_issues.find_by(title: 'issue')
