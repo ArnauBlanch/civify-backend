@@ -43,15 +43,18 @@ group :development, :test do
 end
 
 group :development do
-  gem 'capistrano', '~> 3.8.0'
-  # cap tasks to manage puma application server
-  gem 'capistrano-puma', require: false
-  gem 'capistrano-rails', require: false
-  gem 'capistrano-bundler', require: false
-  gem 'capistrano-rvm', require: false
+    gem 'capistrano',         require: false
+    gem 'capistrano-rvm',     require: false
+    gem 'capistrano-rails',   require: false
+    gem 'capistrano-bundler', require: false
+    gem 'capistrano3-puma',   require: false
 end
 
 gem 'puma'
+
+
+
+
 gem 'nokogiri', platforms: :ruby
 gem 'mini_portile2'
 
