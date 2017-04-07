@@ -43,15 +43,13 @@ group :development, :test do
 end
 
 group :development do
-  gem 'capistrano'
-  gem 'capistrano-rails'
-  gem 'capistrano-rvm'
-  gem 'capistrano3-puma'
-  gem 'capistrano3-nginx'
-  gem 'capistrano-upload-config'
+  gem 'capistrano', '~> 3.8.0'
+  # cap tasks to manage puma application server
+  gem 'capistrano-puma', require: false
+  gem 'capistrano-rails', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-rvm', require: false
 end
-
-gem 'puma'
 
 gem 'nokogiri', '~> 1.6.6.4', platforms: :ruby
 
