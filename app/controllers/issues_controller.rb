@@ -4,13 +4,13 @@ class IssuesController < ApplicationController
 
   def index
     set_user
-    json_response(@user.issues)
+    json_response @user.issues
   end
 
   def show
     set_user
     set_user_issue
-    json_response(@issue)
+    json_response @issue
   end
 
   def create
@@ -18,7 +18,7 @@ class IssuesController < ApplicationController
     @issue = @user.issues.build(issue_params)
     @issue.picture = @picture
     @issue.save!
-    json_response(@issue, :created)
+    json_response @issue, :created
   end
 
   def update
@@ -26,7 +26,7 @@ class IssuesController < ApplicationController
     set_user_issue
     @issue.picture = @picture if @picture
     @issue.update!(issue_params)
-    json_response(@issue)
+    json_response @issue
   end
 
   def destroy
@@ -37,19 +37,19 @@ class IssuesController < ApplicationController
   end
 
   def index_issues
-    json_response(Issue.all)
+    json_response Issue.all
   end
 
   def show_issue
     set_issue
-    json_response(@issue)
+    json_response @issue
   end
 
   def update_issue
     set_issue
     @issue.picture = @picture if @picture
     @issue.update!(issue_params)
-    json_response(@issue)
+    json_response @issue
   end
 
   def destroy_issue
