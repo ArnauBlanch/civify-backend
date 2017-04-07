@@ -56,3 +56,6 @@ bower.json
 .byebug_history
 
 bin/log/\.keep
+
+# deeseestore
+.DS_Store
