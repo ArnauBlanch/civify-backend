@@ -69,8 +69,4 @@ class IssueTest < ActiveSupport::TestCase
     @issue.user_id = nil
     assert_not @issue.valid?
   end
-
-  def sample_file(filename = "image.gif")
-    File.new("test/fixtures/#{filename}")
-  end
 end

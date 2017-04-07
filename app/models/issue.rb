@@ -1,7 +1,7 @@
-# Issue model with validations and foreign key in schema with user
+# Issue model with validations
 class Issue < ApplicationRecord
   belongs_to :user
-  has_many :confirmations
+  has_many :confirmations, dependent: :destroy
   has_many :users, through: :confirmations
   has_secure_token :issue_auth_token
   has_attached_file :picture, styles: { small: '64x64', med: '100x100', large: '200x200' }
