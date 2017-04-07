@@ -2,7 +2,7 @@
 class User < ApplicationRecord
   has_many :issues
   has_many :confirmations
-  has_many :confirmed_issues, through: :confirmations, source: :issues
+  has_many :confirmed_issues, through: :confirmations, source: :issue
   validates :username, presence: true, uniqueness: { case_sensitive: false }
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :first_name, presence: true
