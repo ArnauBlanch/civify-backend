@@ -43,15 +43,17 @@ group :development, :test do
 end
 
 group :development do
-  gem 'capistrano',         require: false
-  gem 'capistrano-rvm',     require: false
-  gem 'capistrano-rails',   require: false
-  gem 'capistrano-bundler', require: false
-  gem 'capistrano3-puma',   require: false
+    gem 'capistrano',         require: false
+    gem 'capistrano-rvm',     require: false
+    gem 'capistrano-rails',   require: false
+    gem 'capistrano-passenger', require: false
 end
 
-gem 'nokogiri', '~> 1.6.6.4', platforms: :ruby
-gem 'puma'
+
+
+
+gem 'nokogiri', platforms: :ruby
+gem 'mini_portile2'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:ruby, :mingw, :x64_mingw, :mswin, :jruby]
