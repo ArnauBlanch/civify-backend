@@ -1,5 +1,3 @@
 set :stage, :production
-
-role :app, %w{deploy@civify.cf}
-role :web, %w{deploy@civify.cf}
-role :db,  %w{deploy@civify.cf}
+server "civify.cf", user: "deploy", roles: %w{web app db}
+set :branch, "master"
