@@ -51,7 +51,7 @@ group :development do
   gem 'capistrano-rvm', require: false
 end
 
-gem 'nokogiri', '~> 1.6.6.4', platforms: :ruby
+gem 'nokogiri', platforms: :ruby
 
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
