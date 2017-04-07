@@ -19,7 +19,7 @@ class ConfirmationTest < ActiveSupport::TestCase
                                                 confirm_votes: 23, reports: 23)
   end
 
-  test 'no automatic confirmation association when new user issue created (fk)' do
+  test 'no automatic confirmation association when new user issue created' do
     assert @issue.confirmations.empty?
     assert @another_issue.confirmations.empty?
     assert @user.confirmations.empty?
@@ -44,6 +44,12 @@ class ConfirmationTest < ActiveSupport::TestCase
   test 'confirmations are created' do
     Confirmation.create!(user: @user, issue: @issue)
     assert_equal @user.confirmations.first, Confirmation.find_by(user_id: @user.id)
+  end
+
+  test 'created issues is not confirmed issues' do
+    @user.confirmations.create!(issue: @another_issue)
+    assert_equal @another_issue, @user.confirmed_issues.find_by(title: 'anotherissue')
+    assert_not_equal @issue, @user.confirmed_issues.find_by(title: 'issue')
   end
 end
 
