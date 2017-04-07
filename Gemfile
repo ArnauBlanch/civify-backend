@@ -42,19 +42,18 @@ group :development, :test do
   gem 'simplecov', :require => false
 end
 
-gem 'nokogiri', '~> 1.6.6.4', platforms: :ruby
+group :development do
+    gem 'capistrano',         require: false
+    gem 'capistrano-rvm',     require: false
+    gem 'capistrano-rails',   require: false
+    gem 'capistrano-passenger', require: false
+end
+
+
+
+
+gem 'nokogiri', platforms: :ruby
+gem 'mini_portile2'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:ruby, :mingw, :x64_mingw, :mswin, :jruby]
-
-group :development do
-  gem 'capistrano'
-  gem 'capistrano-bundler'
-  gem 'capistrano-passenger', '>= 0.1.1'
-
-  # Remove the following if your app does not use Rails
-  gem 'capistrano-rails'
-
-  # Remove the following if your server does not use RVM
-  gem 'capistrano-rvm'
-end

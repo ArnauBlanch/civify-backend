@@ -58,3 +58,5 @@ config/database\.yml
 
 bin/log/\.keep
 config/database.yml
+
+.DS_Store
