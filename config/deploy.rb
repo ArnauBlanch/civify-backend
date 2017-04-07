@@ -4,6 +4,9 @@ set :application, "civify-backend"
 set :repo_url, "git@github.com:ArnauBlanch/civify-backend.git"
 set :user, "deploy"
 
+set :stages, [:staging, :production]
+set :default_stage, :staging
+
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
