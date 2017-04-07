@@ -6,10 +6,10 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     setup_user
-    @picture = sample_file
+    #when picture file asigned, paperclip is executed
     @issue = @user.issues.create!(title: 'issue', latitude: 76.4,
                                   longitude: 38.2, category: 'arbolada',
-                                  description: 'desc', picture: @picture,
+                                  description: 'desc', picture: sample_file,
                                   risk: true, resolved_votes: 564,
                                   confirm_votes: 23, reports: 23)
   end
@@ -145,14 +145,4 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     body = JSON.parse(response.body)
     assert_equal 'Image bad format', body['error']
   end
-
-  def sample_file(filename = 'image.gif')
-    File.new("test/fixtures/#{filename}")
-  end
-
-  def sample_image_hash
-    content = Base64.strict_encode64(File.binread @picture)
-    { filename: 'image.gif', content: content, content_type: 'image/gif' }
-  end
-
 end

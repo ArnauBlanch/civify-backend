@@ -1,7 +1,6 @@
 class IssuesController < ApplicationController
-  #before_action :set_user
-  #before_action :set_user_issue, only: [:show, :update, :destroy]
   before_action :fetch_picture, only: [:create, :update]
+  #before_action :is_confirmed, only: [:index, :show]
 
   def index
     set_user
@@ -27,7 +26,6 @@ class IssuesController < ApplicationController
     set_user_issue
     @issue.picture = @picture if @picture
     @issue.update!(issue_params)
-    # 200 or 204 for update
     json_response(@issue)
   end
 
@@ -63,8 +61,7 @@ class IssuesController < ApplicationController
   private
 
   def issue_params
-    # maybe :id is not necessary
-    params.permit(:id, :user_id, :title, :latitude, :longitude,
+    params.permit(:title, :latitude, :longitude,
                   :category, :picture, :description,
                   :risk, :resolved_votes, :confirm_votes,
                   :reports)
