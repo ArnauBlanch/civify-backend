@@ -1,6 +1,5 @@
 class ResolveController < ApplicationController
   before_action :setup
-  skip_before_action :authenticate_request, only: [:create, :index]
 
   # GET /issues/:issue_auth_token/resolve?user=example
   def index
