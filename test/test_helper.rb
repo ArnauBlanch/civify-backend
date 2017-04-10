@@ -31,4 +31,18 @@ class ActiveSupport::TestCase
                         password: @password, password_confirmation: @password)
     assert @user.valid?
   end
+
+  def setup_issue
+    @picture = sample_file
+    @issue = @user.issues.create(title: 'issue', latitude: 76.4,
+                                  longitude: 38.2, category: 'arbolada',
+                                  description: 'desc', picture: @picture,
+                                  risk: true, resolved_votes: 564,
+                                  confirm_votes: 23, reports: 23)
+    assert @issue.valid?
+  end
+
+  def sample_file(filename = 'image.gif')
+    File.new("test/fixtures/#{filename}")
+  end
 end
