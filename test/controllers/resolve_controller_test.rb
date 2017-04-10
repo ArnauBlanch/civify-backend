@@ -45,6 +45,8 @@ class ResolveControllerTest < ActionDispatch::IntegrationTest
     body = JSON.parse(response.body)
     assert_equal 'Resolution done', body['message']
     assert @user.resolutions.exists?(@issue.id)
+    assert_equal @issue.resolved_votes + 1,
+                 Issue.find_by(id: @issue.id).resolved_votes
   end
 
   # GET /issues/:issue_auth_token/resolve?user=example

@@ -1,5 +1,6 @@
 class ResolveController < ApplicationController
   before_action :setup
+  skip_before_action :authenticate_request, only: [:create, :index]
 
   # GET /issues/:issue_auth_token/resolve?user=example
   def index
@@ -16,6 +17,8 @@ class ResolveController < ApplicationController
       render json: { message: 'Resolution already exists' }, status:
           :bad_request
     elsif @user.resolutions << @issue
+      @issue.resolved_votes += 1
+      @issue.save
       render json: { message: 'Resolution done' }, status: :ok
     else
       render json: { message: 'Could not do the confirmation' }, status:
