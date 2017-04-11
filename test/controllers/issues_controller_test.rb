@@ -6,12 +6,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     setup_user
-    #when picture file asigned, paperclip is executed
-    @issue = @user.issues.create!(title: 'issue', latitude: 76.4,
-                                  longitude: 38.2, category: 'arbolada',
-                                  description: 'desc', picture: sample_file,
-                                  risk: true, resolved_votes: 564,
-                                  confirm_votes: 23, reports: 23)
+    setup_issue
   end
 
   test 'get all user issues request' do
@@ -35,7 +30,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
           longitude: 38.2, category: 'arbolada',
           description: 'desc', picture: sample_image_hash,
           risk: true, resolved_votes: 564,
-          confirm_votes: 23, reports: 23
+          confirm_votes: 0, reports: 0
     }, headers: authorization_header(@password, @user.username)
     assert_response :created
     issue = Issue.find_by(title: 'sample issue')
@@ -78,7 +73,6 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     @issue.reload
     assert_equal @issue.category, 'nuclear'
-    # assert_equal response.body, @issue.to_json check json order
   end
 
   test 'update user issue valid request but ignored values' do
@@ -89,7 +83,6 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     @issue.reload
     assert_equal @issue.title, 'title updated'
-    # assert_equal response.body, @issue.to_json check json order
   end
 
   test 'get issue' do

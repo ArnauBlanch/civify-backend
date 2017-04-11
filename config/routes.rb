@@ -14,5 +14,5 @@ Rails.application.routes.draw do
   put '/issues/:issue_auth_token', to: 'issues#update_issue'
   patch '/issues/:issue_auth_token', to: 'issues#update_issue'
   delete '/issues/:issue_auth_token', to: 'issues#destroy_issue'
-  
+  post '/issues/:issue_auth_token/confirm', to: 'confirmations#create'
 end
