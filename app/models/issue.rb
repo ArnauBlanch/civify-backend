@@ -1,8 +1,10 @@
 # Issue model with validations
 class Issue < ApplicationRecord
+  after_find :update_confirm_votes
+
   belongs_to :user
   has_many :confirmations, dependent: :destroy
-  has_many :users, through: :confirmations
+  has_many :users_confirming, through: :confirmations, source: :user
   has_secure_token :issue_auth_token
   has_attached_file :picture, styles: { small: '64x64', med: '100x100', large: '200x200' }
   validates_attachment_content_type :picture,
@@ -27,7 +29,6 @@ class Issue < ApplicationRecord
                                  :picture_file_size,
                                  :picture_updated_at]))
       .merge(user_auth_token:user.user_auth_token).merge(picture_hash)
-
   end
 
   def picture_hash
@@ -39,4 +40,14 @@ class Issue < ApplicationRecord
                  med_url: picture.url(:med),
                  large_url: picture.url(:large) } }
   end
+
+  private
+
+  def update_confirm_votes
+    self.confirm_votes = users_confirming.size
+  end
+
+  #def update_confirmed_by_auth_user
+  #  self.confirmed_by_auth_user = users_confirming.include? current_user
+  #end
 end

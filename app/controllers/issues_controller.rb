@@ -1,6 +1,5 @@
 class IssuesController < ApplicationController
   before_action :fetch_picture, only: [:create, :update]
-  #before_action :is_confirmed, only: [:index, :show]
 
   def index
     set_user
@@ -10,6 +9,7 @@ class IssuesController < ApplicationController
   def show
     set_user
     set_user_issue
+    confirmed?
     json_response @issue
   end
 
@@ -42,6 +42,7 @@ class IssuesController < ApplicationController
 
   def show_issue
     set_issue
+    confirmed?
     json_response @issue
   end
 
@@ -90,5 +91,9 @@ class IssuesController < ApplicationController
     image_file
   rescue
     json_response({ error: 'Image bad format' }, :bad_request)
+  end
+
+  def confirmed?
+    @issue.confirmed_by_auth_user = @issue.users_confirming.include? current_user
   end
 end
