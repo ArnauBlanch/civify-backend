@@ -6,19 +6,21 @@ class ResolveControllerTest < ActionDispatch::IntegrationTest
     setup_issue
   end
 
-  # GET /issues/:issue_auth_token/resolve?user=example
+  # GET /issues/:issue_auth_token/resolve?user=user_auth_token
   test 'resolution does not exists' do
-    get "/issues/#{@issue.issue_auth_token}/resolve?user=#{@user.username}",
+    get "/issues/#{@issue.issue_auth_token}/resolve?user=#{@user
+                                                           .user_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
     assert_equal 'Resolution does not exist', body['message']
   end
 
-  # GET /issues/:issue_auth_token/resolve?user=example
+  # GET /issues/:issue_auth_token/resolve?user=user_auth_token
   test 'resolution exists' do
     @user.resolutions << @issue
-    get "/issues/#{@issue.issue_auth_token}/resolve?user=#{@user.username}",
+    get "/issues/#{@issue.issue_auth_token}/resolve?user=#{@user
+                                                           .user_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
     body = JSON.parse(response.body)
@@ -30,7 +32,7 @@ class ResolveControllerTest < ActionDispatch::IntegrationTest
     @user.resolutions << @issue
     post "/issues/#{@issue.issue_auth_token}/resolve",
          headers: authorization_header(@password, @user.username),
-         params: { user: @user.username }, as: :json
+         params: { user: @user.user_auth_token }, as: :json
     assert_response :bad_request
     body = JSON.parse(response.body)
     assert_equal 'Resolution already exists', body['message']
@@ -40,7 +42,7 @@ class ResolveControllerTest < ActionDispatch::IntegrationTest
   test 'resolution done' do
     post "/issues/#{@issue.issue_auth_token}/resolve",
          headers: authorization_header(@password, @user.username),
-         params: { user: @user.username }, as: :json
+         params: { user: @user.user_auth_token }, as: :json
     assert_response :ok
     body = JSON.parse(response.body)
     assert_equal 'Resolution done', body['message']
@@ -49,16 +51,16 @@ class ResolveControllerTest < ActionDispatch::IntegrationTest
                  Issue.find_by(id: @issue.id).resolved_votes
   end
 
-  # GET /issues/:issue_auth_token/resolve?user=example
+  # GET /issues/:issue_auth_token/resolve?user=user_auth_token
   test 'issue not found' do
-    get "/issues/1234/resolve?user=#{@user.username}",
+    get "/issues/1234/resolve?user=#{@user.user_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
     assert_equal 'Issue not found', body['message']
   end
 
-  # GET /issues/:issue_auth_token/resolve?user=example
+  # GET /issues/:issue_auth_token/resolve?user=user_auth_token
   test 'user not found' do
     get "/issues/#{@issue.issue_auth_token}/resolve?user=user",
         headers: authorization_header(@password, @user.username)

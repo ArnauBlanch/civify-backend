@@ -1,9 +1,9 @@
 class ResolveController < ApplicationController
   before_action :setup
 
-  # GET /issues/:issue_auth_token/resolve?user=example
+  # GET /issues/:issue_auth_token/resolve?user=user_auth_token
   def index
-    if @issue.resolutions.find_by(username: params[:user]).nil?
+    if @issue.resolutions.find_by(user_auth_token: params[:user]).nil?
       render json: { message: 'Resolution does not exist' }, status: :not_found
     else
       render json: { message: 'Resolution exists' }, status: :ok
@@ -32,7 +32,7 @@ class ResolveController < ApplicationController
     if @issue.nil?
       render json: { message: 'Issue not found' }, status: :not_found
     end
-    @user = User.find_by(username: params[:user])
+    @user = User.find_by(user_auth_token: params[:user])
     if @user.nil?
       render json: { message: 'User not found' }, status: :not_found
     end
