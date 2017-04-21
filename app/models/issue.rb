@@ -1,7 +1,5 @@
 # Issue model with validations
 class Issue < ApplicationRecord
-  after_find :update_confirm_votes
-
   belongs_to :user
   has_many :confirmations, dependent: :destroy
   has_many :users_confirming, through: :confirmations, source: :user
@@ -23,12 +21,17 @@ class Issue < ApplicationRecord
   validates :confirm_votes, presence: true
   validates :reports, presence: true
 
+  attr_accessor :current_user
+
   def as_json(options = nil)
-    super(options.reverse_merge(except: [:id, :user_id, :picture_file_name,
+    json = super(options.reverse_merge(except: [:id, :user_id, :picture_file_name,
                                  :picture_content_type,
                                  :picture_file_size,
                                  :picture_updated_at]))
-      .merge(user_auth_token:user.user_auth_token).merge(picture_hash)
+      .merge(user_auth_token: user.user_auth_token)
+      .merge(confirm_votes: confirm_votes)
+      .merge(picture_hash)
+      .merge(confirmed_by_auth_user: confirmed_by_auth_user)
   end
 
   def picture_hash
@@ -43,11 +46,11 @@ class Issue < ApplicationRecord
 
   private
 
-  def update_confirm_votes
-    self.confirm_votes = users_confirming.size
+  def confirm_votes
+    users_confirming.size
   end
 
-  #def update_confirmed_by_auth_user
-  #  self.confirmed_by_auth_user = users_confirming.include? current_user
-  #end
+  def confirmed_by_auth_user
+    users_confirming.include? @current_user
+  end
 end

@@ -15,6 +15,12 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
     "confirmed by User with auth token #{@user.user_auth_token}",body['message']
     assert @issue.users_confirming.exists?(@user.id)
     assert @user.confirmed_issues.exists?(@issue.id)
+    get "/issues/#{@issue.issue_auth_token}",
+        headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    body = JSON.parse(response.body)
+    assert body['confirmed_by_auth_user']
+    assert_equal 1, body['confirm_votes']
   end
 
   test 'confirm issue by user param' do
@@ -26,6 +32,12 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
     "confirmed by User with auth token #{@user.user_auth_token}",body['message']
     assert @issue.users_confirming.exists?(@user.id)
     assert @user.confirmed_issues.exists?(@issue.id)
+    get "/issues/#{@issue.issue_auth_token}",
+        headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    body = JSON.parse(response.body)
+    assert body['confirmed_by_auth_user']
+    assert_equal 1, body['confirm_votes']
   end
 
   test 'unconfirm issue by auth user' do
@@ -39,6 +51,12 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
     "unconfirmed by User with auth token #{@user.user_auth_token}", body['message']
     assert_not @issue.users_confirming.exists?(@user.id)
     assert_not@user.confirmed_issues.exists?(@issue.id)
+    get "/issues/#{@issue.issue_auth_token}",
+        headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    body = JSON.parse(response.body)
+    assert_not body['confirmed_by_auth_user']
+    assert_equal 0, body['confirm_votes']
   end
 
   test 'unconfirm issue by user param' do
@@ -52,6 +70,12 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
     "unconfirmed by User with auth token #{@user.user_auth_token}",body['message']
     assert_not @issue.users_confirming.exists?(@user.id)
     assert_not@user.confirmed_issues.exists?(@issue.id)
+    get "/issues/#{@issue.issue_auth_token}",
+        headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    body = JSON.parse(response.body)
+    assert_not body['confirmed_by_auth_user']
+    assert_equal 0, body['confirm_votes']
   end
 
   test 'user not found' do
