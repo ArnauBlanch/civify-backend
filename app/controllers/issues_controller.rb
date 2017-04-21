@@ -1,3 +1,4 @@
+# Issue controller class
 class IssuesController < ApplicationController
   before_action :fetch_picture, only: [:create, :update]
 

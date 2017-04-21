@@ -25,13 +25,13 @@ class Issue < ApplicationRecord
 
   def as_json(options = nil)
     json = super(options.reverse_merge(except: [:id, :user_id, :picture_file_name,
-                                 :picture_content_type,
-                                 :picture_file_size,
-                                 :picture_updated_at]))
-      .merge(user_auth_token: user.user_auth_token)
-      .merge(confirm_votes: confirm_votes)
-      .merge(picture_hash)
-      .merge(confirmed_by_auth_user: confirmed_by_auth_user)
+                                                :picture_content_type,
+                                                :picture_file_size,
+                                                :picture_updated_at]))
+           .merge(user_auth_token: user.user_auth_token)
+           .merge(confirm_votes: confirm_votes)
+           .merge(picture_hash)
+           .merge(confirmed_by_auth_user: confirmed_by_auth_user)
   end
 
   def picture_hash

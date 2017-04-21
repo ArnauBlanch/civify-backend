@@ -1,3 +1,4 @@
+# Confirmation model class with user associations
 class Confirmation < ApplicationRecord
   belongs_to :issue
   belongs_to :user
