@@ -17,9 +17,6 @@ class Issue < ApplicationRecord
   validates :picture, presence: true
   validates :description, presence: true
   validates :risk, presence: true
-  validates :resolved_votes, presence: true
-  validates :confirm_votes, presence: true
-  validates :reports, presence: true
 
   attr_accessor :current_user
 

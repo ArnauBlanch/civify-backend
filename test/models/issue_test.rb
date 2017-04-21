@@ -45,16 +45,6 @@ class IssueTest < ActiveSupport::TestCase
     assert_not @issue.valid?
   end
 
-  test 'resolved_votes should be present' do
-    @issue.resolved_votes = nil
-    assert_not @issue.valid?
-  end
-
-  test 'reports should be present' do
-    @issue.reports = nil
-    assert_not @issue.valid?
-  end
-
   test 'userid should be present' do
     @issue.user_id = nil
     assert_not @issue.valid?
