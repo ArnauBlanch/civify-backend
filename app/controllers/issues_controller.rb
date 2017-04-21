@@ -1,17 +1,17 @@
+# Issue controller class
 class IssuesController < ApplicationController
-  #before_action :set_user
-  #before_action :set_user_issue, only: [:show, :update, :destroy]
   before_action :fetch_picture, only: [:create, :update]
 
   def index
     set_user
-    json_response(@user.issues)
+    json_response @user.issues
   end
 
   def show
     set_user
     set_user_issue
-    json_response(@issue)
+    @issue.current_user = current_user
+    json_response @issue
   end
 
   def create
@@ -19,7 +19,7 @@ class IssuesController < ApplicationController
     @issue = @user.issues.build(issue_params)
     @issue.picture = @picture
     @issue.save!
-    json_response(@issue, :created)
+    json_response @issue, :created
   end
 
   def update
@@ -27,8 +27,7 @@ class IssuesController < ApplicationController
     set_user_issue
     @issue.picture = @picture if @picture
     @issue.update!(issue_params)
-    # 200 or 204 for update
-    json_response(@issue)
+    json_response @issue
   end
 
   def destroy
@@ -39,19 +38,20 @@ class IssuesController < ApplicationController
   end
 
   def index_issues
-    json_response(Issue.all)
+    json_response Issue.all
   end
 
   def show_issue
     set_issue
-    json_response(@issue)
+    @issue.current_user = current_user
+    json_response @issue
   end
 
   def update_issue
     set_issue
     @issue.picture = @picture if @picture
     @issue.update!(issue_params)
-    json_response(@issue)
+    json_response @issue
   end
 
   def destroy_issue
@@ -63,10 +63,9 @@ class IssuesController < ApplicationController
   private
 
   def issue_params
-    # maybe :id is not necessary
-    params.permit(:id, :user_id, :title, :latitude, :longitude,
+    params.permit(:title, :latitude, :longitude,
                   :category, :picture, :description,
-                  :risk, :resolved_votes, :confirm_votes,
+                  :risk, :resolved_votes,
                   :reports)
   end
 
