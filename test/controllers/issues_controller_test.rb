@@ -6,16 +6,10 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     setup_user
-    @picture = sample_file
-    @issue = @user.issues.create!(title: 'issue', latitude: 76.4,
-                                  longitude: 38.2, category: 'arbolada',
-                                  description: 'desc', picture: @picture,
-                                  risk: true, resolved_votes: 564,
-                                  confirm_votes: 23, reports: 23)
+    setup_issue
   end
 
   test 'get all user issues request' do
-    # debugger
     get "/users/#{@user.user_auth_token}/issues",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
@@ -26,7 +20,6 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     get "/users/#{@user.user_auth_token}/issues/#{@issue.issue_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal response.body, @issue.to_json
   end
 
   test 'create user issue valid request' do
@@ -35,7 +28,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
           longitude: 38.2, category: 'arbolada',
           description: 'desc', picture: sample_image_hash,
           risk: true, resolved_votes: 564,
-          confirm_votes: 23, reports: 23
+          confirm_votes: 0, reports: 0
     }, headers: authorization_header(@password, @user.username)
     assert_response :created
     issue = Issue.find_by(title: 'sample issue')
@@ -78,7 +71,6 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     @issue.reload
     assert_equal @issue.category, 'nuclear'
-    # assert_equal response.body, @issue.to_json check json order
   end
 
   test 'update user issue valid request but ignored values' do
@@ -89,14 +81,12 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     @issue.reload
     assert_equal @issue.title, 'title updated'
-    # assert_equal response.body, @issue.to_json check json order
   end
 
   test 'get issue' do
     get "/issues/#{@issue.issue_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal response.body, @issue.to_json
   end
 
   test 'destroy issue valid request' do
@@ -133,7 +123,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_equal @issue.title, "title updated"
   end
 
-  test 'create usser issue image bad format' do
+  test 'create user issue image bad format' do
     post "/users/#{@user.user_auth_token}/issues", params: {
         latitude: 76.4,
         longitude: 38.2, category: 'arbolada',
@@ -146,13 +136,18 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Image bad format', body['error']
   end
 
-  def sample_file(filename = 'image.gif')
-    File.new("test/fixtures/#{filename}")
+  test 'get user issue obtains confirmed by authenticated user' do
+    get "/users/#{@user.user_auth_token}/issues/#{@issue.issue_auth_token}",
+        headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    body = JSON.parse(response.body)
+    assert_not body['confirmed_by_auth_user']
+    post "/issues/#{@issue.issue_auth_token}/confirm",
+         headers: authorization_header(@password, @user.username)
+    get "/users/#{@user.user_auth_token}/issues/#{@issue.issue_auth_token}",
+        headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    body = JSON.parse(response.body)
+    assert body['confirmed_by_auth_user']
   end
-
-  def sample_image_hash
-    content = Base64.strict_encode64(File.binread @picture)
-    { filename: 'image.gif', content: content, content_type: 'image/gif' }
-  end
-
 end
