@@ -31,7 +31,12 @@ class Issue < ApplicationRecord
            .merge(user_auth_token: user.user_auth_token)
            .merge(confirm_votes: confirm_votes)
            .merge(picture_hash)
-           .merge(confirmed_by_auth_user: confirmed_by_auth_user)
+
+    if @current_user
+      json = json.merge(confirmed_by_auth_user: confirmed_by_auth_user)
+    else
+      json
+    end
   end
 
   def picture_hash
