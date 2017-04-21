@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419182228) do
+ActiveRecord::Schema.define(version: 20170421183656) do
 
   create_table "confirmations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "issue_id"
@@ -27,16 +27,15 @@ ActiveRecord::Schema.define(version: 20170419182228) do
     t.string   "category"
     t.string   "description"
     t.boolean  "risk"
-    t.integer  "reports"
     t.integer  "user_id"
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
-    t.integer  "resolved_votes"
     t.string   "issue_auth_token"
     t.string   "picture_file_name"
     t.string   "picture_content_type"
     t.integer  "picture_file_size"
     t.datetime "picture_updated_at"
+    t.integer  "resolved_votes"
     t.index ["issue_auth_token"], name: "index_issues_on_issue_auth_token", unique: true, using: :btree
     t.index ["user_id"], name: "index_issues_on_user_id", using: :btree
   end

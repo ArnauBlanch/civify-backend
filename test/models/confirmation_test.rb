@@ -15,9 +15,7 @@ class ConfirmationTest < ActiveSupport::TestCase
                                                  category: 'arbolada',
                                                  description: 'desc',
                                                  picture: sample_file,
-                                                 risk: true,
-                                                 resolved_votes: 564,
-                                                 reports: 23)
+                                                 risk: true)
   end
 
   test 'no automatic confirmation association when new user issue created' do
