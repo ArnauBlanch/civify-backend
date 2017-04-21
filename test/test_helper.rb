@@ -38,7 +38,7 @@ class ActiveSupport::TestCase
                                  longitude: 38.2, category: 'arbolada',
                                  description: 'desc', picture: @picture,
                                  risk: true, resolved_votes: 564,
-                                 confirm_votes: 0, reports: 0)
+                                 reports: 0)
     assert @issue.valid?
   end
 

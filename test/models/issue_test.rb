@@ -50,11 +50,6 @@ class IssueTest < ActiveSupport::TestCase
     assert_not @issue.valid?
   end
 
-  test 'confirm_votes should be present' do
-    @issue.confirm_votes = nil
-    assert_not @issue.valid?
-  end
-
   test 'reports should be present' do
     @issue.reports = nil
     assert_not @issue.valid?

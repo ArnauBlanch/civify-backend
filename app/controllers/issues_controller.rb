@@ -9,7 +9,7 @@ class IssuesController < ApplicationController
   def show
     set_user
     set_user_issue
-    confirmed?
+    @issue.current_user = current_user
     json_response @issue
   end
 
@@ -42,7 +42,7 @@ class IssuesController < ApplicationController
 
   def show_issue
     set_issue
-    confirmed?
+    @issue.current_user = current_user
     json_response @issue
   end
 
@@ -64,7 +64,7 @@ class IssuesController < ApplicationController
   def issue_params
     params.permit(:title, :latitude, :longitude,
                   :category, :picture, :description,
-                  :risk, :resolved_votes, :confirm_votes,
+                  :risk, :resolved_votes,
                   :reports)
   end
 
@@ -91,9 +91,5 @@ class IssuesController < ApplicationController
     image_file
   rescue
     json_response({ error: 'Image bad format' }, :bad_request)
-  end
-
-  def confirmed?
-    @issue.confirmed_by_auth_user = @issue.users_confirming.include? current_user
   end
 end

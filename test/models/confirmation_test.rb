@@ -17,7 +17,6 @@ class ConfirmationTest < ActiveSupport::TestCase
                                                  picture: sample_file,
                                                  risk: true,
                                                  resolved_votes: 564,
-                                                 confirm_votes: 23,
                                                  reports: 23)
   end
 

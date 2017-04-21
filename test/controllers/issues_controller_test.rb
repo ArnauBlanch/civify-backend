@@ -126,7 +126,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_equal @issue.title, "title updated"
   end
 
-  test 'create usser issue image bad format' do
+  test 'create user issue image bad format' do
     post "/users/#{@user.user_auth_token}/issues", params: {
         latitude: 76.4,
         longitude: 38.2, category: 'arbolada',
@@ -137,5 +137,20 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
     body = JSON.parse(response.body)
     assert_equal 'Image bad format', body['error']
+  end
+
+  test 'get user issue obtains confirmed by authenticated user' do
+    get "/users/#{@user.user_auth_token}/issues/#{@issue.issue_auth_token}",
+        headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    body = JSON.parse(response.body)
+    assert_not body['confirmed_by_auth_user']
+    post "/issues/#{@issue.issue_auth_token}/confirm",
+         headers: authorization_header(@password, @user.username)
+    get "/users/#{@user.user_auth_token}/issues/#{@issue.issue_auth_token}",
+        headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    body = JSON.parse(response.body)
+    assert body['confirmed_by_auth_user']
   end
 end
