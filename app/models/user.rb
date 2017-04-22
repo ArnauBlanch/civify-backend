@@ -9,6 +9,4 @@ class User < ApplicationRecord
   validates :password, presence: true
   validates :password_confirmation, presence: true
   has_secure_token :user_auth_token
-  has_and_belongs_to_many :resolutions, join_table: 'resolutions',
-                          class_name: 'Issue'
 end

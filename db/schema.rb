@@ -37,6 +37,8 @@ ActiveRecord::Schema.define(version: 20170408173350) do
   create_table "resolutions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "user_id"
     t.integer "issue_id"
+    t.index ["issue_id"], name: "index_resolutions_on_issue_id", using: :btree
+    t.index ["user_id"], name: "index_resolutions_on_user_id", using: :btree
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

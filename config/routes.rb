@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   end
   resources :issues, param: :issue_auth_token, only: [] do
     member do
-      resources :resolve, only: [:create, :index]
+      resources :resolve, only: [:create]
     end
   end
   resources :users, param: :user_auth_token do
