@@ -93,8 +93,7 @@ class UserTest < ActiveSupport::TestCase
     @issue = @user.issues.new(title: 'sample issue', latitude: 76.4,
                               longitude: 38.2, category: 'arbolada',
                               description: 'desc',
-                              risk: true, resolved_votes: 564,
-                              confirm_votes: 23, reports: 23)
+                              risk: true, resolved_votes: 564)
     @issue.picture = sample_file
   end
 
