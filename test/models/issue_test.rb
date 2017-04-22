@@ -3,12 +3,7 @@ require 'test_helper'
 class IssueTest < ActiveSupport::TestCase
   def setup
     setup_user
-    @issue = @user.issues.build(title: 'sample issue', latitude: 76.4,
-                                longitude: 38.2, category: 'arbolada',
-                                description: 'desc',
-                                risk: true, resolved_votes: 564,
-                                confirm_votes: 23, reports: 23)
-    @issue.picture = sample_file
+    setup_issue
   end
 
   test 'should be valid' do
@@ -50,27 +45,8 @@ class IssueTest < ActiveSupport::TestCase
     assert_not @issue.valid?
   end
 
-  test 'resolved_votes should be present' do
-    @issue.resolved_votes = nil
-    assert_not @issue.valid?
-  end
-
-  test 'confirm_votes should be present' do
-    @issue.confirm_votes = nil
-    assert_not @issue.valid?
-  end
-
-  test 'reports should be present' do
-    @issue.reports = nil
-    assert_not @issue.valid?
-  end
-
   test 'userid should be present' do
     @issue.user_id = nil
     assert_not @issue.valid?
-  end
-
-  def sample_file(filename = "image.gif")
-    File.new("test/fixtures/#{filename}")
   end
 end
