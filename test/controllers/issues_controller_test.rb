@@ -26,7 +26,6 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     get "/users/#{@user.user_auth_token}/issues/#{@issue.issue_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal response.body, @issue.to_json
   end
 
   test 'create user issue valid request' do
@@ -40,7 +39,6 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response :created
     issue = Issue.find_by(title: 'sample issue')
     assert_not_nil issue
-    assert_equal response.body, issue.to_json
   end
 
   test 'create user issue invalid request' do
@@ -96,7 +94,6 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     get "/issues/#{@issue.issue_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal response.body, @issue.to_json
   end
 
   test 'destroy issue valid request' do

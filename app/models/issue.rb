@@ -17,17 +17,25 @@ class Issue < ApplicationRecord
   validates :picture, presence: true
   validates :description, presence: true
   validates :risk, presence: true
-  validates :resolved_votes, presence: true
   validates :confirm_votes, presence: true
+  validates :resolved_votes, presence: true
   validates :reports, presence: true
 
-  def as_json(options = nil)
-    super(options.reverse_merge(except: [:id, :user_id, :picture_file_name,
+  attr_accessor :current_user
+
+  def as_json(options = {})
+    json = super(options.reverse_merge(except: [:id, :user_id,
+                                               :picture_file_name,
                                  :picture_content_type,
                                  :picture_file_size,
                                  :picture_updated_at]))
       .merge(user_auth_token:user.user_auth_token).merge(picture_hash)
 
+    if current_user
+      json = json.merge(resolved_by_auth_user: resolved_by_auth_user)
+    else
+      json
+    end
   end
 
   def picture_hash
@@ -38,5 +46,9 @@ class Issue < ApplicationRecord
                  small_url: picture.url(:small),
                  med_url: picture.url(:med),
                  large_url: picture.url(:large) } }
+  end
+
+  def resolved_by_auth_user
+    resolutions.exists?(current_user.id)
   end
 end

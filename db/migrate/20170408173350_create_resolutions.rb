@@ -2,8 +2,8 @@
 class CreateResolutions < ActiveRecord::Migration[5.0]
   def change
     create_table :resolutions do |t|
-      t.integer :user_id
-      t.integer :issue_id
+      t.belongs_to :user, index: true
+      t.belongs_to :issue, index: true
     end
   end
 end
