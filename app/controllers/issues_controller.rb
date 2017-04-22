@@ -19,7 +19,8 @@ class IssuesController < ApplicationController
     @issue = @user.issues.build(issue_params)
     @issue.picture = @picture
     @issue.save!
-    json_response @issue, :created
+    @issue.current_user = current_user
+    json_response(@issue, :created)
   end
 
   def update
@@ -27,6 +28,8 @@ class IssuesController < ApplicationController
     set_user_issue
     @issue.picture = @picture if @picture
     @issue.update!(issue_params)
+    # 200 or 204 for update
+    @issue.current_user = current_user
     json_response @issue
   end
 
@@ -51,6 +54,7 @@ class IssuesController < ApplicationController
     set_issue
     @issue.picture = @picture if @picture
     @issue.update!(issue_params)
+    @issue.current_user = current_user
     json_response @issue
   end
 

@@ -1,6 +1,8 @@
 # Issue model with validations
 class Issue < ApplicationRecord
   belongs_to :user
+  has_and_belongs_to_many :resolutions, join_table: 'resolutions',
+                          class_name: 'User'
   has_many :confirmations, dependent: :destroy
   has_many :users_confirming, through: :confirmations, source: :user
   has_secure_token :issue_auth_token
@@ -31,6 +33,7 @@ class Issue < ApplicationRecord
 
     if @current_user
       json = json.merge(confirmed_by_auth_user: confirmed_by_auth_user)
+                 .merge(resolved_by_auth_user: resolved_by_auth_user)
     else
       json
     end
@@ -54,5 +57,9 @@ class Issue < ApplicationRecord
 
   def confirmed_by_auth_user
     users_confirming.include? @current_user
+  end
+
+  def resolved_by_auth_user
+    resolutions.exists?(@current_user.id)
   end
 end

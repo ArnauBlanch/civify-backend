@@ -40,6 +40,13 @@ ActiveRecord::Schema.define(version: 20170421183656) do
     t.index ["user_id"], name: "index_issues_on_user_id", using: :btree
   end
 
+  create_table "resolutions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "user_id"
+    t.integer "issue_id"
+    t.index ["issue_id"], name: "index_resolutions_on_issue_id", using: :btree
+    t.index ["user_id"], name: "index_resolutions_on_user_id", using: :btree
+  end
+
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "username"
     t.string   "email"
@@ -48,7 +55,6 @@ ActiveRecord::Schema.define(version: 20170421183656) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.string   "password_digest"
-    t.string   "name"
     t.string   "user_auth_token"
     t.index ["user_auth_token"], name: "index_users_on_user_auth_token", unique: true, using: :btree
   end
