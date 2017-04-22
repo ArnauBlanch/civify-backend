@@ -81,4 +81,23 @@ class UserTest < ActiveSupport::TestCase
     @user.save
     assert_not_nil @user.user_auth_token
   end
+
+  test 'test' do
+    setup_issue
+    assert_not_nil @issue
+  end
+
+  private
+
+  def setup_issue
+    @issue = @user.issues.new(title: 'sample issue', latitude: 76.4,
+                              longitude: 38.2, category: 'arbolada',
+                              description: 'desc',
+                              risk: true, resolved_votes: 564)
+    @issue.picture = sample_file
+  end
+
+  def sample_file(filename = 'image.gif')
+    File.new("test/fixtures/#{filename}")
+  end
 end

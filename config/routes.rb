@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   namespace :users do
-    resources :search
+    resources :search, only: [:create]
+  end
+  resources :issues, param: :issue_auth_token, only: [] do
+    member do
+      resources :resolve, only: [:create]
+    end
   end
   resources :users, param: :user_auth_token do
     member do

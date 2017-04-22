@@ -33,7 +33,6 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response :created
     issue = Issue.find_by(title: 'sample issue')
     assert_not_nil issue
-    assert_equal response.body, issue.to_json
   end
 
   test 'create user issue invalid request' do
