@@ -1,8 +1,10 @@
-# Issue model with validations and foreign key in schema with user
+# Issue model with validations
 class Issue < ApplicationRecord
   belongs_to :user
   has_and_belongs_to_many :resolutions, join_table: 'resolutions',
                           class_name: 'User'
+  has_many :confirmations, dependent: :destroy
+  has_many :users_confirming, through: :confirmations, source: :user
   has_secure_token :issue_auth_token
   has_attached_file :picture, styles: { small: '64x64', med: '100x100', large: '200x200' }
   validates_attachment_content_type :picture,
@@ -17,22 +19,21 @@ class Issue < ApplicationRecord
   validates :picture, presence: true
   validates :description, presence: true
   validates :risk, presence: true
-  validates :confirm_votes, presence: true
-  validates :resolved_votes, presence: true
-  validates :reports, presence: true
 
   attr_accessor :current_user
 
-  def as_json(options = {})
-    json = super(options.reverse_merge(except: [:id, :user_id,
-                                               :picture_file_name,
-                                 :picture_content_type,
-                                 :picture_file_size,
-                                 :picture_updated_at]))
-      .merge(user_auth_token:user.user_auth_token).merge(picture_hash)
+  def as_json(options = nil)
+    json = super(options.reverse_merge(except: [:id, :user_id, :picture_file_name,
+                                                :picture_content_type,
+                                                :picture_file_size,
+                                                :picture_updated_at]))
+           .merge(user_auth_token: user.user_auth_token)
+           .merge(confirm_votes: confirm_votes)
+           .merge(picture_hash)
 
-    if current_user
-      json = json.merge(resolved_by_auth_user: resolved_by_auth_user)
+    if @current_user
+      json = json.merge(confirmed_by_auth_user: confirmed_by_auth_user)
+                 .merge(resolved_by_auth_user: resolved_by_auth_user)
     else
       json
     end
@@ -48,7 +49,17 @@ class Issue < ApplicationRecord
                  large_url: picture.url(:large) } }
   end
 
+  private
+
+  def confirm_votes
+    users_confirming.size
+  end
+
+  def confirmed_by_auth_user
+    users_confirming.include? @current_user
+  end
+
   def resolved_by_auth_user
-    resolutions.exists?(current_user.id)
+    resolutions.exists?(@current_user.id)
   end
 end
