@@ -37,7 +37,7 @@ class ActiveSupport::TestCase
     @issue = @user.issues.create(title: 'issue', latitude: 76.4,
                                   longitude: 38.2, category: 'arbolada',
                                   description: 'desc', picture: @picture,
-                                  risk: true, resolved_votes: 564)
+                                  risk: false, resolved_votes: 564)
     assert @issue.valid?
   end
 

@@ -6,7 +6,7 @@ class Issue < ApplicationRecord
   has_many :confirmations, dependent: :destroy
   has_many :users_confirming, through: :confirmations, source: :user
   has_secure_token :issue_auth_token
-  has_attached_file :picture, styles: { small: '64x64', med: '100x100', large: '200x200' }
+  has_attached_file :picture, styles: { small: '128x128', med: '800x800', large: '1600x1600' }
   validates_attachment_content_type :picture,
                                     content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
   validates_attachment :picture, size: { in: 0..5.megabytes }
@@ -18,7 +18,7 @@ class Issue < ApplicationRecord
   validates :category, presence: true
   validates :picture, presence: true
   validates :description, presence: true
-  validates :risk, presence: true
+  validates_inclusion_of :risk, in: [true, false]
 
   attr_accessor :current_user
 
