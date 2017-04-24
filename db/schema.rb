@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 20170421183656) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.string   "password_digest"
+    t.string   "name"
     t.string   "user_auth_token"
     t.index ["user_auth_token"], name: "index_users_on_user_auth_token", unique: true, using: :btree
   end
