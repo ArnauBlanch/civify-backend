@@ -1,5 +1,5 @@
 require 'test_helper'
-
+# Confirmations controller test
 class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
   def setup
     setup_user

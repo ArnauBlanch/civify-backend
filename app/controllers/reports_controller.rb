@@ -1,3 +1,4 @@
+# Reports controller class
 class ReportsController < ApplicationController
   before_action :fetch_params
 
