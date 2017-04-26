@@ -5,6 +5,8 @@ class Issue < ApplicationRecord
                           class_name: 'User'
   has_many :confirmations, dependent: :destroy
   has_many :users_confirming, through: :confirmations, source: :user
+  has_many :reports, dependent: :destroy
+  has_many :users_reporting, through: :reports, source: :user
   has_secure_token :issue_auth_token
   has_attached_file :picture, styles: { small: '128x128', med: '800x800', large: '1600x1600' }
   validates_attachment_content_type :picture,
@@ -29,11 +31,13 @@ class Issue < ApplicationRecord
                                                 :picture_updated_at]))
            .merge(user_auth_token: user.user_auth_token)
            .merge(confirm_votes: confirm_votes)
+           .merge(num_reports: num_reports)
            .merge(picture_hash)
 
     if @current_user
-      json = json.merge(confirmed_by_auth_user: confirmed_by_auth_user)
-                 .merge(resolved_by_auth_user: resolved_by_auth_user)
+      json.merge(confirmed_by_auth_user: confirmed_by_auth_user)
+          .merge(resolved_by_auth_user: resolved_by_auth_user)
+          .merge(reported_by_auth_user: reported_by_auth_user)
     else
       json
     end
@@ -55,8 +59,16 @@ class Issue < ApplicationRecord
     users_confirming.size
   end
 
+  def num_reports
+    users_reporting.size
+  end
+
+  def reported_by_auth_user
+    users_reporting.exists? @current_user.id
+  end
+
   def confirmed_by_auth_user
-    users_confirming.include? @current_user
+    users_confirming.exists? @current_user.id
   end
 
   def resolved_by_auth_user
