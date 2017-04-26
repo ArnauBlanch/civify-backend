@@ -8,7 +8,9 @@ class Issue < ApplicationRecord
   has_many :reports, dependent: :destroy
   has_many :users_reporting, through: :reports, source: :user
   has_secure_token :issue_auth_token
-  has_attached_file :picture, styles: { small: '128x128', med: '800x800', large: '1600x1600' }
+  has_attached_file :picture, preserve_files: 'false',
+                    styles: { small: '128x128', med: '256x256' }
+  # User large_url for original image size
   validates_attachment_content_type :picture,
                                     content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
   validates_attachment :picture, size: { in: 0..5.megabytes }
@@ -50,7 +52,7 @@ class Issue < ApplicationRecord
                  updated_at: picture_updated_at,
                  small_url: picture.url(:small),
                  med_url: picture.url(:med),
-                 large_url: picture.url(:large) } }
+                 large_url: picture.url(:original) } }
   end
 
   private
