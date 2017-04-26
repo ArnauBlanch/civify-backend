@@ -1,5 +1,5 @@
 require 'test_helper'
-
+# Resolve controller test
 class ResolveControllerTest < ActionDispatch::IntegrationTest
   def setup
     setup_user
@@ -36,7 +36,7 @@ class ResolveControllerTest < ActionDispatch::IntegrationTest
   # POST /issues/:issue_auth_token/resolve
   test 'issue not found' do
     post "/issues/1234/resolve?user=#{@user.user_auth_token}",
-        headers: authorization_header(@password, @user.username)
+         headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
     assert_equal 'Issue not found', body['message']
@@ -45,7 +45,7 @@ class ResolveControllerTest < ActionDispatch::IntegrationTest
   # POST /issues/:issue_auth_token/resolve
   test 'user not found' do
     post "/issues/#{@issue.issue_auth_token}/resolve?user=user",
-        headers: authorization_header(@password, @user.username)
+         headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
     assert_equal 'User not found', body['message']

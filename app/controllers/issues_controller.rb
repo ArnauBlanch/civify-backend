@@ -28,7 +28,6 @@ class IssuesController < ApplicationController
     set_user_issue
     @issue.picture = @picture if @picture
     @issue.update!(issue_params)
-    # 200 or 204 for update
     @issue.current_user = current_user
     json_response @issue
   end
