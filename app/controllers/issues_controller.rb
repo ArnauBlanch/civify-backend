@@ -18,6 +18,7 @@ class IssuesController < ApplicationController
     set_user
     @issue = @user.issues.build(issue_params)
     @issue.picture = @picture
+    @issue.resolved_votes = 0
     @issue.save!
     @issue.current_user = current_user
     json_response(@issue, :created)
