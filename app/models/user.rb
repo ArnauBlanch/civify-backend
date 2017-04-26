@@ -3,6 +3,8 @@ class User < ApplicationRecord
   has_many :issues
   has_many :confirmations, dependent: :destroy
   has_many :confirmed_issues, through: :confirmations, source: :issue
+  has_many :reports, dependent: :destroy
+  has_many :reported_issues, through: :reports, source: :issue
   validates :username, presence: true, uniqueness: { case_sensitive: false }
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :first_name, presence: true
