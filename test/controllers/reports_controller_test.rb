@@ -1,5 +1,5 @@
 require 'test_helper'
-
+# Reports controller test
 class ReportsControllerTest < ActionDispatch::IntegrationTest
   def setup
     setup_user
