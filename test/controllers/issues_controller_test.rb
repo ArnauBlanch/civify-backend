@@ -27,7 +27,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
           title: 'sample issue', latitude: 76.4,
           longitude: 38.2, category: 'arbolada',
           description: 'desc', picture: sample_image_hash,
-          risk: true, resolved_votes: 564,
+          risk: false, resolved_votes: 564,
           confirm_votes: 0, reports: 0
     }, headers: authorization_header(@password, @user.username)
     assert_response :created
