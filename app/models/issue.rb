@@ -9,7 +9,7 @@ class Issue < ApplicationRecord
   has_many :users_reporting, through: :reports, source: :user
   has_secure_token :issue_auth_token
   has_attached_file :picture, preserve_files: 'false',
-                    styles: { small: '128x128', med: '256x256' }
+                    styles: { small: '450x450', med: '800x800' }
   # User large_url for original image size
   validates_attachment_content_type :picture,
                                     content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
