@@ -1,7 +1,6 @@
 # Issue controller class
 class IssuesController < ApplicationController
   before_action :fetch_picture, only: [:create, :update]
-  skip_before_action :authenticate_request, only: [:index_issues, :show_issue]
 
   def index
     set_user
