@@ -13,4 +13,8 @@ class User < ApplicationRecord
   validates :password, presence: true
   validates :password_confirmation, presence: true
   has_secure_token :user_auth_token
+
+  def as_json(options = {})
+    super(options.reverse_merge(except: [:id, :password_digest, :updated_at]))
+  end
 end
