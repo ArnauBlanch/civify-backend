@@ -1,8 +1,6 @@
 class CoinsController < ApplicationController
   before_action :set_user
 
-  skip_before_action :authenticate_request
-
   # POST /users/:user_auth_token/coins
   def create
     if params[:coins].nil?
