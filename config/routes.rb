@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :users, param: :user_auth_token do
     member do
       resources :issues, param: :issue_auth_token
+      resources :coins, only: [:create]
     end
   end
   post '/login', to: 'authentication#login'

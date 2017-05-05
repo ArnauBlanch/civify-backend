@@ -1,6 +1,8 @@
 # Issue controller class
 class IssuesController < ApplicationController
   before_action :fetch_picture, only: [:create, :update]
+  skip_before_action :authenticate_request, only: [:index_issues, :show_issue]
+  before_action :set_current_user, only: [:show_issue]
 
   def index
     set_user
@@ -18,9 +20,8 @@ class IssuesController < ApplicationController
     set_user
     @issue = @user.issues.build(issue_params)
     @issue.picture = @picture
-    @issue.resolved_votes = 0
-    @issue.save!
     @issue.current_user = current_user
+    @issue.save!
     json_response(@issue, :created)
   end
 
@@ -95,5 +96,12 @@ class IssuesController < ApplicationController
     image_file
   rescue
     json_response({ error: 'Image bad format' }, :bad_request)
+  end
+
+  def set_current_user
+    auth_command = AuthorizeApiRequest.call(request.headers)
+    if auth_command.success?
+      @current_user = auth_command.result
+    end
   end
 end

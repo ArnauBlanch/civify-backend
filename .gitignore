@@ -57,5 +57,4 @@ bower.json
 
 bin/log/\.keep
 
-# deeseestore
 .DS_Store
