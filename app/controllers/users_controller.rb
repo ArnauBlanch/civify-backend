@@ -6,13 +6,13 @@ class UsersController < ApplicationController
   # GET /users
   def index
     @users = User.all
-    render json: @users.to_json(except: [:id, :password_digest, :updated_at]),
+    render json: @users.to_json(except: [:id, :password_digest, :email, :first_name, :last_name, :updated_at]),
            status: :ok
   end
 
   # GET /users/[:user_auth_token]
   def show
-    render json: @user.to_json(except: [:id, :password_digest, :updated_at]),
+    render json: @user.to_json(except: [:id, :password_digest, :email, :first_name, :last_name, :updated_at]),
            status: :ok
   end
 

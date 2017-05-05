@@ -24,6 +24,6 @@ class AuthenticationController < ApplicationController
                    else
                      :bad_request
                    end
-    render json: { error: errors.values[0].first }, status: error_status
+    render json: { message: errors.values[0].first }, status: error_status
   end
 end

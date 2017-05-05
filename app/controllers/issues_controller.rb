@@ -95,7 +95,7 @@ class IssuesController < ApplicationController
     image_file.original_filename = image_data[:filename]
     image_file
   rescue
-    json_response({ error: 'Image bad format' }, :bad_request)
+    json_response({ message: 'Image bad format' }, :bad_request)
   end
 
   def set_current_user

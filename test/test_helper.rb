@@ -23,11 +23,11 @@ class ActiveSupport::TestCase
 
   attr_reader :user, :password
 
-  def setup_user
+  def setup_user(username = 'test')
     @password = '1234'
-    @user = User.create(username: 'test',
-                        email: 'test@test.com',
-                        first_name: 'test', last_name: 'test',
+    @user = User.create(username: username,
+                        email: "#{username}@test.com",
+                        first_name: username, last_name: username,
                         password: @password, password_confirmation: @password)
     assert @user.valid?
   end
@@ -35,9 +35,9 @@ class ActiveSupport::TestCase
   def setup_issue
     @picture = sample_file
     @issue = @user.issues.create(title: 'issue', latitude: 76.4,
-                                  longitude: 38.2, category: 'arbolada',
-                                  description: 'desc', picture: @picture,
-                                  risk: false, resolved_votes: 564)
+                                 longitude: 38.2, category: 'arbolada',
+                                 description: 'desc', picture: @picture,
+                                 risk: false, resolved_votes: 564)
     assert @issue.valid?
   end
 

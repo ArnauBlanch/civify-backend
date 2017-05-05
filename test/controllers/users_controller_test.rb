@@ -6,9 +6,8 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     setup_user
     get '/users', headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal response.body, User.all.to_json(except: [:id,
-                                                          :password_digest,
-                                                          :updated_at])
+    assert_equal User.all.to_json(except: [:id, :password_digest, :email, :first_name, :last_name, :updated_at]),
+                 response.body
   end
 
   test 'get user by auth token' do
@@ -16,8 +15,8 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     token = @user.user_auth_token
     get '/users/' + token, headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal response.body,
-                 @user.to_json(except: [:id, :password_digest, :updated_at])
+    assert_equal @user.to_json(except: [:id, :password_digest, :email, :first_name, :last_name, :updated_at]),
+                 response.body
   end
 
   test 'valid create request' do
@@ -81,6 +80,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test 'invalid destroy request' do
     setup_user
+    @user.update(kind: :admin)
     delete '/users/123', headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
