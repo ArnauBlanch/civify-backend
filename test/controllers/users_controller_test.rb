@@ -80,7 +80,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test 'invalid destroy request' do
     setup_user
-    @user.update(kind: :admin)
     delete '/users/123', headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)

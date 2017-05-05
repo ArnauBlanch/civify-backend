@@ -25,17 +25,30 @@ class ApplicationController < ActionController::API
 
   def verify_user_auth
     user_auth_token = params[:user_auth_token]
-    if !user_auth_token.nil? && !is_current_user(user_auth_token)
-      render json: { message: 'Cannot update other users' }, status: :unauthorized
-      return false
+    unless user_auth_token.nil?
+      if User.find_by_user_auth_token(user_auth_token).nil?
+        check_user_exists(nil)
+        return false
+      end
+      unless is_current_user(user_auth_token)
+        render json: { message: 'Cannot update other users' }, status: :unauthorized
+        return false
+      end
     end
     true
   end
 
   def verify_issue_auth
     issue_auth_token = params[:issue_auth_token]
-    if !issue_auth_token.nil? && !pertains_to_current_user(issue_auth_token)
-      render json: { message: "Cannot update other's issues" }, status: :unauthorized
+    unless issue_auth_token.nil?
+      issue = Issue.find_by_issue_auth_token(issue_auth_token)
+      if issue.nil?
+        check_issue_exists(nil)
+        return false
+      end
+      unless pertains_to_current_user(issue)
+        render json: { message: "Cannot update other's issues" }, status: :unauthorized
+      end
     end
   end
 
@@ -43,9 +56,15 @@ class ApplicationController < ActionController::API
     user_auth_token == @current_user.user_auth_token
   end
 
-  def pertains_to_current_user(issue_auth_token)
-    issue = Issue.find_by_issue_auth_token(issue_auth_token)
-    return is_current_user(issue.user.user_auth_token) if issue
-    true
+  def pertains_to_current_user(issue)
+    is_current_user(issue.user.user_auth_token)
+  end
+
+  def check_user_exists(user)
+    render json: { message: 'User not found' }, status: :not_found unless user
+  end
+
+  def check_issue_exists(issue)
+    render json: { message: 'Issue not found' }, status: :not_found unless issue
   end
 end

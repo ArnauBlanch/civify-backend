@@ -6,7 +6,6 @@ class CoinsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'user not found' do
-    @user.update(kind: :admin)
     post "/users/1234/coins",
          headers: authorization_header(@password, @user.username),
          params: { coins: 5 }, as: :json

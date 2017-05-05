@@ -79,12 +79,11 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'user not found' do
-    @user.update(kind: :admin)
     post "/issues/#{@issue.issue_auth_token}/report?user_auth_token=fake",
          headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
-    assert_equal"Doesn't exists record", body['message']
+    assert_equal'User not found', body['message']
   end
 
   test 'issue not found' do
@@ -92,6 +91,6 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
          headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
-    assert_equal"Doesn't exists record", body['message']
+    assert_equal'Issue not found', body['message']
   end
 end
