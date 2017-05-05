@@ -18,7 +18,19 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
-    @user = User.new(user_params)
+    request_params = user_params
+    if request_params[:last_name].blank? && request_params[:kind] == :business.to_s
+      request_params[:last_name] = 'business'
+    end
+    if request_params[:kind] == :admin.to_s
+      render json: { message: 'Admin users cannot be created this way for security reasons' }, status: :unauthorized
+    else
+      create_user request_params
+    end
+  end
+
+  def create_user(params)
+    @user = User.new(params)
     if @user.save
       render json: { message: 'User created' }, status: :created
     else
@@ -39,7 +51,7 @@ class UsersController < ApplicationController
 
   def user_params
     params.permit(:username, :email, :first_name, :last_name,
-                  :password, :password_confirmation)
+                  :password, :password_confirmation, :kind)
   end
 
   def set_user
