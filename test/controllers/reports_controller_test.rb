@@ -79,6 +79,7 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'user not found' do
+    @user.update(kind: :admin)
     post "/issues/#{@issue.issue_auth_token}/report?user_auth_token=fake",
          headers: authorization_header(@password, @user.username)
     assert_response :not_found

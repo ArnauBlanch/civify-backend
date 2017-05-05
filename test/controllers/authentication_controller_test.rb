@@ -70,7 +70,7 @@ class AuthenticationControllerTest < ActionDispatch::IntegrationTest
 
   def assert_error(status, msg)
     assert_response status
-    expected_response = { error: msg }.to_json
+    expected_response = { message: msg }.to_json
     assert_equal expected_response, response.body
   end
 end
