@@ -25,10 +25,6 @@ class ResolveController < ApplicationController
   def setup
     @issue = Issue.find_by(issue_auth_token: params[:issue_auth_token])
     @user = User.find_by(user_auth_token: params[:user])
-    if @issue.nil?
-      render json: { message: 'Issue not found' }, status: :not_found
-    elsif @user.nil?
-      render json: { message: 'User not found' }, status: :not_found
-    end
+    check_user_exists @user
   end
 end

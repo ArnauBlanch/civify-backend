@@ -25,7 +25,10 @@ class AuthorizeApiRequestTest < ActionDispatch::IntegrationTest
   end
 
   test 'request trying to delete other user' do
-    delete '/users/12321', headers: authorization_header(@password, @user.username)
+    other = @user
+    setup_user('self')
+    delete "/users/#{other.user_auth_token}",
+           headers: authorization_header(@password, @user.username)
     assert_unauthorized_error 'Cannot update other users'
   end
 

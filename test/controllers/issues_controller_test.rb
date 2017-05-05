@@ -60,7 +60,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
            headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
-    assert_equal "Doesn't exists record", body['message']
+    assert_equal 'Issue not found', body['message']
   end
 
   test 'update user issue valid request' do
@@ -100,7 +100,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
            headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
-    assert_equal "Doesn't exists record", body['message']
+    assert_equal 'Issue not found', body['message']
   end
   
   test 'update issue valid request' do
