@@ -30,14 +30,14 @@ ActiveRecord::Schema.define(version: 20170505144057) do
     t.string   "description"
     t.boolean  "risk"
     t.integer  "user_id"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
     t.string   "issue_auth_token"
     t.string   "picture_file_name"
     t.string   "picture_content_type"
     t.integer  "picture_file_size"
     t.datetime "picture_updated_at"
-    t.integer  "resolved_votes"
+    t.integer  "resolved_votes",                  default: 0
     t.index ["issue_auth_token"], name: "index_issues_on_issue_auth_token", unique: true, using: :btree
     t.index ["user_id"], name: "index_issues_on_user_id", using: :btree
   end
@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(version: 20170505144057) do
     t.string   "password_digest"
     t.string   "user_auth_token"
     t.integer  "kind",            default: 0
+    t.integer  "coins",           default: 0
     t.index ["user_auth_token"], name: "index_users_on_user_auth_token", unique: true, using: :btree
   end
 
