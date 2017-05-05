@@ -21,6 +21,7 @@ class IssuesController < ApplicationController
     @issue = @user.issues.build(issue_params)
     @issue.picture = @picture
     @issue.current_user = current_user
+    @issue.save!
     json_response(@issue, :created)
   end
 
