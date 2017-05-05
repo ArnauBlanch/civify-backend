@@ -82,9 +82,13 @@ class UserTest < ActiveSupport::TestCase
     assert_not_nil @user.user_auth_token
   end
 
-  test 'test' do
+  test 'user can have issues' do
     setup_issue
     assert_not_nil @issue
+  end
+
+  test 'user by default is of kind normal' do
+    assert @user.normal?
   end
 
   private
