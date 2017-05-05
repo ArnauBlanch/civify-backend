@@ -32,6 +32,20 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'User created', body['message']
   end
 
+  test 'valid business creation request with optional last name' do
+    post '/users', params: {
+        username: 'foo', email: 'foo@bar.com',
+        first_name: 'Foo', kind: 'business',
+        password: 'mypass', password_confirmation: 'mypass'
+    }, as: :json
+    assert_response :created # test status code
+    user = User.find_by(username: 'foo') # test user creation
+    assert_not_nil user
+    assert user.business?
+    body = JSON.parse(response.body)
+    assert_equal 'User created', body['message']
+  end
+
   test 'invalid create request' do
     post '/users', params: {
       email: 'foo@bar.com',
@@ -41,6 +55,18 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request # test status code
     body = JSON.parse(response.body)
     assert_equal 'User not created', body['message'] # test response body
+  end
+
+  test 'invalid admin create request' do
+    post '/users', params: {
+        username: 'foo', email: 'foo@bar.com',
+        first_name: 'Foo', last_name: 'Bar', kind: 'admin',
+        password: 'mypass', password_confirmation: 'mypass'
+    }, as: :json
+    assert_response :unauthorized # test status code
+    body = JSON.parse(response.body)
+    assert_equal 'Admin users cannot be created this way for security reasons',
+                 body['message'] # test response body
   end
 
   test 'valid destroy request' do
