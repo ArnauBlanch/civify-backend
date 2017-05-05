@@ -91,6 +91,10 @@ class UserTest < ActiveSupport::TestCase
     assert @user.normal?
   end
 
+  test 'user experience by default is 0' do
+    assert @user.xp == 0
+  end
+
   private
 
   def setup_issue

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170505144057) do
+ActiveRecord::Schema.define(version: 20170505170903) do
 
   create_table "confirmations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "issue_id"
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 20170505144057) do
     t.string   "user_auth_token"
     t.integer  "kind",            default: 0
     t.integer  "coins",           default: 0
+    t.bigint   "xp",              default: 0
     t.index ["user_auth_token"], name: "index_users_on_user_auth_token", unique: true, using: :btree
   end
 
