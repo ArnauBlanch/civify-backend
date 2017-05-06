@@ -10,9 +10,8 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :first_name, presence: true
   validates :last_name, presence: true
+  validates :coins, numericality: { greater_than_or_equal_to: 0 }
   has_secure_password # method to implement the secure password
-  validates :password, presence: true
-  validates :password_confirmation, presence: true
   has_secure_token :user_auth_token
 
   def as_json(options = {})

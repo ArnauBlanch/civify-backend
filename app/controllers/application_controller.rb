@@ -15,7 +15,7 @@ class ApplicationController < ActionController::API
     if auth_command.success?
       @current_user = auth_command.result
       if !@current_user.admin? && request.request_method != :get.to_s
-        verify_issue_auth if verify_user_auth
+        verify_issue_auth if verify_user_auth?
       end
     else
       render json: { message: auth_command.errors.values[0].first },
@@ -23,41 +23,39 @@ class ApplicationController < ActionController::API
     end
   end
 
-  def verify_user_auth
+  def verify_user_auth?
     user_auth_token = params[:user_auth_token]
-    unless user_auth_token.nil?
-      if User.find_by_user_auth_token(user_auth_token).nil?
-        check_user_exists(nil)
-        return false
-      end
-      unless is_current_user(user_auth_token)
-        render json: { message: 'Cannot update other users' }, status: :unauthorized
-        return false
-      end
+    return true unless user_auth_token
+    unless User.find_by_user_auth_token(user_auth_token)
+      check_user_exists(nil)
+      return false
+    end
+    unless current_user?(user_auth_token)
+      render json: { message: 'Cannot update other users' }, status: :unauthorized
+      return false
     end
     true
   end
 
   def verify_issue_auth
     issue_auth_token = params[:issue_auth_token]
-    unless issue_auth_token.nil?
-      issue = Issue.find_by_issue_auth_token(issue_auth_token)
-      if issue.nil?
-        check_issue_exists(nil)
-        return false
-      end
-      unless pertains_to_current_user(issue)
-        render json: { message: "Cannot update other's issues" }, status: :unauthorized
-      end
+    return true unless issue_auth_token
+    issue = Issue.find_by_issue_auth_token(issue_auth_token)
+    unless issue
+      check_issue_exists(nil)
+      return false
+    end
+    unless pertains_to_current_user?(issue)
+      render json: { message: "Cannot update other's issues" }, status: :unauthorized
     end
   end
 
-  def is_current_user(user_auth_token)
+  def current_user?(user_auth_token)
     user_auth_token == @current_user.user_auth_token
   end
 
-  def pertains_to_current_user(issue)
-    is_current_user(issue.user.user_auth_token)
+  def pertains_to_current_user?(issue)
+    current_user?(issue.user.user_auth_token)
   end
 
   def check_user_exists(user)

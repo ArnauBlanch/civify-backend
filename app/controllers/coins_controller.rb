@@ -4,12 +4,14 @@ class CoinsController < ApplicationController
   # POST /users/:user_auth_token/coins
   def create
     if params[:coins].nil?
-      render json: { message: 'Specify the number of coins' }, status:
-          :bad_request
+      render json: { message: 'Specify the number of coins' }, status: :bad_request
     else
       @user.coins += params[:coins]
-      @user.save(validate: false)
-      render json: @user, status: :ok
+      if @user.save
+        render json: @user, status: :ok
+      else
+        render json: { message: @user.errors.full_messages[0] }, status: :bad_request
+      end
     end
   end
 
