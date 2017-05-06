@@ -3,7 +3,9 @@ class CoinsController < ApplicationController
 
   # POST /users/:user_auth_token/coins
   def create
-    if params[:coins].nil?
+    if !@current_user.admin?
+      render json: { message: 'Cannot give money to yourself' }, status: :unauthorized
+    elsif params[:coins].nil?
       render json: { message: 'Specify the number of coins' }, status: :bad_request
     else
       @user.coins += params[:coins]

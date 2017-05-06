@@ -26,7 +26,7 @@ class AuthorizeApiRequestTest < ActionDispatch::IntegrationTest
 
   test 'request trying to delete other user' do
     other = @user
-    setup_user('self')
+    setup_user(username: 'self')
     delete "/users/#{other.user_auth_token}",
            headers: authorization_header(@password, @user.username)
     assert_unauthorized_error 'Cannot update other users'
@@ -34,8 +34,7 @@ class AuthorizeApiRequestTest < ActionDispatch::IntegrationTest
 
   test 'request trying to delete other user being admin' do
     other = @user
-    setup_user('self')
-    @user.update(kind: :admin)
+    setup_user(username: 'self', kind: :admin)
     delete "/users/#{other.user_auth_token}",
            headers: authorization_header(@password, @user.username)
     assert_response :success
@@ -45,7 +44,7 @@ class AuthorizeApiRequestTest < ActionDispatch::IntegrationTest
     setup_issue
     other_user = @user
     other_issue = other_user.issues.first
-    setup_user('self')
+    setup_user(username: 'self')
     post "/users/#{other_user.user_auth_token}/issues",
           headers: authorization_header(@password, @user.username)
     assert_unauthorized_error 'Cannot update other users'
@@ -61,8 +60,7 @@ class AuthorizeApiRequestTest < ActionDispatch::IntegrationTest
     setup_issue
     other_user = @user
     other_issue = other_user.issues.first
-    setup_user('self')
-    @user.update(kind: :admin)
+    setup_user(username: 'self', kind: :admin)
     post "/users/#{other_user.user_auth_token}/issues",
          headers: authorization_header(@password, @user.username)
     assert response.code != '401'

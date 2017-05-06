@@ -6,14 +6,12 @@ class UsersController < ApplicationController
   # GET /users
   def index
     @users = User.all
-    render json: @users.to_json(except: [:id, :password_digest, :email, :first_name, :last_name, :updated_at]),
-           status: :ok
+    render json: @users.to_json(except: json_exclude), status: :ok
   end
 
   # GET /users/[:user_auth_token]
   def show
-    render json: @user.to_json(except: [:id, :password_digest, :email, :first_name, :last_name, :updated_at]),
-           status: :ok
+    render json: @user.to_json(except: json_exclude), status: :ok
   end
 
   # POST /users
@@ -57,5 +55,9 @@ class UsersController < ApplicationController
   def set_user
     @user = User.find_by(user_auth_token: params[:user_auth_token])
     render json: { message: 'User not found' }, status: :not_found if @user.nil?
+  end
+
+  def json_exclude
+    [:id, :password_digest, :email, :created_at, :updated_at]
   end
 end
