@@ -11,6 +11,7 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :coins, numericality: { greater_than_or_equal_to: 0 }
+  validates :xp, numericality: { greater_than_or_equal_to: 0 }
   has_secure_password # method to implement the secure password
   has_secure_token :user_auth_token
 
