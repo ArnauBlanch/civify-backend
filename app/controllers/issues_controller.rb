@@ -22,7 +22,8 @@ class IssuesController < ApplicationController
     @issue.picture = @picture
     @issue.current_user = current_user
     @issue.save!
-    json_response(@issue, :created)
+    rewards = add_reward!(@user, COINS::ISSUE_CREATION, XP::ISSUE_CREATION)
+    json_response({ issue: @issue, rewards: rewards }, :created)
   end
 
   def update

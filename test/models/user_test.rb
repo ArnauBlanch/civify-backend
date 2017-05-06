@@ -72,11 +72,6 @@ class UserTest < ActiveSupport::TestCase
     assert_not duplicate_user.valid?
   end
 
-  test 'password should be present and non-blank' do
-    @user.password = @user.password_confirmation = ' '
-    assert_not @user.valid?
-  end
-
   test 'user token is not null' do
     @user.save
     assert_not_nil @user.user_auth_token
