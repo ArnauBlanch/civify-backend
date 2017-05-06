@@ -23,16 +23,32 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'create user issue valid request' do
-    post "/users/#{@user.user_auth_token}/issues", params: {
-          title: 'sample issue', latitude: 76.4,
-          longitude: 38.2, category: 'arbolada',
-          description: 'desc', picture: sample_image_hash,
-          risk: false, resolved_votes: 564,
-          confirm_votes: 0, reports: 0
-    }, headers: authorization_header(@password, @user.username)
+    create_issue_post_method
     assert_response :created
     issue = Issue.find_by(title: 'sample issue')
     assert_not_nil issue
+  end
+
+  test 'create an issue gives rewards' do
+    @user.update(coins: 2, xp: 30)
+    create_issue_post_method
+    @user.reload
+    new_coins = 2 + COINS::ISSUE_CREATION
+    new_xp = 30 + XP::ISSUE_CREATION
+    assert_equal new_coins, @user.coins
+    assert_equal new_xp, @user.xp
+    rewards_hash = { 'coins' => COINS::ISSUE_CREATION, 'xp' => XP::ISSUE_CREATION }
+    assert_equal rewards_hash, JSON.parse(response.body)['rewards']
+  end
+
+  def create_issue_post_method
+    post "/users/#{@user.user_auth_token}/issues", params: {
+        title: 'sample issue', latitude: 76.4,
+        longitude: 38.2, category: 'arbolada',
+        description: 'desc', picture: sample_image_hash,
+        risk: false, resolved_votes: 564,
+        confirm_votes: 0, reports: 0
+    }, headers: authorization_header(@password, @user.username)
   end
 
   test 'create user issue invalid request' do
