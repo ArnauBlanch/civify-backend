@@ -2,11 +2,11 @@ require 'test_helper'
 
 class CoinsControllerTest < ActionDispatch::IntegrationTest
   def setup
-    setup_user
+    setup_user(username: 'test', kind: :admin)
   end
 
   test 'user not found' do
-    post "/users/1234/coins",
+    post '/users/1234/coins',
          headers: authorization_header(@password, @user.username),
          params: { coins: 5 }, as: :json
     assert_response :not_found
@@ -40,5 +40,14 @@ class CoinsControllerTest < ActionDispatch::IntegrationTest
     body = JSON.parse(response.body)
     assert_equal before_coins + 5, body['coins']
     assert_equal before_coins + 5, User.find(@user.id).coins
+  end
+
+  test 'method only for admins' do
+    @user.update(kind: :normal)
+    post "/users/#{@user.user_auth_token}/coins",
+         headers: authorization_header(@password, @user.username),
+         params: { coins: 5 }, as: :json
+    assert_response :unauthorized
+    assert_equal 'Cannot give money to yourself', JSON.parse(response.body)['message']
   end
 end

@@ -23,11 +23,14 @@ class ActiveSupport::TestCase
 
   attr_reader :user, :password
 
-  def setup_user(username = 'test')
+  # options = { username = 'test', kind: :normal }
+  def setup_user(options = {})
+    options[:username] ||= 'test'
+    options[:kind] ||= :normal
     @password = '1234'
-    @user = User.create(username: username,
-                        email: "#{username}@test.com",
-                        first_name: username, last_name: username,
+    @user = User.create(username: options[:username],
+                        email: "#{options[:username]}@test.com",
+                        first_name: options[:username], last_name: options[:username], kind: options[:kind],
                         password: @password, password_confirmation: @password)
     assert @user.valid?
   end

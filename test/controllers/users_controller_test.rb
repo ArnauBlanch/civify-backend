@@ -6,7 +6,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     setup_user
     get '/users', headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal User.all.to_json(except: [:id, :password_digest, :email, :first_name, :last_name, :updated_at]),
+    assert_equal User.all.to_json(except: json_exclude),
                  response.body
   end
 
@@ -15,7 +15,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     token = @user.user_auth_token
     get '/users/' + token, headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal @user.to_json(except: [:id, :password_digest, :email, :first_name, :last_name, :updated_at]),
+    assert_equal @user.to_json(except: json_exclude),
                  response.body
   end
 
@@ -84,5 +84,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
     body = JSON.parse(response.body)
     assert_equal 'User not found', body['message']
+  end
+
+  def json_exclude
+    [:id, :password_digest, :email, :first_name, :last_name, :created_at, :updated_at]
   end
 end
