@@ -22,6 +22,15 @@ class CoinsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Specify the number of coins', body['message']
   end
 
+  test 'coins must be positive' do
+    post "/users/#{@user.user_auth_token}/coins",
+         headers: authorization_header(@password, @user.username),
+         params: { coins: -5 }, as: :json
+    assert_response :bad_request
+    body = JSON.parse(response.body)
+    assert_equal 'Coins must be greater than or equal to 0', body['message']
+  end
+
   test 'valid add coins' do
     before_coins = @user.coins
     post "/users/#{@user.user_auth_token}/coins",
