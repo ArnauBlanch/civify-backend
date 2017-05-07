@@ -103,6 +103,7 @@ GEM
       mime-types
       mimemagic (~> 0.3.0)
     rack (2.0.1)
+    rack-cors (0.4.1)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (5.0.2)
@@ -172,6 +173,7 @@ DEPENDENCIES
   mysql2 (>= 0.3.18, < 0.5)
   nokogiri
   paperclip
+  rack-cors
   rails (~> 5.0.2)
   simple_command
   simplecov
