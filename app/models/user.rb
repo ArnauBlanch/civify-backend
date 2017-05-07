@@ -1,6 +1,7 @@
 # ActiveRecord that represents users in the database
 class User < ApplicationRecord
   has_many :issues
+  has_many :offered_awards, dependent: :destroy, foreign_key: 'offered_by', class_name: 'Award'
   has_many :confirmations, dependent: :destroy
   has_many :confirmed_issues, through: :confirmations, source: :issue
   has_many :reports, dependent: :destroy
