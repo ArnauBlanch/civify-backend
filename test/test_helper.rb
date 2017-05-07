@@ -45,6 +45,13 @@ class ActiveSupport::TestCase
     assert @issue.valid?
   end
 
+  def setup_award
+    @picture = sample_file
+    @award = @user.offered_awards.create!(title: 'award', description: 'desc',
+                                         picture: @picture, price: 564)
+    assert @award.valid?
+  end
+
   def sample_file(filename = 'image.gif')
     File.new("test/fixtures/#{filename}")
   end
