@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170507193903) do
+ActiveRecord::Schema.define(version: 20170507210050) do
 
   create_table "awards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
@@ -83,7 +83,6 @@ ActiveRecord::Schema.define(version: 20170507193903) do
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
     t.string   "password_digest"
-    t.string   "name"
     t.string   "user_auth_token"
     t.integer  "coins",           default: 0
     t.integer  "kind",            default: 0
