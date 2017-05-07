@@ -3,9 +3,7 @@ require 'test_helper'
 # Tests the User model
 class UserTest < ActiveSupport::TestCase
   def setup
-    @user = User.new(username: 'foo', email: 'foo@bar.com',
-                     first_name: 'Foo', last_name: 'Bar',
-                     password: 'mypass', password_confirmation: 'mypass')
+    setup_user
   end
 
   test 'user should be valid' do
@@ -80,6 +78,13 @@ class UserTest < ActiveSupport::TestCase
   test 'user can have issues' do
     setup_issue
     assert_not_nil @issue
+    assert_equal @issue.to_json, @user.issues.first.to_json
+  end
+
+  test 'user can have awards' do
+    setup_award
+    assert_not_nil @award
+    assert_equal @award.to_json, @user.offered_awards.first.to_json
   end
 
   test 'user by default is of kind normal' do
