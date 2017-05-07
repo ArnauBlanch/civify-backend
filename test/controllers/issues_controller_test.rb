@@ -46,8 +46,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
         title: 'sample issue', latitude: 76.4,
         longitude: 38.2, category: 'arbolada',
         description: 'desc', picture: sample_image_hash,
-        risk: false, resolved_votes: 564,
-        confirm_votes: 0, reports: 0
+        risk: false, resolved_votes: 564
     }, headers: authorization_header(@password, @user.username)
   end
 
@@ -56,8 +55,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
         latitude: 76.4,
         longitude: 38.2, category: 'arbolada',
         description: 'desc', picture: sample_image_hash,
-        risk: true, resolved_votes: 564,
-        confirm_votes: 23, reports: 23
+        risk: true, resolved_votes: 564
     }, headers: authorization_header(@password, @user.username)
     assert_response :bad_request
     body = JSON.parse(response.body)
@@ -143,8 +141,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
         latitude: 76.4,
         longitude: 38.2, category: 'arbolada',
         description: 'desc', picture: 'nil',
-        risk: true, resolved_votes: 564,
-        confirm_votes: 23, reports: 23
+        risk: true, resolved_votes: 564
     }, headers: authorization_header(@password, @user.username)
     assert_response :bad_request
     body = JSON.parse(response.body)
