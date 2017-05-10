@@ -10,20 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170507210050) do
+ActiveRecord::Schema.define(version: 20170510175527) do
 
   create_table "awards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.string   "description"
     t.integer  "price"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
     t.integer  "offered_by"
     t.string   "award_auth_token"
     t.string   "picture_file_name"
     t.string   "picture_content_type"
     t.integer  "picture_file_size"
     t.datetime "picture_updated_at"
+    t.boolean  "visible",              default: true
     t.index ["award_auth_token"], name: "index_awards_on_award_auth_token", unique: true, using: :btree
     t.index ["offered_by"], name: "index_awards_on_offered_by", using: :btree
   end
@@ -88,6 +89,16 @@ ActiveRecord::Schema.define(version: 20170507210050) do
     t.integer  "kind",            default: 0
     t.bigint   "xp",              default: 0
     t.index ["user_auth_token"], name: "index_users_on_user_auth_token", unique: true, using: :btree
+  end
+
+  create_table "validations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "award_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["award_id", "user_id"], name: "index_validations_on_award_id_and_user_id", unique: true, using: :btree
+    t.index ["award_id"], name: "index_validations_on_award_id", using: :btree
+    t.index ["user_id"], name: "index_validations_on_user_id", using: :btree
   end
 
   add_foreign_key "awards", "users", column: "offered_by"
