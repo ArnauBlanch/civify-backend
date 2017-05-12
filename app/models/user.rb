@@ -16,19 +16,33 @@ class User < ApplicationRecord
   has_secure_token :user_auth_token
 
   XP_CURVE_CONSTANT = 0.1
+  MIN_LEVEL = 1
   MAX_LEVEL = 100
 
-  def as_json(options = {})
-    super(add_level(options.reverse_merge(except: [:id, :password_digest, :updated_at, :xp])))
+  def level
+    raw_level = (XP_CURVE_CONSTANT * Math.sqrt(xp)).floor
+    [[MIN_LEVEL, raw_level].max, MAX_LEVEL].min
   end
 
-  def add_level(json)
-    level = Math.floor(XP_CURVE_CONSTANT * Math.sqrt(xp)) + 1
-    level = MAX_LEVEL if level > MAX_LEVEL
-    xp_current = xp - ((level - 1) / XP_CURVE_CONSTANT)**2
-    xp_max = (level / XP_CURVE_CONSTANT)**2 - ((level - 1) / XP_CURVE_CONSTANT)**2
-    json.merge(lv: level)
-        .merge(xp: xp_current)
-        .merge(xp_next_level: xp_max)
+  def current_xp
+    xp - User.get_min_xp_from_lv(level)
   end
+
+  def max_xp
+    lv = level
+    User.get_min_xp_from_lv(lv + 1) - User.get_min_xp_from_lv(lv)
+  end
+
+  def self.get_min_xp_from_lv(lv)
+    return 0 if lv == MIN_LEVEL
+    ((lv / XP_CURVE_CONSTANT)**2).ceil
+  end
+
+  def as_json(options = {})
+    super(options.reverse_merge(except: [:id, :password_digest, :updated_at, :xp]))
+      .merge(lv: level)
+      .merge(xp: current_xp)
+      .merge(xp_max: max_xp)
+  end
+
 end
