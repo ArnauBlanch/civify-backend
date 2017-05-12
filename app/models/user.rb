@@ -25,7 +25,9 @@ class User < ApplicationRecord
   end
 
   def current_xp
-    xp - User.get_min_xp_from_lv(level)
+    lv = level
+    return 0 if lv == MAX_LEVEL
+    xp - User.get_min_xp_from_lv(lv)
   end
 
   def max_xp
@@ -34,7 +36,7 @@ class User < ApplicationRecord
   end
 
   def self.get_min_xp_from_lv(lv)
-    return 0 if lv == MIN_LEVEL
+    return 0 if lv <= MIN_LEVEL
     ((lv / XP_CURVE_CONSTANT)**2).ceil
   end
 
