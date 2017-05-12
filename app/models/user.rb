@@ -15,7 +15,20 @@ class User < ApplicationRecord
   has_secure_password # method to implement the secure password
   has_secure_token :user_auth_token
 
+  XP_CURVE_CONSTANT = 0.1
+  MAX_LEVEL = 100
+
   def as_json(options = {})
-    super(options.reverse_merge(except: [:id, :password_digest, :updated_at]))
+    super(add_level(options.reverse_merge(except: [:id, :password_digest, :updated_at, :xp])))
+  end
+
+  def add_level(json)
+    level = Math.floor(XP_CURVE_CONSTANT * Math.sqrt(xp)) + 1
+    level = MAX_LEVEL if level > MAX_LEVEL
+    xp_current = xp - ((level - 1) / XP_CURVE_CONSTANT)**2
+    xp_max = (level / XP_CURVE_CONSTANT)**2 - ((level - 1) / XP_CURVE_CONSTANT)**2
+    json.merge(lv: level)
+        .merge(xp: xp_current)
+        .merge(xp_next_level: xp_max)
   end
 end
