@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170510175527) do
+ActiveRecord::Schema.define(version: 20170516214349) do
 
   create_table "awards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
@@ -37,6 +37,17 @@ ActiveRecord::Schema.define(version: 20170510175527) do
     t.index ["issue_id", "user_id"], name: "index_confirmations_on_issue_id_and_user_id", unique: true, using: :btree
     t.index ["issue_id"], name: "index_confirmations_on_issue_id", using: :btree
     t.index ["user_id"], name: "index_confirmations_on_user_id", using: :btree
+  end
+
+  create_table "exchanges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "award_id"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.boolean  "used",       default: false
+    t.index ["award_id", "user_id"], name: "index_exchanges_on_award_id_and_user_id", unique: true, using: :btree
+    t.index ["award_id"], name: "index_exchanges_on_award_id", using: :btree
+    t.index ["user_id"], name: "index_exchanges_on_user_id", using: :btree
   end
 
   create_table "issues", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -89,16 +100,6 @@ ActiveRecord::Schema.define(version: 20170510175527) do
     t.integer  "kind",            default: 0
     t.bigint   "xp",              default: 0
     t.index ["user_auth_token"], name: "index_users_on_user_auth_token", unique: true, using: :btree
-  end
-
-  create_table "validations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "user_id"
-    t.integer  "award_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["award_id", "user_id"], name: "index_validations_on_award_id_and_user_id", unique: true, using: :btree
-    t.index ["award_id"], name: "index_validations_on_award_id", using: :btree
-    t.index ["user_id"], name: "index_validations_on_user_id", using: :btree
   end
 
   add_foreign_key "awards", "users", column: "offered_by"
