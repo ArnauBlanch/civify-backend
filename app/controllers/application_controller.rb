@@ -15,7 +15,7 @@ class ApplicationController < ActionController::API
     auth_command = AuthorizeApiRequest.call(request.headers)
     if auth_command.success?
       @current_user = auth_command.result
-      verify_issue_auth if verify_user_auth?
+      verify_award_auth? if verify_user_auth? and verify_issue_auth?
     else
       render json: { message: auth_command.errors.values[0].first }, status: :unauthorized
     end
@@ -32,13 +32,25 @@ class ApplicationController < ActionController::API
     true
   end
 
-  def verify_issue_auth
+  def verify_issue_auth?
     issue_auth_token = params[:issue_auth_token]
     return true unless issue_auth_token
     issue = Issue.find_by_issue_auth_token(issue_auth_token)
     return false unless check_issue_exists(issue)
-    if critical_request? && !pertains_to_current_user?(issue)
+    if critical_request? && !current_user?(issue.user.user_auth_token)
       render json: { message: "Cannot update other's issues" }, status: :unauthorized
+      false
+    end
+  end
+
+  def verify_award_auth?
+    award_auth_token = params[:award_auth_token]
+    return true unless award_auth_token
+    award = Award.find_by_award_auth_token(award_auth_token)
+    return false unless check_award_exists(award)
+    if critical_request? && !current_user?(award.commerce_offering.user_auth_token)
+      render json: { message: "Cannot update other's awards" }, status: :unauthorized
+      false
     end
   end
 
@@ -50,10 +62,6 @@ class ApplicationController < ActionController::API
     user_auth_token == @current_user.user_auth_token
   end
 
-  def pertains_to_current_user?(issue)
-    current_user?(issue.user.user_auth_token)
-  end
-
   def check_user_exists(user)
     return true if user
     render json: { message: 'User not found' }, status: :not_found
@@ -63,6 +71,12 @@ class ApplicationController < ActionController::API
   def check_issue_exists(issue)
     return true if issue
     render json: { message: 'Issue not found' }, status: :not_found
+    false
+  end
+
+  def check_award_exists(award)
+    return true if award
+    render json: { message: 'Award not found' }, status: :not_found
     false
   end
 
