@@ -21,7 +21,7 @@ class Award < ApplicationRecord
                                          :picture_content_type,
                                          :picture_file_size,
                                          :picture_updated_at]))
-      .merge(offered_by: commerce_offering.user_auth_token)
+      .merge(offered_by: commerce_offering.first_name)
       .merge(picture_hash)
   end
 

@@ -92,7 +92,21 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test 'user experience by default is 0' do
-    assert @user.xp == 0
+    assert @user.xp.zero?
+  end
+
+  test 'user level by default is 1' do
+    assert @user.level == 1
+  end
+
+  test 'user level cannot be higher than max level' do
+    @user.update(xp: User.get_min_xp_from_lv(User::MAX_LEVEL + 1))
+    assert @user.level == User::MAX_LEVEL
+  end
+
+  test 'user current experience is 0 if max level achieved' do
+    @user.update(xp: User.get_min_xp_from_lv(User::MAX_LEVEL) + 1)
+    assert @user.current_xp.zero?
   end
 
   private
