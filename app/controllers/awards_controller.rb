@@ -14,14 +14,8 @@ class AwardsController < ApplicationController
   end
 
   # GET /awards/:award_auth_token
-  # GET /users/:user_auth_token/offered_awards/:award_auth_token
   def show
-    if params[:user_auth_token]
-      set_user
-      set_user_award
-    else
-      set_award
-    end
+    set_award
     json_response @award
   end
 
@@ -35,30 +29,17 @@ class AwardsController < ApplicationController
   end
 
   # PUT /awards/:award_auth_token
-  # PUT /users/:user_auth_token/offered_awards/:award_auth_token
   # PATCH /awards/:award_auth_token
-  # PATCH /users/:user_auth_token/offered_awards/:award_auth_token
   def update
-    if params[:user_auth_token]
-      set_user
-      set_user_award
-    else
-      set_award
-    end
+    set_award
     @award.picture = @picture if @picture
     @award.update!(award_params)
     json_response @award
   end
 
   # DELETE /awards/:award_auth_token
-  # DELETE /users/:user_auth_token/offered_awards/:award_auth_token
   def destroy
-    if params[:user_auth_token]
-      set_user
-      set_user_award
-    else
-      set_award
-    end
+    set_award
     @award.destroy
     head :no_content
   end
@@ -89,9 +70,5 @@ class AwardsController < ApplicationController
 
   def set_award
     @award = Award.find_by!(award_auth_token: params[:award_auth_token])
-  end
-
-  def set_user_award
-    @award = @user.offered_awards.find_by!(award_auth_token: params[:award_auth_token])
   end
 end

@@ -1,6 +1,8 @@
 # Award model class
 class Award < ApplicationRecord
   belongs_to :commerce_offering, foreign_key: 'offered_by', class_name: 'User'
+  has_many :exchanges, dependent: :destroy
+  has_many :users_exchanging, through: :exchanges, source: :user
   has_secure_token :award_auth_token
   has_attached_file :picture, preserve_files: 'false',
                    styles: { small: '450x450', med: '800x800' }

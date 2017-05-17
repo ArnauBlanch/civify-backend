@@ -9,34 +9,27 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
     setup_award
   end
 
-  test 'get all user offered awards request' do
-    get "/users/#{@user.user_auth_token}/offered_awards",
-        headers: authorization_header(@password, @user.username)
-    assert_response :ok
-    assert_equal response.body, @user.offered_awards.to_json
-  end
-
   # test 'get all awards request' do
   #   get '/awards', headers: authorization_header(@password, @user.username)
   #   assert_response :ok
   #   assert_equal response.body, Award.all.to_json
   # end
 
-  test 'get user award by token request' do
-    get "/users/#{@user.user_auth_token}/offered_awards/#{@award.award_auth_token}",
+  test 'get all commerce offered awards request' do
+    get "/users/#{@user.user_auth_token}/offered_awards",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal response.body, @award.to_json
+    assert_equal response.body, @user.offered_awards.to_json
   end
 
-  test 'create user award valid request' do
+  test 'create commerce offered award valid request' do
     create_award_post_method
     assert_response :created
     award = Award.find_by(title: 'sample award')
     assert_not_nil award
   end
 
-  test 'create user award invalid request' do
+  test 'create commerce offered award invalid request' do
     post "/users/#{@user.user_auth_token}/offered_awards", params: {
         description: 'desc', picture: sample_image_hash,
         price: 564
@@ -46,39 +39,6 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Validation failed: Title can't be blank", body['message']
   end
 
-  test 'destroy user award valid request' do
-    delete "/users/#{@user.user_auth_token}/offered_awards/#{@award.award_auth_token}",
-           headers: authorization_header(@password, @user.username)
-    assert_response :no_content
-    assert_nil Award.find_by(award_auth_token: @award.award_auth_token)
-  end
-
-  test 'destroy user award invalid request' do
-    delete "/users/#{@user.user_auth_token}/offered_awards/123",
-           headers: authorization_header(@password, @user.username)
-    assert_response :not_found
-    body = JSON.parse(response.body)
-    assert_equal "Award not found", body['message']
-  end
-
-  test 'update user award valid request' do
-    patch "/users/#{@user.user_auth_token}/offered_awards/#{@award.award_auth_token}", params: {
-        description: 'free sample texts'
-    }, headers: authorization_header(@password, @user.username)
-    assert_response :ok
-    @award.reload
-    assert_equal @award.description, 'free sample texts'
-  end
-
-  test 'update user award valid request but ignored values' do
-    patch "/users/#{@user.user_auth_token}/offered_awards/#{@award.award_auth_token}", params: {
-        title: 'title updated',
-        titlefake: 'no'
-    }, headers: authorization_header(@password, @user.username)
-    assert_response :ok
-    @award.reload
-    assert_equal @award.title, 'title updated'
-  end
 
   test 'get award' do
     get "/awards/#{@award.award_auth_token}",
@@ -121,7 +81,7 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @award.title, "title updated"
   end
 
-  test 'create user award image bad format' do
+  test 'create commerce offered award image bad format' do
     post "/users/#{@user.user_auth_token}/offered_awards", params: {
         description: 'desc', picture: 'nil',
         price: 564
