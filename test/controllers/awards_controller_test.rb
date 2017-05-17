@@ -58,7 +58,7 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
            headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
-    assert_equal "Doesn't exists record", body['message']
+    assert_equal "Award not found", body['message']
   end
 
   test 'update user award valid request' do
@@ -99,7 +99,7 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
            headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
-    assert_equal "Doesn't exists record", body['message']
+    assert_equal "Award not found", body['message']
   end
 
   test 'update award valid request' do
