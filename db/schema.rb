@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 20170518003006) do
 
-  create_table "awards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "awards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin" do |t|
     t.string   "title"
     t.string   "description"
     t.integer  "price"
@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(version: 20170518003006) do
     t.index ["offered_by"], name: "index_awards_on_offered_by", using: :btree
   end
 
-  create_table "confirmations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "confirmations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin" do |t|
     t.integer  "issue_id"
     t.integer  "user_id"
     t.datetime "created_at", null: false
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 20170518003006) do
     t.index ["user_id"], name: "index_confirmations_on_user_id", using: :btree
   end
 
-  create_table "exchanges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "exchanges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin" do |t|
     t.integer  "user_id"
     t.integer  "award_id"
     t.datetime "created_at",                 null: false
@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 20170518003006) do
     t.index ["user_id"], name: "index_issues_on_user_id", using: :btree
   end
 
-  create_table "reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin" do |t|
     t.integer  "user_id"
     t.integer  "issue_id"
     t.datetime "created_at", null: false
@@ -80,14 +80,14 @@ ActiveRecord::Schema.define(version: 20170518003006) do
     t.index ["user_id"], name: "index_reports_on_user_id", using: :btree
   end
 
-  create_table "resolutions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "resolutions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin" do |t|
     t.integer "user_id"
     t.integer "issue_id"
     t.index ["issue_id"], name: "index_resolutions_on_issue_id", using: :btree
     t.index ["user_id"], name: "index_resolutions_on_user_id", using: :btree
   end
 
-  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin" do |t|
     t.string   "username"
     t.string   "email"
     t.string   "first_name"
