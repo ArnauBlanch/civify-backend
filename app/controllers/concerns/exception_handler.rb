@@ -10,9 +10,5 @@ module ExceptionHandler
     rescue_from ActiveRecord::RecordInvalid do |e|
       render json: { message: e.message }, status: :bad_request
     end
-
-    rescue_from ActiveRecord::StatementInvalid do |e|
-      render json: { message: 'Invalid Statement!!!' }, status: :bad_request
-    end
   end
 end
