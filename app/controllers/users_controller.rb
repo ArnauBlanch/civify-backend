@@ -29,11 +29,12 @@ class UsersController < ApplicationController
 
   def create_user(params)
     @user = User.new(params)
-    if @user.save
-      render json: { message: 'User created' }, status: :created
-    else
-      render json: { message: 'User not created' }, status: :bad_request
-    end
+    @user.save!
+    render json: { message: 'User created' }, status: :created
+  rescue ActiveRecord::RecordNotUnique
+    render json: { message: 'Already exists' }, status: :bad_request
+  rescue
+    render json: @user.errors, status: :bad_request
   end
 
   # DELETE /users/[:user_auth_token]
@@ -41,7 +42,7 @@ class UsersController < ApplicationController
     if @user.destroy
       render json: { message: 'User deleted' }, status: :ok
     else
-      render json: { message: 'User not deleted' }, status: :bad_request
+      render json: @user.errors, status: :bad_request
     end
   end
 
