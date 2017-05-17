@@ -5,7 +5,8 @@ Rails.application.routes.draw do
   resources :users, param: :user_auth_token do
     member do
       resources :issues, param: :issue_auth_token
-      resources :offered_awards, param: :award_auth_token, controller: 'awards'
+      resources :offered_awards, only: [:index, :create], param: :award_auth_token, controller: 'awards'
+      resources :exchanged_awards, only: [:index], param: :award_auth_token, controller: 'exchanges'
       resources :coins, only: [:create]
     end
   end
@@ -16,7 +17,12 @@ Rails.application.routes.draw do
       resources :report, only: [:create], controller: 'reports'
     end
   end
-  resources :awards, param: :award_auth_token, only: [:show, :index, :update, :destroy]
+  resources :awards, param: :award_auth_token, only: [:show, :index, :update, :destroy] do
+    member do
+      resources :exchange, only: [:create], controller: 'exchanges'
+      resources :use, only: [:create], controller: 'uses'
+    end
+  end
 
   post '/login', to: 'authentication#login'
   get '/me', to: 'authorized_request#me'
