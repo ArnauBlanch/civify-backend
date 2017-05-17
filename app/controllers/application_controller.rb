@@ -55,7 +55,7 @@ class ApplicationController < ActionController::API
   end
 
   def critical_request?
-    !@current_user.admin? && request.request_method != :get.to_s
+    !@current_user.admin? && request.request_method != 'GET'
   end
 
   def current_user?(user_auth_token)
