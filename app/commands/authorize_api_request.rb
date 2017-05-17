@@ -29,6 +29,12 @@ class AuthorizeApiRequest
   def user
     decode_auth_token
     @user ||= User.find(@decoded_auth_token[:user_id]) if @decoded_auth_token
-    @user || errors.add(:unauthorized, 'Invalid Token') && nil
+    @user || invalid_token
+  rescue
+    invalid_token
+  end
+
+  def invalid_token
+    errors.add(:unauthorized, 'Invalid Token') && nil
   end
 end
