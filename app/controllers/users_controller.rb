@@ -29,8 +29,11 @@ class UsersController < ApplicationController
 
   def create_user(params)
     @user = User.new(params)
-    @user.save!
-    render json: { message: 'User created' }, status: :created
+    if @user.save
+      render json: { message: 'User created' }, status: :created
+    else
+      render json: { message: 'User not created' }, status: :bad_request
+    end
   rescue ActiveRecord::RecordNotUnique
     render json: { message: 'Already exists' }, status: :bad_request
   rescue
