@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170517220454) do
+ActiveRecord::Schema.define(version: 20170518003006) do
 
   create_table "awards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 20170517220454) do
     t.index ["user_id"], name: "index_exchanges_on_user_id", using: :btree
   end
 
-  create_table "issues", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "issues", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.text     "title",                limit: 65535
     t.float    "latitude",             limit: 24
     t.float    "longitude",            limit: 24
