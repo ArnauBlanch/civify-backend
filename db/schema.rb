@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170507210050) do
+ActiveRecord::Schema.define(version: 20170507205921) do
 
   create_table "awards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
@@ -84,8 +84,8 @@ ActiveRecord::Schema.define(version: 20170507210050) do
     t.datetime "updated_at",                  null: false
     t.string   "password_digest"
     t.string   "user_auth_token"
-    t.integer  "coins",           default: 0
     t.integer  "kind",            default: 0
+    t.integer  "coins",           default: 0
     t.bigint   "xp",              default: 0
     t.index ["user_auth_token"], name: "index_users_on_user_auth_token", unique: true, using: :btree
   end
