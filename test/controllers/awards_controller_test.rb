@@ -5,7 +5,7 @@ require 'base64'
 class AwardsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    setup_user
+    setup_user(kind: :business)
     setup_award
   end
 
@@ -89,6 +89,14 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
     body = JSON.parse(response.body)
     assert_equal 'Image bad format', body['message']
+  end
+
+  test 'normal users cannot manage awards' do
+    @user.update(kind: :normal)
+    create_award_post_method
+    assert_response :unauthorized
+    body = JSON.parse(response.body)
+    assert_equal 'You are not allowed to manage awards', body['message']
   end
 
   def create_award_post_method

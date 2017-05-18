@@ -1,5 +1,6 @@
 class ResolveController < ApplicationController
   before_action :setup
+  skip_before_action :verify_issue, :verify_user
 
   RESOLVE_IN = 2
 

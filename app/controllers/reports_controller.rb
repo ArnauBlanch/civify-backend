@@ -1,6 +1,7 @@
 # Reports controller class
 class ReportsController < ApplicationController
   before_action :fetch_params
+  skip_before_action :verify_issue, :verify_user
 
   DELETE_IN = 2
 
