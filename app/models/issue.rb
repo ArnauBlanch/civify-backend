@@ -76,4 +76,8 @@ class Issue < ApplicationRecord
   def resolved_by_auth_user
     resolutions.exists?(@current_user.id)
   end
+
+  def resolve_issue
+    users_confirming.size
+  end
 end
