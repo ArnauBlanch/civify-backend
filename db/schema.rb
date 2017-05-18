@@ -52,22 +52,22 @@ ActiveRecord::Schema.define(version: 20170518171120) do
     t.index ["user_id"], name: "index_exchanges_on_user_id", using: :btree
   end
 
-  create_table "issues", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "title"
+  create_table "issues", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+    t.text     "title",                limit: 65535
     t.float    "latitude",             limit: 24
     t.float    "longitude",            limit: 24
     t.string   "category"
-    t.string   "description"
+    t.text     "description",          limit: 65535
     t.boolean  "risk"
     t.integer  "user_id"
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
     t.string   "issue_auth_token"
     t.string   "picture_file_name"
     t.string   "picture_content_type"
     t.integer  "picture_file_size"
     t.datetime "picture_updated_at"
-    t.integer  "resolved_votes",                  default: 0
+    t.integer  "resolved_votes",                     default: 0
     t.index ["issue_auth_token"], name: "index_issues_on_issue_auth_token", unique: true, using: :btree
     t.index ["user_id"], name: "index_issues_on_user_id", using: :btree
   end
