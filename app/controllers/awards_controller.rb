@@ -1,6 +1,7 @@
 # Awards controller class
 class AwardsController < ApplicationController
   before_action :fetch_picture, only: [:create, :update]
+  before_action :check_business_or_admin, except: [:index, :show]
 
   # GET /awards
   # GET /users/:user_auth_token/offered_awards
@@ -47,8 +48,7 @@ class AwardsController < ApplicationController
   private
 
   def award_params
-    params.permit(:title, :description, :price,
-                  :picture)
+    params.permit(:title, :description, :price, :picture)
   end
 
   def fetch_picture
@@ -70,5 +70,9 @@ class AwardsController < ApplicationController
 
   def set_award
     @award = Award.find_by!(award_auth_token: params[:award_auth_token])
+  end
+
+  def check_business_or_admin
+    render json: { message: 'You are not allowed to manage awards' }, status: :unauthorized if current_user.normal?
   end
 end
