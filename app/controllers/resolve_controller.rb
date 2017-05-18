@@ -1,5 +1,6 @@
 class ResolveController < ApplicationController
   before_action :setup
+  skip_before_action :verify_issue, :verify_user
 
   # POST /issues/:issue_auth_token/resolve
   def create

@@ -1,5 +1,6 @@
 class ConfirmationsController < ApplicationController
   before_action :fetch_params
+  skip_before_action :verify_issue, :verify_user
 
   def create
     if @user.confirmed_issues.exists? @issue.id
