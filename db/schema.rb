@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170516214349) do
+ActiveRecord::Schema.define(version: 20170518171120) do
 
   create_table "awards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
@@ -42,11 +42,13 @@ ActiveRecord::Schema.define(version: 20170516214349) do
   create_table "exchanges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "award_id"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.boolean  "used",       default: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.boolean  "used",                default: false
+    t.string   "exchange_auth_token"
     t.index ["award_id", "user_id"], name: "index_exchanges_on_award_id_and_user_id", unique: true, using: :btree
     t.index ["award_id"], name: "index_exchanges_on_award_id", using: :btree
+    t.index ["exchange_auth_token"], name: "index_exchanges_on_exchange_auth_token", unique: true, using: :btree
     t.index ["user_id"], name: "index_exchanges_on_user_id", using: :btree
   end
 
@@ -96,8 +98,8 @@ ActiveRecord::Schema.define(version: 20170516214349) do
     t.datetime "updated_at",                  null: false
     t.string   "password_digest"
     t.string   "user_auth_token"
-    t.integer  "kind",            default: 0
     t.integer  "coins",           default: 0
+    t.integer  "kind",            default: 0
     t.bigint   "xp",              default: 0
     t.index ["user_auth_token"], name: "index_users_on_user_auth_token", unique: true, using: :btree
   end

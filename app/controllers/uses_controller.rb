@@ -1,15 +1,14 @@
 class UsesController < ApplicationController
-  # POST /awards/:award_auth_token/exchange
+  # POST /use
   def create
     set_user
-    return unless set_award_to_use
-    exchange = @user.exchanges.find_by(award_id: @award.id)
-    if !exchange.used
-      exchange.used = true
-      exchange.save!
+    return unless set_exchange
+    if !@exchange.used
+      @exchange.used = true
+      @exchange.save!
       head :ok
     else
-      render json: { message: 'User has already used this award' }, status: :bad_request if exchange.used
+      render json: { message: 'User has already used this buyed award' }, status: :bad_request if @exchange.used
     end
   end
 
@@ -23,10 +22,10 @@ class UsesController < ApplicationController
             end
   end
 
-  def set_award_to_use
-    @award = Award.find_by!(award_auth_token: params[:award_auth_token])
-    return true if @user.exchanged_awards.exists? @award.id
-    render json: { message: "User doesn't own this award" }, status: :not_found
+  def set_exchange
+    @exchange = Exchange.find_by(exchange_auth_token: params[:exchange_auth_token])
+    return true if @exchange
+    render json: { message: 'Exchange not found' }, status: :not_found
     false
   end
 
