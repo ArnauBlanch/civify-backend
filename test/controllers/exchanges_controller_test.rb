@@ -25,6 +25,20 @@ class ExchangesControllerTest < ActionDispatch::IntegrationTest
     assert_equal'Validation failed: Award has already been taken', body['message']
   end
 
+  test 'get all exchanged awards' do
+    post "/awards/#{@award.award_auth_token}/exchange",
+         headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    get "/users/#{@user.user_auth_token}/exchanged_awards",
+         headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    body = JSON.parse(response.body)
+    e_token = @user.exchanges.first.exchange_auth_token
+    assert_equal false, body[0]['used']
+    assert_equal @award.award_auth_token, body[0]['award_auth_token']
+    assert_equal e_token, body[0]['exchange_auth_token']
+  end
+
   test 'user not found' do
     post "/awards/#{@award.award_auth_token}/exchange?user_auth_token=fake",
          headers: authorization_header(@password, @user.username)
