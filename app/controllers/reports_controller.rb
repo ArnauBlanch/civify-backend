@@ -2,6 +2,8 @@
 class ReportsController < ApplicationController
   before_action :fetch_params
 
+  DELETE_IN = 2
+
   def create
     if @user.reported_issues.exists? @issue.id
       @issue.users_reporting.destroy @user
@@ -11,6 +13,9 @@ class ReportsController < ApplicationController
       @issue.users_reporting << @user
       render json: { message: "Issue with auth token #{@issue.issue_auth_token} "\
       "reported by User with auth token #{@user.user_auth_token}" }
+      if @issue.num_reports >= DELETE_IN
+        @issue.destroy
+      end
     end
   end
 

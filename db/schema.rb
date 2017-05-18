@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170518003006) do
+ActiveRecord::Schema.define(version: 20170518151859) do
 
   create_table "awards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
@@ -58,14 +58,15 @@ ActiveRecord::Schema.define(version: 20170518003006) do
     t.text     "description",          limit: 65535
     t.boolean  "risk"
     t.integer  "user_id"
-    t.datetime "created_at",                                     null: false
-    t.datetime "updated_at",                                     null: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
     t.string   "issue_auth_token"
     t.string   "picture_file_name"
     t.string   "picture_content_type"
     t.integer  "picture_file_size"
     t.datetime "picture_updated_at"
     t.integer  "resolved_votes",                     default: 0
+    t.boolean  "resolved",                           default: false
     t.index ["issue_auth_token"], name: "index_issues_on_issue_auth_token", unique: true, using: :btree
     t.index ["user_id"], name: "index_issues_on_user_id", using: :btree
   end
