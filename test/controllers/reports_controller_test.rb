@@ -12,7 +12,7 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     body = JSON.parse(response.body)
     assert_equal "Issue with auth token #{@issue.issue_auth_token} "\
-    "reported by User with auth token #{@user.user_auth_token}",body['message']
+    "reported by User with auth token #{@user.user_auth_token}", body['message']
     assert @issue.users_reporting.exists?(@user.id)
     assert @user.reported_issues.exists?(@issue.id)
     get "/issues/#{@issue.issue_auth_token}",
@@ -21,6 +21,16 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     body = JSON.parse(response.body)
     assert body['reported_by_auth_user']
     assert_equal 1, body['num_reports']
+  end
+
+  test "one user can report other's user issue" do
+    setup_user(username: 'self')
+    post "/issues/#{@issue.issue_auth_token}/report",
+         headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    body = JSON.parse(response.body)
+    assert_equal "Issue with auth token #{@issue.issue_auth_token} "\
+    "reported by User with auth token #{@user.user_auth_token}", body['message']
   end
 
   test 'report issue by user param' do

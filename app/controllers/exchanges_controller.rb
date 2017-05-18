@@ -1,5 +1,6 @@
 class ExchangesController < ApplicationController
-
+  skip_before_action :verify_award, only: :create
+  
   # GET /users/:user_auth_token/exchanged_awards
   def index
     set_user

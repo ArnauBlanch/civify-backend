@@ -22,6 +22,19 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
   end
 
+  test 'get user issue by invalid token request' do
+    get "/users/#{@user.user_auth_token}/issues/fake",
+        headers: authorization_header(@password, @user.username)
+    assert_response :not_found
+    assert_equal 'Issue not found', JSON.parse(response.body)['message']
+  end
+
+  test 'get issue by invalid token request' do
+    get '/issues/fake', headers: authorization_header(@password, @user.username)
+    assert_response :not_found
+    assert_equal 'Issue not found', JSON.parse(response.body)['message']
+  end
+
   test 'create user issue valid request' do
     create_issue_post_method
     assert_response :created
