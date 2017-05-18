@@ -40,22 +40,6 @@ class AuthorizeApiRequestTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "request trying to update other's issue" do
-    setup_issue
-    other_user = @user
-    other_issue = other_user.issues.first
-    setup_user(username: 'self')
-    post "/users/#{other_user.user_auth_token}/issues",
-          headers: authorization_header(@password, @user.username)
-    assert_unauthorized_error 'Cannot update other users'
-    patch "/issues/#{other_issue.issue_auth_token}",
-          headers: authorization_header(@password, @user.username)
-    assert_unauthorized_error "Cannot update other's issues"
-    delete "/users/#{other_user.user_auth_token}/issues/#{other_issue.issue_auth_token}",
-          headers: authorization_header(@password, @user.username)
-    assert_unauthorized_error 'Cannot update other users'
-  end
-
   test "request trying to update other's issue being admin" do
     setup_issue
     other_user = @user

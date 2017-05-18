@@ -5,7 +5,7 @@ class ApplicationController < ActionController::API
   include RewardsConstants
   # Requires authentication token before requesting resources
   # Moreover checks that update target is the current user
-  before_action :authenticate_request
+  before_action :verify_user, :verify_issue, :verify_award, :authenticate_request
 
   attr_reader :current_user
 
@@ -25,6 +25,7 @@ class ApplicationController < ActionController::API
     user_auth_token = params[:user_auth_token]
     return true unless user_auth_token
     return false unless check_user_exists(User.find_by_user_auth_token(user_auth_token))
+    return true unless @verify_user
     if critical_request? && !current_user?(user_auth_token)
       render json: { message: 'Cannot update other users' }, status: :unauthorized
       return false
@@ -37,6 +38,7 @@ class ApplicationController < ActionController::API
     return true unless issue_auth_token
     issue = Issue.find_by_issue_auth_token(issue_auth_token)
     return false unless check_issue_exists(issue)
+    return true unless @verify_issue
     if critical_request? && !current_user?(issue.user.user_auth_token)
       render json: { message: "Cannot update other's issues" }, status: :unauthorized
       false
@@ -48,10 +50,23 @@ class ApplicationController < ActionController::API
     return true unless award_auth_token
     award = Award.find_by_award_auth_token(award_auth_token)
     return false unless check_award_exists(award)
+    return true unless @verify_award
     if critical_request? && !current_user?(award.commerce_offering.user_auth_token)
       render json: { message: "Cannot update other's awards" }, status: :unauthorized
       false
     end
+  end
+
+  def verify_user
+    @verify_user = true
+  end
+
+  def verify_issue
+    @verify_issue = true
+  end
+
+  def verify_award
+    @verify_award = true
   end
 
   def critical_request?
