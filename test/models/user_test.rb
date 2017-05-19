@@ -3,9 +3,7 @@ require 'test_helper'
 # Tests the User model
 class UserTest < ActiveSupport::TestCase
   def setup
-    @user = User.new(username: 'foo', email: 'foo@bar.com',
-                     first_name: 'Foo', last_name: 'Bar',
-                     password: 'mypass', password_confirmation: 'mypass')
+    setup_user
   end
 
   test 'user should be valid' do
@@ -72,19 +70,43 @@ class UserTest < ActiveSupport::TestCase
     assert_not duplicate_user.valid?
   end
 
-  test 'password should be present and non-blank' do
-    @user.password = @user.password_confirmation = ' '
-    assert_not @user.valid?
-  end
-
   test 'user token is not null' do
     @user.save
     assert_not_nil @user.user_auth_token
   end
 
-  test 'test' do
+  test 'user can have issues' do
     setup_issue
     assert_not_nil @issue
+    assert_equal @issue.to_json, @user.issues.first.to_json
+  end
+
+  test 'user can have awards' do
+    setup_award
+    assert_not_nil @award
+    assert_equal @award.to_json, @user.offered_awards.first.to_json
+  end
+
+  test 'user by default is of kind normal' do
+    assert @user.normal?
+  end
+
+  test 'user experience by default is 0' do
+    assert @user.xp.zero?
+  end
+
+  test 'user level by default is 1' do
+    assert @user.level == 1
+  end
+
+  test 'user level cannot be higher than max level' do
+    @user.update(xp: User.get_min_xp_from_lv(User::MAX_LEVEL + 1))
+    assert @user.level == User::MAX_LEVEL
+  end
+
+  test 'user current experience is 0 if max level achieved' do
+    @user.update(xp: User.get_min_xp_from_lv(User::MAX_LEVEL) + 1)
+    assert @user.current_xp.zero?
   end
 
   private

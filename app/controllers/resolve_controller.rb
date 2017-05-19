@@ -1,9 +1,12 @@
 class ResolveController < ApplicationController
   before_action :setup
+  skip_before_action :verify_issue, :verify_user
+
+  RESOLVE_IN = 10
 
   # POST /issues/:issue_auth_token/resolve
   def create
-    if @issue.resolutions.exists?(@user.id)
+    if @issue.resolutions.exists?(@user)
       @issue.resolutions.delete(@user)
       @issue.resolved_votes -= 1
       @issue.save
@@ -11,6 +14,9 @@ class ResolveController < ApplicationController
     else
       if @issue.resolutions << @user
         @issue.resolved_votes += 1
+        if @issue.resolved_votes >= RESOLVE_IN
+          @issue.resolved = true
+        end
         @issue.save
         render json: { message: 'Resolution added' }, status: :ok
       else
@@ -25,10 +31,6 @@ class ResolveController < ApplicationController
   def setup
     @issue = Issue.find_by(issue_auth_token: params[:issue_auth_token])
     @user = User.find_by(user_auth_token: params[:user])
-    if @issue.nil?
-      render json: { message: 'Issue not found' }, status: :not_found
-    elsif @user.nil?
-      render json: { message: 'User not found' }, status: :not_found
-    end
+    check_user_exists @user
   end
 end

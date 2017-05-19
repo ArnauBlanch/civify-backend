@@ -2,14 +2,9 @@ require 'test_helper'
 
 class ConfirmationTest < ActiveSupport::TestCase
   def setup
-    setup_user
+    setup_user second_user: true
     setup_issue
-    @second_user = User.create!(username: 'test2',
-                                email: 'test2@test.com',
-                                first_name: 'test', last_name: 'test',
-                                password: @password,
-                                password_confirmation: '1234')
-    @another_issue = @second_user.issues.create!(title: 'anotherissue',
+    @another_issue = @user2.issues.create!(title: 'anotherissue',
                                                  latitude: 76.4,
                                                  longitude: 38.2,
                                                  category: 'arbolada',
@@ -22,7 +17,7 @@ class ConfirmationTest < ActiveSupport::TestCase
     assert @issue.confirmations.empty?
     assert @another_issue.confirmations.empty?
     assert @user.confirmations.empty?
-    assert @second_user.confirmations.empty?
+    assert @user2.confirmations.empty?
   end
 
   test 'confirmation is valid' do

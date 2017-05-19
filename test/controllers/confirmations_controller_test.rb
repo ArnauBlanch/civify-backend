@@ -1,6 +1,7 @@
 require 'test_helper'
 # Confirmations controller test
 class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
+
   def setup
     setup_user
     setup_issue
@@ -38,6 +39,16 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
     body = JSON.parse(response.body)
     assert body['confirmed_by_auth_user']
     assert_equal 1, body['confirm_votes']
+  end
+
+  test "one user can confirm other's user issue" do
+    setup_user(username: 'self')
+    post "/issues/#{@issue.issue_auth_token}/confirm",
+         headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    body = JSON.parse(response.body)
+    assert_equal "Issue with auth token #{@issue.issue_auth_token} "\
+    "confirmed by User with auth token #{@user.user_auth_token}", body['message']
   end
 
   test 'unconfirm issue by auth user' do
@@ -83,7 +94,7 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
          headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
-    assert_equal"Doesn't exists record", body['message']
+    assert_equal'User not found', body['message']
   end
 
   test 'issue not found' do
@@ -91,6 +102,7 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
          headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
-    assert_equal"Doesn't exists record", body['message']
+    assert_equal'Issue not found', body['message']
   end
+
 end

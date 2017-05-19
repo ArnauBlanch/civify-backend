@@ -1,6 +1,8 @@
 # Issue controller class
 class IssuesController < ApplicationController
-  before_action :fetch_picture, only: [:create, :update]
+  before_action :fetch_picture, only: [:create, :update, :update_issue]
+  skip_before_action :authenticate_request, only: [:index_issues, :show_issue]
+  before_action :set_current_user, only: [:show_issue]
 
   def index
     set_user
@@ -18,10 +20,10 @@ class IssuesController < ApplicationController
     set_user
     @issue = @user.issues.build(issue_params)
     @issue.picture = @picture
-    @issue.resolved_votes = 0
-    @issue.save!
     @issue.current_user = current_user
-    json_response(@issue, :created)
+    @issue.save!
+    rewards = add_reward!(@user, COINS::ISSUE_CREATION, XP::ISSUE_CREATION)
+    json_response({ issue: @issue, rewards: rewards }, :created)
   end
 
   def update
@@ -68,8 +70,8 @@ class IssuesController < ApplicationController
 
   def issue_params
     params.permit(:title, :latitude, :longitude,
-                  :category, :picture, :description,
-                  :risk)
+                   :category, :picture, :description,
+                   :risk, :coins)
   end
 
   def set_user
@@ -94,6 +96,13 @@ class IssuesController < ApplicationController
     image_file.original_filename = image_data[:filename]
     image_file
   rescue
-    json_response({ error: 'Image bad format' }, :bad_request)
+    json_response({ message: 'Image bad format' }, :bad_request)
+  end
+
+  def set_current_user
+    auth_command = AuthorizeApiRequest.call(request.headers)
+    if auth_command.success?
+      @current_user = auth_command.result
+    end
   end
 end
