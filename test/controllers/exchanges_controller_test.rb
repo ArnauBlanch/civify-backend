@@ -1,24 +1,47 @@
 require 'test_helper'
 
 class ExchangesControllerTest < ActionDispatch::IntegrationTest
+
   def setup
-    setup_user
-    setup_award
+    award_price = 564
+    setup_user(coins: award_price)
+    setup_award(award_price)
   end
 
   test 'exchange award by auth user' do
+    balance = @user.coins
+    xp = @user.xp
     post "/awards/#{@award.award_auth_token}/exchange",
          headers: authorization_header(@password, @user.username)
     assert_response :ok
     assert @award.users_exchanging.exists?(@user.id)
     assert @user.exchanged_awards.exists?(@award.id)
+    @user.reload
+    assert_equal balance - @award.price, @user.coins
+    assert_equal xp + XP.exchange_reward(@award.price), @user.xp
+    rewards_hash = { 'coins' => -@award.price, 'xp' => XP.exchange_reward(@award.price) }
+    assert_equal rewards_hash, JSON.parse(response.body)['rewards']
+  end
+
+  test 'cannot exchange award without enough money' do
+    balance = @award.price - 1
+    @user.update!(coins: balance)
+    post "/awards/#{@award.award_auth_token}/exchange",
+         headers: authorization_header(@password, @user.username)
+    assert_response :unauthorized
+    assert_equal balance, @user.coins
+    body = JSON.parse(response.body)
+    assert_equal"You do not have enough coins (needed $#{@award.price} but have $#{balance})",
+                body['message']
   end
 
   test 'cant exchange award multiple times' do
-    post "/awards/#{@award.award_auth_token}/exchange",
+    post "/awards/#{@award.award_auth_token}/exchange?user_auth_token=#{@user.user_auth_token}",
          headers: authorization_header(@password, @user.username)
     assert_response :ok
-    post "/awards/#{@award.award_auth_token}/exchange",
+    @user.reload
+    @user.update!(coins: @award.price)
+    post "/awards/#{@award.award_auth_token}/exchange?user_auth_token=#{@user.user_auth_token}",
          headers: authorization_header(@password, @user.username)
     assert_response :bad_request
     body = JSON.parse(response.body)
