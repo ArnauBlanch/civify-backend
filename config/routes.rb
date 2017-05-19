@@ -20,9 +20,10 @@ Rails.application.routes.draw do
   resources :awards, param: :award_auth_token, only: [:show, :index, :update, :destroy] do
     member do
       resources :exchange, only: [:create], controller: 'exchanges'
-      resources :use, only: [:create], controller: 'uses'
     end
   end
+  
+  resources :use , param: :exchange_auth_token, only: [:create], controller: 'uses'
 
   post '/login', to: 'authentication#login'
   get '/me', to: 'authorized_request#me'
