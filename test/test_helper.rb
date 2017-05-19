@@ -28,12 +28,23 @@ class ActiveSupport::TestCase
   def setup_user(options = {})
     options[:username] ||= 'test'
     options[:kind] ||= :normal
+    options[:coins] ||= 0
     @password = '1234'
     @user = User.create(username: options[:username],
                         email: "#{options[:username]}@test.com",
-                        first_name: options[:username], last_name: options[:username], kind: options[:kind],
+                        first_name: options[:username], last_name: options[:username],
+                        kind: options[:kind], coins: options[:coins],
                         password: @password, password_confirmation: @password)
     assert @user.valid?
+
+    if options[:second_user]
+      @user2 = User.create(username: options[:username] + '2',
+                          email: "#{options[:username]}@test2.com",
+                          first_name: options[:username] + '2', last_name: options[:username],
+                          kind: options[:kind], coins: options[:coins],
+                          password: @password, password_confirmation: @password)
+      assert @user2.valid?
+    end
   end
 
   def setup_issue
@@ -45,10 +56,10 @@ class ActiveSupport::TestCase
     assert @issue.valid?
   end
 
-  def setup_award
+  def setup_award(price = 0)
     @picture = sample_file
     @award = @user.offered_awards.create!(title: 'award', description: 'desc',
-                                         picture: @picture, price: 564)
+                                         picture: @picture, price: price)
     assert @award.valid?
   end
 

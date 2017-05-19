@@ -8,9 +8,9 @@ class AwardsController < ApplicationController
   def index
     if params[:user_auth_token]
       set_user
-      json_response @user.offered_awards
+      json_response @user.offered_awards.where(visible: true)
     else
-      json_response Award.all
+      json_response Award.all.where(visible: true)
     end
   end
 

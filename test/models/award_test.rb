@@ -38,4 +38,14 @@ class AwardTest < ActiveSupport::TestCase
   test 'award is offered by the user' do
     assert_equal @user.to_json, @award.commerce_offering.to_json
   end
+
+  test 'award json contains number of times exchanged' do
+    @user.exchanged_awards << @award
+    @exchange = @user.exchanges.find_by!(award_id: @award.id)
+    @exchange.used = true
+    @exchange.save!
+    award_hash = JSON.parse @award.to_json
+    assert_equal 1, award_hash['num_exchanges']
+    assert_equal 1, award_hash['num_usages']
+  end
 end
