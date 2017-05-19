@@ -29,7 +29,7 @@ class UsesController < ApplicationController
 
   def set_exchange
     @exchange = Exchange.find_by(exchange_auth_token: params[:exchange_auth_token])
-    get_commerce
+    get_commerce if @exchange
     return true if @exchange and current_user.id == @commerce.id
     if !@exchange
       render json: { message: 'Exchange not found' }, status: :not_found
