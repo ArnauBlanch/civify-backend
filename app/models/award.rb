@@ -22,6 +22,8 @@ class Award < ApplicationRecord
                                          :picture_file_size,
                                          :picture_updated_at]))
       .merge(offered_by: commerce_offering.first_name)
+      .merge(num_exchanges: num_exchanges)
+      .merge(num_usages: num_usages)
       .merge(picture_hash)
   end
 
@@ -33,5 +35,15 @@ class Award < ApplicationRecord
                  small_url: picture.url(:small),
                  med_url: picture.url(:med),
                  large_url: picture.url(:original) } }
+  end
+
+  private
+
+  def num_exchanges
+    exchanges.size
+  end
+
+  def num_usages
+    exchanges.where(used: true).size
   end
 end
