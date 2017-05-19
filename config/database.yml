@@ -16,7 +16,7 @@ default: &default
   collation: utf8mb4_unicode_ci
   pool: 5
   username: root # change this to your local MySQL username
-  password: root # change this to your local MySQL password
+  password: ricard # change this to your local MySQL password
   host: localhost
 
 development:
