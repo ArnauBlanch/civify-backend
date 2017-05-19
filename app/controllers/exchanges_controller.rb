@@ -4,7 +4,7 @@ class ExchangesController < ApplicationController
   # GET /users/:user_auth_token/exchanged_awards
   def index
     set_user
-    json_response @user.exchanged_awards
+    json_response @user.exchanges
   end
 
   # POST /awards/:award_auth_token/exchange
