@@ -4,5 +4,9 @@ module RewardsConstants
   end
   class XP
     ISSUE_CREATION = 200
+
+    def self.exchange_reward(price)
+      100 * price
+    end
   end
 end

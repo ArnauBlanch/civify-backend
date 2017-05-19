@@ -70,8 +70,8 @@ class IssuesController < ApplicationController
 
   def issue_params
     params.permit(:title, :latitude, :longitude,
-                  :category, :picture, :description,
-                  :risk)
+                   :category, :picture, :description,
+                   :risk, :coins)
   end
 
   def set_user
