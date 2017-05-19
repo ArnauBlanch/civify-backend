@@ -24,9 +24,41 @@ class AuthorizeApiRequestTest < ActionDispatch::IntegrationTest
     assert_unauthorized_error 'Missing Authorization Token'
   end
 
+  test 'request trying to delete other user' do
+    other = @user
+    setup_user(username: 'self')
+    delete "/users/#{other.user_auth_token}",
+           headers: authorization_header(@password, @user.username)
+    assert_unauthorized_error 'Cannot update other users'
+  end
+
+  test 'request trying to delete other user being admin' do
+    other = @user
+    setup_user(username: 'self', kind: :admin)
+    delete "/users/#{other.user_auth_token}",
+           headers: authorization_header(@password, @user.username)
+    assert_response :success
+  end
+
+  test "request trying to update other's issue being admin" do
+    setup_issue
+    other_user = @user
+    other_issue = other_user.issues.first
+    setup_user(username: 'self', kind: :admin)
+    post "/users/#{other_user.user_auth_token}/issues",
+         headers: authorization_header(@password, @user.username)
+    assert response.code != '401'
+    patch "/issues/#{other_issue.issue_auth_token}",
+          headers: authorization_header(@password, @user.username)
+    assert response.code != '401'
+    delete "/users/#{other_user.user_auth_token}/issues/#{other_issue.issue_auth_token}",
+           headers: authorization_header(@password, @user.username)
+    assert response.code != '401'
+  end
+
   def assert_unauthorized_error(msg)
     assert_response :unauthorized
-    expected_response = { error: msg }.to_json
+    expected_response = { message: msg }.to_json
     assert_equal expected_response, response.body
   end
 end

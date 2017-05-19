@@ -1,6 +1,7 @@
 require 'test_helper'
 # Resolve controller test
 class ResolveControllerTest < ActionDispatch::IntegrationTest
+
   def setup
     setup_user
     setup_issue
@@ -33,6 +34,19 @@ class ResolveControllerTest < ActionDispatch::IntegrationTest
                  Issue.find_by(id: @issue.id).resolved_votes
   end
 
+  test "one user can resolve other's user issue" do
+    setup_user(username: 'self')
+    post "/issues/#{@issue.issue_auth_token}/resolve",
+         headers: authorization_header(@password, @user.username),
+         params: { user: @user.user_auth_token }, as: :json
+    assert_response :ok
+    body = JSON.parse(response.body)
+    assert_equal 'Resolution added', body['message']
+    assert @issue.resolutions.exists?(@user.id)
+    assert_equal @issue.resolved_votes + 1,
+                 Issue.find_by(id: @issue.id).resolved_votes
+  end
+
   # POST /issues/:issue_auth_token/resolve
   test 'issue not found' do
     post "/issues/1234/resolve?user=#{@user.user_auth_token}",
@@ -50,4 +64,20 @@ class ResolveControllerTest < ActionDispatch::IntegrationTest
     body = JSON.parse(response.body)
     assert_equal 'User not found', body['message']
   end
+
+##  test "Issue resolved automatically" do
+
+  #@issue.resolved_votes = (RESOLVE_IN - 1)
+   # setup_user(username: 'resolver')
+    #post "/issues/#{@issue.issue_auth_token}/resolve",
+     #    headers: authorization_header(@password, @user.username),
+     #    params: { user: @user.user_auth_token }, as: :json
+   # assert_response :ok
+   # body = JSON.parse(response.body)
+   # assert_equal 'Resolution added', body['message']
+   # assert @issue.resolutions.exists?(@user.id)
+   # assert_equal @issue.resolved_votes + 1,
+   #              Issue.find_by(id: @issue.id).resolved_votes
+   # aasert_equal @issue.resolved, true
+  #end
 end
