@@ -22,9 +22,15 @@ class UsesController < ApplicationController
             end
   end
 
+  def get_commerce
+    @award = Award.find_by_id! @exchange.award_id
+    @commerce = @award.commerce_offering
+  end
+
   def set_exchange
     @exchange = Exchange.find_by(exchange_auth_token: params[:exchange_auth_token])
-    return true if @exchange and @exchange.user_id == current_user.id
+    get_commerce
+    return true if @exchange and current_user.id == @commerce.id
     if !@exchange
       render json: { message: 'Exchange not found' }, status: :not_found
     else
