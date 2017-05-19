@@ -1,6 +1,6 @@
 class ExchangesController < ApplicationController
   skip_before_action :verify_award, only: :create
-  
+
   # GET /users/:user_auth_token/exchanged_awards
   def index
     set_user
@@ -11,8 +11,14 @@ class ExchangesController < ApplicationController
   def create
     set_user
     set_award_to_exchange
-    @user.exchanged_awards << @award
-    head :ok
+    if @user.coins < @award.price
+      render json: { message: "You do not have enough coins (needed $#{@award.price} but have $#{@user.coins})" },
+             status: :unauthorized
+    else
+      rewards = add_reward! @user, -@award.price, XP.exchange_reward(@award.price)
+      @user.exchanged_awards << @award
+      render json: { rewards: rewards }, status: :ok
+    end
   end
 
   private

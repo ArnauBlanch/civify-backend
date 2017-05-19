@@ -22,8 +22,8 @@ class ApplicationController < ActionController::API
     user.xp += xp
     user.save!
     rewards = {}
-    rewards[:coins] = coins if coins > 0
-    rewards[:xp] = xp if xp > 0
+    rewards[:coins] = coins if coins != 0
+    rewards[:xp] = xp if xp != 0
     rewards
   end
 end
