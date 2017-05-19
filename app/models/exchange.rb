@@ -3,6 +3,7 @@ class Exchange < ApplicationRecord
   belongs_to :user
   has_secure_token :exchange_auth_token
   validates_uniqueness_of :award_id, scope: :user_id
+  validates :exchange_auth_token, presence: true
 
   def as_json(options = nil)
     super(options.merge(except: [:id, :user_id, :award_id]))
