@@ -2,7 +2,6 @@ require 'test_helper'
 # Resolve controller test
 class ResolveControllerTest < ActionDispatch::IntegrationTest
 
-  RESOLVE_IN = 10
   def setup
     setup_user
     setup_issue
@@ -80,5 +79,5 @@ class ResolveControllerTest < ActionDispatch::IntegrationTest
    # assert_equal @issue.resolved_votes + 1,
    #              Issue.find_by(id: @issue.id).resolved_votes
    # aasert_equal @issue.resolved, true
-end
+  #end
 end
