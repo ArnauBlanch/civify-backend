@@ -6,9 +6,9 @@ class UsesController < ApplicationController
     if !@exchange.used
       @exchange.used = true
       @exchange.save!
-      head :ok
+      render json: { message: 'Exchange used' }, status: :ok
     else
-      render json: { message: 'User has already used this buyed award' }, status: :bad_request if @exchange.used
+      render json: { message: 'User has already used this buyed award' }, status: :unauthorized if @exchange.used
     end
   end
 
@@ -24,9 +24,12 @@ class UsesController < ApplicationController
 
   def set_exchange
     @exchange = Exchange.find_by(exchange_auth_token: params[:exchange_auth_token])
-    return true if @exchange
-    render json: { message: 'Exchange not found' }, status: :not_found
+    return true if @exchange and @exchange.user_id == current_user.id
+    if !@exchange
+      render json: { message: 'Exchange not found' }, status: :not_found
+    else
+      render json: { message: "This award doesn't belong to this commerce" }, status: :unauthorized
+    end
     false
   end
-
 end

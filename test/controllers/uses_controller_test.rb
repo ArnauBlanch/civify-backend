@@ -2,7 +2,7 @@ require 'test_helper'
 
 class UsesControllerTest < ActionDispatch::IntegrationTest
   def setup
-    setup_user
+    setup_user second_user: true
     setup_award
     @user.exchanged_awards << @award
     @exchange = @user.exchanges.find_by!(award_id: @award.id)
@@ -16,6 +16,13 @@ class UsesControllerTest < ActionDispatch::IntegrationTest
     assert @exchange.used
   end
 
+  test "can't use an award of a different commerce" do
+    post "/use?exchange_auth_token=#{@exchange.exchange_auth_token}",
+         headers: authorization_header(@password, @user2.username)
+    assert_response :unauthorized
+    assert_not @exchange.used
+  end
+
   test 'award already used' do
     post "/use?exchange_auth_token=#{@exchange.exchange_auth_token}",
          headers: authorization_header(@password, @user.username)
@@ -23,7 +30,7 @@ class UsesControllerTest < ActionDispatch::IntegrationTest
     post "/use?exchange_auth_token=#{@exchange.exchange_auth_token}",
          headers: authorization_header(@password, @user.username)
     body = JSON.parse(response.body)
-    assert_response :bad_request
+    assert_response :unauthorized
     assert_equal 'User has already used this buyed award', body['message']
   end
 
