@@ -67,7 +67,8 @@ class ResolveControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "Issue resolved automatically" do
-    @issue.update(resolved_votes: RESOLVE_IN - 1)
+    old_votes = RESOLVE_IN - 1
+    @issue.update(resolved_votes: old_votes)
     setup_user(username: 'resolver')
     post "/issues/#{@issue.issue_auth_token}/resolve",
          headers: authorization_header(@password, @user.username),
@@ -77,7 +78,7 @@ class ResolveControllerTest < ActionDispatch::IntegrationTest
     body = JSON.parse(response.body)
     assert_equal 'Resolution added', body['message']
     assert @issue.resolutions.exists?(@user.id)
-    assert_equal @issue.resolved_votes + 1,
+    assert_equal old_votes + 1,
                  Issue.find_by(id: @issue.id).resolved_votes
     assert_equal true, @issue.resolved
   end

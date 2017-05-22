@@ -6,7 +6,7 @@ class ResolveController < ApplicationController
 
   # POST /issues/:issue_auth_token/resolve
   def create
-    if @issue.resolutions.exists?(@user)
+    if @issue.resolutions.exists?(@user.id)
       @issue.resolutions.delete(@user)
       @issue.resolved_votes -= 1
       @issue.save

@@ -104,49 +104,19 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_equal'Issue not found', body['message']
   end
 
-  test 'report issue by user param' do
-    setup_user(username: 'rep1')
-    post "/issues/#{@issue.issue_auth_token}/report",
-         headers: authorization_header(@password, @user.username)
-    assert_response :ok
-    setup_user(username: 'rep2')
-    post "/issues/#{@issue.issue_auth_token}/report",
-         headers: authorization_header(@password, @user.username)
-    assert_response :ok
-    setup_user(username: 'rep3')
-    post "/issues/#{@issue.issue_auth_token}/report",
-         headers: authorization_header(@password, @user.username)
-    assert_response :ok
-    setup_user(username: 'rep4')
-    post "/issues/#{@issue.issue_auth_token}/report",
-         headers: authorization_header(@password, @user.username)
-    assert_response :ok
-    setup_user(username: 'rep5')
-    post "/issues/#{@issue.issue_auth_token}/report",
-         headers: authorization_header(@password, @user.username)
-    assert_response :ok
-    setup_user(username: 'rep6')
-    post "/issues/#{@issue.issue_auth_token}/report",
-         headers: authorization_header(@password, @user.username)
-    assert_response :ok
-    setup_user(username: 'rep7')
-    post "/issues/#{@issue.issue_auth_token}/report",
-         headers: authorization_header(@password, @user.username)
-    assert_response :ok
-    setup_user(username: 'rep8')
-    post "/issues/#{@issue.issue_auth_token}/report",
-         headers: authorization_header(@password, @user.username)
-    assert_response :ok
-    setup_user(username: 'rep9')
-    post "/issues/#{@issue.issue_auth_token}/report",
-         headers: authorization_header(@password, @user.username)
-    assert_response :ok
-    setup_user(username: 'rep10')
-    post "/issues/#{@issue.issue_auth_token}/report",
-         headers: authorization_header(@password, @user.username)
-    assert_response :ok
+  test 'reported issue 10 times deletes issue' do
+    report10times
     get "/issues/#{@issue.issue_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :not_found
+  end
+
+  def report10times
+    (1..10).each do |i|
+      setup_user(username: "rep#{i}")
+      post "/issues/#{@issue.issue_auth_token}/report",
+           headers: authorization_header(@password, @user.username)
+      assert_response :ok
+    end
   end
 end
