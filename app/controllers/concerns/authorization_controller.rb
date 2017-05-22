@@ -27,7 +27,11 @@ module AuthorizationController
   def verify_issue_auth
     issue_auth_token = params[:issue_auth_token]
     return unless issue_auth_token
-    issue = Issue.find_by_issue_auth_token(issue_auth_token)
+    issue = if params[:user_auth_token] # and it's verified that exists (checked by before_action left-to-right order)
+              User.find_by_user_auth_token!(params[:user_auth_token]).issues.find_by_issue_auth_token(issue_auth_token)
+            else
+              Issue.find_by_issue_auth_token(issue_auth_token)
+            end
     return unless check_issue_exists(issue)
     return unless @current_user
     return unless @verify_issue
