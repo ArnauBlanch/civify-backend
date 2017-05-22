@@ -58,7 +58,6 @@ class UsersController < ApplicationController
 
   def set_user
     @user = User.find_by(user_auth_token: params[:user_auth_token])
-    render json: { message: 'User not found' }, status: :not_found if @user.nil?
   end
 
   def json_exclude
