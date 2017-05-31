@@ -10,4 +10,8 @@ class Achievement < ApplicationRecord
   validates :coins, presence: true
   validates :xp, presence: true
   validates_uniqueness_of :number, scope: :kind
+
+  def as_json(options = {})
+    super(options.reverse_merge(except: [:id, :updated_at]))
+  end
 end
