@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :reports, dependent: :destroy
   has_many :reported_issues, through: :reports, source: :issue
   enum kind: [:normal, :business, :admin]
+  validates :kind, presence: true, inclusion: {in: kinds.keys}
   validates :username, presence: true, uniqueness: { case_sensitive: false }
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :first_name, presence: true

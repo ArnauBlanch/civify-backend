@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531180136) do
+ActiveRecord::Schema.define(version: 20170531181852) do
 
   create_table "achievements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
@@ -50,6 +50,25 @@ ActiveRecord::Schema.define(version: 20170531180136) do
     t.index ["issue_id", "user_id"], name: "index_confirmations_on_issue_id_and_user_id", unique: true, using: :btree
     t.index ["issue_id"], name: "index_confirmations_on_issue_id", using: :btree
     t.index ["user_id"], name: "index_confirmations_on_user_id", using: :btree
+  end
+
+  create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "title"
+    t.string   "description"
+    t.integer  "number"
+    t.integer  "coins"
+    t.integer  "xp"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.integer  "kind"
+    t.string   "event_token"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.index ["event_token"], name: "index_events_on_event_token", unique: true, using: :btree
   end
 
   create_table "exchanges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

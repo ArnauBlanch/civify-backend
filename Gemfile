@@ -34,6 +34,10 @@ gem 'simple_command'
 # cross-origin AJAX possible
 gem 'rack-cors'
 
+# validates :data, :date: options
+gem 'date_validator'
+
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger
   # console
