@@ -69,6 +69,12 @@ class ActiveSupport::TestCase
     assert @event.valid?
   end
 
+  def setup_achievement()
+    @achievement = Achievement.create(title: 'Title', description:
+        'Description', number: 1, kind: :issue, coins: 10, xp: 100)
+    @achievement.valid?
+  end
+
   def sample_file(filename = 'image.gif')
     File.new("test/fixtures/#{filename}")
   end
