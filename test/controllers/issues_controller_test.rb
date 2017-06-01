@@ -158,7 +158,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     }, headers: authorization_header(@password, @user.username)
     assert_response :bad_request
     body = JSON.parse(response.body)
-    assert_equal 'Image bad format', body['message']
+    assert_equal 'Invalid attachment', body['message']
   end
 
   test 'get user issue obtains confirmed by authenticated user' do

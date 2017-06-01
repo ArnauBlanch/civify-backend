@@ -1,5 +1,6 @@
 # Awards controller class
 class AwardsController < ApplicationController
+  include Xattachable
   before_action :fetch_picture, only: [:create, :update]
   before_action :check_business_or_admin, except: [:index, :show]
 
@@ -49,19 +50,6 @@ class AwardsController < ApplicationController
 
   def award_params
     params.permit(:title, :description, :price, :picture)
-  end
-
-  def fetch_picture
-    @picture = parse_image_data(params[:picture]) if params[:picture]
-  end
-
-  def parse_image_data(image_data)
-    content_type = image_data[:content_type]
-    image_file = Paperclip.io_adapters.for("data:#{content_type};base64,#{image_data[:content]}")
-    image_file.original_filename = image_data[:filename]
-    image_file
-  rescue
-    json_response({ message: 'Image bad format' }, :bad_request)
   end
 
   def set_user
