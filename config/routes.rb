@@ -28,6 +28,9 @@ Rails.application.routes.draw do
   # Achievements
   resources :achievements
 
+  # Events
+  resources :events
+
   post '/login', to: 'authentication#login'
   get '/me', to: 'authorized_request#me'
   get '/issues', to: 'issues#index_issues'

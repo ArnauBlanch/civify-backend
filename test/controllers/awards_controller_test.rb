@@ -39,6 +39,16 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Validation failed: Title can't be blank", body['message']
   end
 
+  test 'create commerce offered award invalid request no image' do
+    post "/users/#{@user.user_auth_token}/offered_awards", params: {
+        description: 'desc',
+        price: 564, title: 'turtle'
+    }, headers: authorization_header(@password, @user.username)
+    assert_response :bad_request
+    body = JSON.parse(response.body)
+    assert_equal "Validation failed: Picture can't be blank", body['message']
+  end
+
 
   test 'get award' do
     get "/awards/#{@award.award_auth_token}",
@@ -88,7 +98,7 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
     }, headers: authorization_header(@password, @user.username)
     assert_response :bad_request
     body = JSON.parse(response.body)
-    assert_equal 'Image bad format', body['message']
+    assert_equal 'Invalid attachment', body['message']
   end
 
   test 'normal users cannot manage awards' do

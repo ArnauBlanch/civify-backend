@@ -1,5 +1,6 @@
 # Issue controller class
 class IssuesController < ApplicationController
+  include Xattachable
   before_action :fetch_picture, only: [:create, :update, :update_issue]
   skip_before_action :authenticate_request, only: [:index_issues, :show_issue]
   before_action :set_current_user, only: [:show_issue]
@@ -84,19 +85,6 @@ class IssuesController < ApplicationController
 
   def set_issue
     @issue = Issue.find_by!(issue_auth_token: params[:issue_auth_token])
-  end
-
-  def fetch_picture
-    @picture = parse_image_data(params[:picture]) if params[:picture]
-  end
-
-  def parse_image_data(image_data)
-    content_type = image_data[:content_type]
-    image_file = Paperclip.io_adapters.for("data:#{content_type};base64,#{image_data[:content]}")
-    image_file.original_filename = image_data[:filename]
-    image_file
-  rescue
-    json_response({ message: 'Image bad format' }, :bad_request)
   end
 
   def set_current_user
