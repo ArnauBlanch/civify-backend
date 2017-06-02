@@ -31,9 +31,9 @@ class ApplicationController < ActionController::API
     if object.save
       render json: object, status: status
     else
-      render json: { errors: object.errors.full_messages }, status: :bad_request
+      render json: { message: object.errors.full_messages[0] }, status: :bad_request
     end
   rescue => e
-    render json: { errors: e.message }, status: :bad_request
+    render json: { message: e.message }, status: :bad_request
   end
 end

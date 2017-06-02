@@ -13,9 +13,9 @@ module AuthorizationController
     end
   end
 
-  def needs_admin
+  def needs_admin(message = 'You are not allowed to perform this action')
     return unless @current_user
-    render json: { message: 'You are not allowed to perform this action' }, status: :unauthorized unless @current_user.admin?
+    render json: { message: message }, status: :unauthorized unless @current_user.admin?
   end
 
   def verify_user_auth
