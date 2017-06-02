@@ -22,14 +22,14 @@ Rails.application.routes.draw do
       resources :exchange, only: [:create], controller: 'exchanges'
     end
   end
-  
+
   resources :use, param: :exchange_auth_token, only: [:create], controller: 'uses'
 
   # Achievements
-  resources :achievements
+  resources :achievements, param: :achievement_token
 
   # Events
-  resources :events
+  resources :events, param: :event_token
 
   post '/login', to: 'authentication#login'
   get '/me', to: 'authorized_request#me'

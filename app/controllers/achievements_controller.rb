@@ -1,13 +1,8 @@
 class AchievementsController < ApplicationController
-  skip_before_action :authenticate_request
+  before_action :needs_admin, except: [:show, :index]
 
   def create
-    @achievement = Achievement.new(achievement_params)
-    if @achievement.save
-      render json: @achievement, status: :created
-    else
-      render json: { message: 'Achievement not created' }, status: :bad_request
-    end
+    save_render(Achievement.new(achievement_params), :created)
   end
 
   private
