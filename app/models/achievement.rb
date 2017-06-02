@@ -3,6 +3,10 @@ class Achievement < ApplicationRecord
   enum kind: [:issue, :confirm, :resolve, :reward, :use, :confirm_received,
               :resolve_received, :coins_spent, :issue_resolved, :level]
 
+  # Users
+  has_many :achievement_progresses
+  has_many :users, through: :achievement_progresses
+
   validates :title, presence: true
   validates :description, presence: true
   validates :number, presence: true
