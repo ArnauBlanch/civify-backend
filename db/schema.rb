@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170602161214) do
+ActiveRecord::Schema.define(version: 20170602173635) do
+
+  create_table "achievement_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "achievement_id"
+    t.integer  "progress",       default: 0
+    t.boolean  "completed",      default: false
+    t.boolean  "claimed",        default: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.index ["achievement_id"], name: "index_achievement_progresses_on_achievement_id", using: :btree
+    t.index ["user_id"], name: "index_achievement_progresses_on_user_id", using: :btree
+  end
 
   create_table "achievements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
