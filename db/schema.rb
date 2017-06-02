@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531181852) do
+ActiveRecord::Schema.define(version: 20170602161214) do
 
   create_table "achievements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
@@ -19,9 +19,10 @@ ActiveRecord::Schema.define(version: 20170531181852) do
     t.integer  "kind"
     t.integer  "coins"
     t.integer  "xp"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.string   "achievement_token"
+    t.boolean  "enabled",           default: true
     t.index ["achievement_token"], name: "index_achievements_on_achievement_token", unique: true, using: :btree
   end
 
