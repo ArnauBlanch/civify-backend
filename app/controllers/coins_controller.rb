@@ -1,5 +1,6 @@
 class CoinsController < ApplicationController
-  before_action :needs_admin, :set_user
+  before_action -> { needs_admin('Cannot give money to yourself') }
+  before_action :set_user
 
   # POST /users/:user_auth_token/coins
   def create
