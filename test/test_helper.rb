@@ -64,8 +64,8 @@ class ActiveSupport::TestCase
 
   def setup_event
     @event = Event.create(title: 'title', description: 'desc', number: 288, coins: 288,
-                  xp: 288, kind: :confirm,  image: sample_file, start_date: '2017-5-12',
-                  end_date: '2017-5-12')
+                  xp: 288, kind: :confirm,  image: sample_file, start_date: '17-5-12 00:00:00',
+                  end_date: '17-5-12 00:00:01')
     assert @event.valid?
   end
 
