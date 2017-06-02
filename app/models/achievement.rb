@@ -15,7 +15,16 @@ class Achievement < ApplicationRecord
   validates :xp, presence: true
   validates_uniqueness_of :number, scope: :kind
 
+  attr_accessor :current_user
+
   def as_json(options = {})
     super(options.reverse_merge(except: [:id, :updated_at]))
+      .merge(progress: current_user_progress)
+  end
+
+  private
+
+  def current_user_progress
+    achievement_progresses.find_by(user_id: current_user.id).progress
   end
 end

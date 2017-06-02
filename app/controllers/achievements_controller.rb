@@ -1,11 +1,18 @@
 class AchievementsController < ApplicationController
   before_action :needs_admin, except: [:show, :index]
-  skip_before_action :authenticate_request
 
   def create
     a = Achievement.new(achievement_params)
     save_render(a, :created)
     create_achievement_progresses(a) if a.valid?
+  end
+
+  def index
+    achievements = Achievement.all
+    achievements.each do |a|
+      a.current_user = current_user
+    end
+    render json: achievements, status: :ok
   end
 
   private
