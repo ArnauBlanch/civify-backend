@@ -19,9 +19,10 @@ ActiveRecord::Schema.define(version: 20170602163943) do
     t.integer  "kind"
     t.integer  "coins"
     t.integer  "xp"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.string   "achievement_token"
+    t.boolean  "enabled",           default: true
     t.index ["achievement_token"], name: "index_achievements_on_achievement_token", unique: true, using: :btree
   end
 
