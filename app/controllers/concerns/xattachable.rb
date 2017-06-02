@@ -1,4 +1,3 @@
-# attachable.rb name transforms into plain text (?)
 module Xattachable
   extend ActiveSupport::Concern
   def fetch_picture

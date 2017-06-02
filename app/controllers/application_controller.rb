@@ -26,4 +26,14 @@ class ApplicationController < ActionController::API
     rewards[:xp] = xp if xp != 0
     rewards
   end
+
+  def save_render(object, status = :ok)
+    if object.save
+      render json: object, status: status
+    else
+      render json: { errors: object.errors.full_messages }, status: :bad_request
+    end
+  rescue => e
+    render json: { errors: e.message }, status: :bad_request
+  end
 end
