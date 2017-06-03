@@ -17,4 +17,23 @@ class Event < ApplicationRecord
   enum kind: [:issue, :confirm, :resolve]
   validates :kind, presence: true, inclusion: {in: kinds.keys}
 
+  def as_json(options = nil)
+    json = super(options.reverse_merge(except: [:id, :user_id, :image_file_name,
+                                                :image_content_type,
+                                                :image_file_size,
+                                                :image_updated_at]))
+               .merge(picture_hash)
+    json
+  end
+
+  def picture_hash
+    { picture: { file_name: image_file_name,
+                 content_type: image_content_type,
+                 file_size: image_file_size,
+                 updated_at: image_updated_at,
+                 small_url: image.url(:small),
+                 med_url: image.url(:med),
+                 large_url: image.url(:original) } }
+  end
+
 end
