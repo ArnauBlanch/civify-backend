@@ -10,11 +10,11 @@ class AchievementsController < ApplicationController
   end
 
   def index
-    render json: Achievement.all, status: :ok
+    render_from Achievement.all
   end
 
   def show
-    render json: @achievement, status: :ok unless @achievement.nil?
+    render_from @achievement unless @achievement.nil?
   end
 
   private
