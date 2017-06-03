@@ -24,6 +24,7 @@ class UsersController < ApplicationController
       render json: { message: 'Admin users cannot be created this way for security reasons' }, status: :unauthorized
     else
       create_user request_params
+      create_event_progress unless @user.kind == :business
     end
   end
 
@@ -62,5 +63,9 @@ class UsersController < ApplicationController
 
   def json_exclude
     [:id, :password_digest, :email, :created_at, :updated_at]
+  end
+
+  def create_event_progress
+    @user.events_in_progress << Event.all
   end
 end

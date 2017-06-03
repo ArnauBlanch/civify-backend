@@ -8,6 +8,8 @@ class User < ApplicationRecord
   has_many :confirmed_issues, through: :confirmations, source: :issue
   has_many :reports, dependent: :destroy
   has_many :reported_issues, through: :reports, source: :issue
+  has_many :event_progresses, dependent: :destroy
+  has_many :events_in_progress, through: :event_progresses, source: :event
   enum kind: [:normal, :business, :admin]
   validates :kind, presence: true, inclusion: {in: kinds.keys}
   validates :username, presence: true, uniqueness: { case_sensitive: false }
