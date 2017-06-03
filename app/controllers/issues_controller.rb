@@ -40,7 +40,7 @@ class IssuesController < ApplicationController
   end
 
   def index_issues
-    render_from Issue.all
+    render_from filter_issues(Issue.all)
   end
 
   def show_issue
@@ -86,5 +86,16 @@ class IssuesController < ApplicationController
     if auth_command.success?
       @current_user = auth_command.result
     end
+  end
+
+  def filter_issues(issues)
+    issues = issues.where(category: params[:category]) if params.key?('category')
+    issues = issues.where(resolved: params[:resolved] == 'true') if params.key?('resolved')
+    issues = issues.where(risk: params[:risk] == 'true') if params.key?('risk')
+    issues = issues.where('latitude <= ?', params[:lat_max].to_f) if params.key?('lat_max')
+    issues = issues.where('longitude <= ?', params[:lon_max].to_f) if params.key?('lon_max')
+    issues = issues.where('latitude >= ?', params[:lat_min].to_f) if params.key?('lat_min')
+    issues = issues.where('longitude >= ?', params[:lon_min].to_f) if params.key?('lon_min')
+    issues
   end
 end
