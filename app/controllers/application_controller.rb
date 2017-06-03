@@ -61,6 +61,7 @@ class ApplicationController < ActionController::API
   # xp: 0
   def save!(object, options = {})
     object.save!
+    check_attach!(object, options)
     apply(options)
   end
 
@@ -77,6 +78,7 @@ class ApplicationController < ActionController::API
   # xp: 0
   def update!(object, fields, options = {})
     object.update!(fields)
+    check_attach!(object, options)
     apply(options)
   end
 
