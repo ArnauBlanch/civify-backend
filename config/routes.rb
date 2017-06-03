@@ -36,8 +36,7 @@ Rails.application.routes.draw do
   resources :events, param: :event_token
 
   # New achievements/events
-  resources :new_achievements_events, only: [:index], controller:
-      'new_achievements_events'
+  resources :new_achievements_events, only: [:index], controller: 'new_achievements_events'
 
   post '/login', to: 'authentication#login'
   get '/me', to: 'authorized_request#me'

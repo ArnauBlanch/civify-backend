@@ -74,4 +74,58 @@ class ActiveSupport::TestCase
     content = Base64.strict_encode64(File.binread sample_file)
     { filename: 'image.gif', content: content, content_type: 'image/gif' }
   end
+
+  def setup_reward(user = @user)
+    user.update!(coins: 2, xp: 30)
+    @before_reward_user = user.dup
+  end
+
+  def assert_reward(exp_coins, exp_xp, user = @user)
+    assert_reward_no_body(exp_coins, exp_xp, user)
+    assert_response_body({ coins: exp_coins, xp: exp_xp }, :rewards)
+  end
+
+  def assert_reward_no_body(exp_coins, exp_xp, user = @user)
+    user.reload
+    assert_equal @before_reward_user.coins + exp_coins, user.coins
+    assert_equal @before_reward_user.xp + exp_xp, user.xp
+  end
+
+  def assert_reward_not_given
+    assert_reward_no_body(0, 0)
+    assert_not response_body_has_key?(:rewards)
+  end
+
+  # Example usage after setup_user plus call to GET /user/#{@user.user_auth_token}:
+  # assert_response_body(:normal, response, :kind)
+  # Example usage after call to POST /issues
+  # assert_response_body(COINS::ISSUE_CREATION, response, [:rewards, :coins])
+  # DO NOT DO .to_json on exp parameter
+  # You can compare hashes if needed (even with the entire body without providing any key)
+  def assert_response_body(exp, keys = [])
+    return unless response
+    act = find_in_path(JSON.parse(response.body), keys)
+    assert_equal exp.to_json, act.to_json
+  end
+
+  def assert_response_body_message(exp)
+    assert_response_body exp, :message
+  end
+
+  def response_body_has_key?(keys = [])
+    return false unless response
+    act = find_in_path(JSON.parse(response.body), keys)
+    !act.nil?
+  end
+
+  private
+
+  def find_in_path(source, keys = [])
+    keys = [keys] unless keys.is_a?(Array)
+    keys.each do |key|
+      source = source[key.to_s]
+    end
+    source
+  end
+
 end
