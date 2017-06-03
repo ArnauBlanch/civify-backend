@@ -7,11 +7,11 @@ require 'rails/test_help'
 
 class ActiveSupport::TestCase
   include RewardsConstants
-  # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical
-  # order.
+  # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
-  # Add more helper methods to be used by all tests here...
+  # Add more helper methods to be used by all tests here
+
   def auth_token(password, username)
     auth_user = AuthenticateUser.call password, username
     assert auth_user.success?
@@ -24,7 +24,7 @@ class ActiveSupport::TestCase
 
   attr_reader :user, :password
 
-  # options = { username = 'test', kind: :normal }
+  # options = { username: 'test', kind: :normal }
   def setup_user(options = {})
     options[:username] ||= 'test'
     options[:kind] ||= :normal
@@ -36,15 +36,6 @@ class ActiveSupport::TestCase
                         kind: options[:kind], coins: options[:coins],
                         password: @password, password_confirmation: @password)
     assert @user.valid?
-
-    if options[:second_user]
-      @user2 = User.create(username: options[:username] + '2',
-                          email: "#{options[:username]}@test2.com",
-                          first_name: options[:username] + '2', last_name: options[:username],
-                          kind: options[:kind], coins: options[:coins],
-                          password: @password, password_confirmation: @password)
-      assert @user2.valid?
-    end
   end
 
   def setup_issue
@@ -69,7 +60,7 @@ class ActiveSupport::TestCase
     assert @event.valid?
   end
 
-  def setup_achievement()
+  def setup_achievement
     @achievement = Achievement.create(title: 'Title', description:
         'Description', number: 1, kind: :issue, coins: 10, xp: 100)
     @achievement.valid?

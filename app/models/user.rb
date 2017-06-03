@@ -8,6 +8,9 @@ class User < ApplicationRecord
   has_many :confirmed_issues, through: :confirmations, source: :issue
   has_many :reports, dependent: :destroy
   has_many :reported_issues, through: :reports, source: :issue
+  has_many :achievement_progresses, dependent: :destroy
+  has_many :achievements_in_progress, through: :achievement_progresses,
+                                      source: :achievement
   has_many :event_progresses, dependent: :destroy
   has_many :events_in_progress, through: :event_progresses, source: :event
   enum kind: [:normal, :business, :admin]
@@ -47,7 +50,7 @@ class User < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.reverse_merge(except: [:id, :password_digest, :updated_at, :xp]))
+    super(options.reverse_merge(except: [:id, :password_digest, :xp]))
       .merge(lv: level)
       .merge(xp: current_xp)
       .merge(xp_max: max_xp)
