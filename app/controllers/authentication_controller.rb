@@ -10,7 +10,7 @@ class AuthenticationController < ApplicationController
     )
 
     if auth_command.success?
-      render json: { auth_token: auth_command.result }
+      render_from(auth_token: auth_command.result)
     else
       render_login_error auth_command.errors
     end
@@ -24,6 +24,6 @@ class AuthenticationController < ApplicationController
                    else
                      :bad_request
                    end
-    render json: { message: errors.values[0].first }, status: error_status
+    render_from(message: errors.values[0].first, status: error_status)
   end
 end

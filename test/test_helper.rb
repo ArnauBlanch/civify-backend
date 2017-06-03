@@ -24,7 +24,7 @@ class ActiveSupport::TestCase
 
   attr_reader :user, :password
 
-  # options = { username = 'test', kind: :normal }
+  # options = { username: 'test', kind: :normal }
   def setup_user(options = {})
     options[:username] ||= 'test'
     options[:kind] ||= :normal
@@ -36,15 +36,6 @@ class ActiveSupport::TestCase
                         kind: options[:kind], coins: options[:coins],
                         password: @password, password_confirmation: @password)
     assert @user.valid?
-
-    if options[:second_user]
-      @user2 = User.create(username: options[:username] + '2',
-                          email: "#{options[:username]}@test2.com",
-                          first_name: options[:username] + '2', last_name: options[:username],
-                          kind: options[:kind], coins: options[:coins],
-                          password: @password, password_confirmation: @password)
-      assert @user2.valid?
-    end
   end
 
   def setup_issue

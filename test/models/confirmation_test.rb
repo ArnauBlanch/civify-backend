@@ -2,7 +2,10 @@ require 'test_helper'
 
 class ConfirmationTest < ActiveSupport::TestCase
   def setup
-    setup_user second_user: true
+    setup_user
+    user1 = @user
+    setup_user username: '2'
+    @user2 = user1
     setup_issue
     @another_issue = @user2.issues.create!(title: 'anotherissue',
                                                  latitude: 76.4,

@@ -45,7 +45,7 @@ class User < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.reverse_merge(except: [:id, :password_digest, :updated_at, :xp]))
+    super(options.reverse_merge(except: [:id, :password_digest, :xp]))
       .merge(lv: level)
       .merge(xp: current_xp)
       .merge(xp_max: max_xp)

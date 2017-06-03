@@ -6,7 +6,7 @@ class EventsController < ApplicationController
   def create
     @event = Event.new(event_params)
     @event.image = @picture
-    save_render(@event, :created)
+    save_render! @event
   end
 
   def event_params

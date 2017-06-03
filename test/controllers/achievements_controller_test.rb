@@ -18,8 +18,8 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil Achievement.find_by(number: 5, kind: :issue)
   end
 
-  test 'Achievements are created only by admins' do
-    @user.update kind: :normal
+  test 'achievements are created only by admins' do
+    @user.update! kind: :normal
     create_achievement
     assert_response :unauthorized
     assert_not Achievement.find_by(number: 5, kind: :issue)
