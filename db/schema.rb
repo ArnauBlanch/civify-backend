@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531181852) do
+ActiveRecord::Schema.define(version: 20170602163943) do
 
   create_table "achievements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
@@ -19,9 +19,10 @@ ActiveRecord::Schema.define(version: 20170531181852) do
     t.integer  "kind"
     t.integer  "coins"
     t.integer  "xp"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.string   "achievement_token"
+    t.boolean  "enabled",           default: true
     t.index ["achievement_token"], name: "index_achievements_on_achievement_token", unique: true, using: :btree
   end
 
@@ -55,19 +56,20 @@ ActiveRecord::Schema.define(version: 20170531181852) do
   create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.string   "description"
-    t.datetime "start_date"
-    t.datetime "end_date"
     t.integer  "number"
     t.integer  "coins"
     t.integer  "xp"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
     t.integer  "kind"
     t.string   "event_token"
     t.string   "image_file_name"
     t.string   "image_content_type"
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.boolean  "enabled",            default: true
     t.index ["event_token"], name: "index_events_on_event_token", unique: true, using: :btree
   end
 
