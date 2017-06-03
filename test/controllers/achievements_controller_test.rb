@@ -18,6 +18,7 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
     achievement = Achievement.find_by(number: 5, kind: :issue)
     assert_not_nil achievement
     assert_equal achievement.to_json, response.body
+    assert 1, @user.achievement_progresses.size
   end
 
   test 'achievements are created only by admins' do
