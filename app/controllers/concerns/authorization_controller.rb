@@ -1,4 +1,5 @@
 module AuthorizationController
+  include RenderUtils
 
   attr_reader :current_user
 
@@ -7,7 +8,7 @@ module AuthorizationController
     if auth_command.success?
       @current_user = auth_command.result
     else
-      render json: { message: auth_command.errors.values[0].first }, status: :unauthorized
+      render_from(message: auth_command.errors.values[0].first, status: :unauthorized)
     end
   end
 
@@ -27,7 +28,7 @@ module AuthorizationController
   end
 
   def unauthorize(message, condition = true)
-    render json: { message: message }, status: :unauthorized if condition
+    render_from(message: message, status: :unauthorized) if condition
   end
 
   def verify_user_auth
@@ -73,19 +74,19 @@ module AuthorizationController
 
   def check_user_exists(user)
     return true if user
-    render json: { message: 'User not found' }, status: :not_found
+    render_from(message: 'User not found', status: :not_found)
     false
   end
 
   def check_issue_exists(issue)
     return true if issue
-    render json: { message: 'Issue not found' }, status: :not_found
+    render_from(message: 'Issue not found', status: :not_found)
     false
   end
 
   def check_award_exists(award)
     return true if award
-    render json: { message: 'Award not found' }, status: :not_found
+    render_from(message: 'Award not found', status: :not_found)
     false
   end
 

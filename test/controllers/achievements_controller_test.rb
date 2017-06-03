@@ -15,7 +15,9 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
   test 'create achievement' do
     create_achievement
     assert_response :created
-    assert_not_nil Achievement.find_by(number: 5, kind: :issue)
+    achievement = Achievement.find_by(number: 5, kind: :issue)
+    assert_not_nil achievement
+    assert_equal achievement.to_json, response.body
     assert 1, @user.achievement_progresses.size
   end
 
@@ -27,18 +29,17 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'get achievements' do
-    setup_achievement
-    get '/achievements', headers: authorization_header(@password,
-                                                       @user.username)
+    get '/achievements', headers: authorization_header(@password, @user.username)
     assert_response :ok
+    assert_equal Achievement.all.to_json, response.body
   end
 
   test 'get one achievement' do
     setup_achievement
     get "/achievements/#{@achievement.achievement_token}",
-        headers: authorization_header(@password,
-                                      @user.username)
+        headers: authorization_header(@password, @user.username)
     assert_response :ok
+    assert_equal @achievement.to_json, response.body
   end
 
   test 'get achievements unauthorized' do
@@ -57,10 +58,9 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'get one achievement not found' do
-    get '/achievements/1', headers: authorization_header(@password,
-                                                         @user.username)
+    get '/achievements/1', headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
-    assert_equal 'Achievement does not exist', body['message']
+    assert_equal 'Achievement does not exists', body['message']
   end
 end

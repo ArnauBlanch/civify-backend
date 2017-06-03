@@ -14,14 +14,13 @@ class AchievementsController < ApplicationController
   end
 
   def show
-    render_from @achievement unless @achievement.nil?
+    render_from @achievement
   end
 
   private
 
   def achievement_params
-    params.permit(:title, :description, :number, :kind, :coins, :xp,
-                  :enabled)
+    params.permit(:title, :description, :number, :kind, :coins, :xp, :enabled)
   end
 
   def create_achievement_progresses(achievement)
@@ -31,11 +30,8 @@ class AchievementsController < ApplicationController
   end
 
   def set_achievement
-    @achievement = Achievement.find_by(achievement_token:
-                                           params[:achievement_token])
-    if @achievement.nil?
-      render json: { message: 'Achievement does not exist' }, status: :not_found
-    end
+    @achievement = Achievement.find_by(achievement_token: params[:achievement_token])
+    render_from message: 'Achievement does not exists', status: :not_found unless @achievement
   end
 
   def set_current_user
