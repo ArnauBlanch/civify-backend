@@ -13,7 +13,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     get "/users/#{@user.user_auth_token}/issues",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal response.body, @user.issues.to_json
+    assert_response_body @user.issues
   end
 
   test 'get user issue by token request' do
@@ -26,53 +26,48 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     get "/users/#{@user.user_auth_token}/issues/fake",
         headers: authorization_header(@password, @user.username)
     assert_response :not_found
-    assert_equal 'Issue not found', JSON.parse(response.body)['message']
+    assert_response_body_message 'Issue not found'
   end
 
   test 'get issue by invalid token request' do
     get '/issues/fake', headers: authorization_header(@password, @user.username)
     assert_response :not_found
-    assert_equal 'Issue not found', JSON.parse(response.body)['message']
+    assert_response_body_message 'Issue not found'
   end
 
   test 'create user issue valid request' do
     create_issue_post_method
     issue = Issue.find_by(title: 'sample issue')
     assert_not_nil issue
+    issue.current_user = @user
+    assert_response_body issue, :issue
   end
 
   test 'create an issue gives rewards' do
-    @user.update(coins: 2, xp: 30)
+    setup_reward
     create_issue_post_method
-    @user.reload
-    new_coins = 2 + COINS::ISSUE_CREATION
-    new_xp = 30 + XP::ISSUE_CREATION
-    assert_equal new_coins, @user.coins
-    assert_equal new_xp, @user.xp
-    rewards_hash = { 'coins' => COINS::ISSUE_CREATION, 'xp' => XP::ISSUE_CREATION }
-    assert_equal rewards_hash, JSON.parse(response.body)['rewards']
+    assert_reward COINS::ISSUE_CREATION, XP::ISSUE_CREATION
   end
 
   def create_issue_post_method
     post "/users/#{@user.user_auth_token}/issues", params: {
-        title: 'sample issue', latitude: 76.4,
-        longitude: 38.2, category: 'arbolada',
-        description: 'desc', picture: sample_image_hash,
-        risk: false, resolved_votes: 564
+      title: 'sample issue', latitude: 76.4,
+      longitude: 38.2, category: 'arbolada',
+      description: 'desc', picture: sample_image_hash,
+      risk: false, resolved_votes: 564
     }, headers: authorization_header(@password, @user.username)
     assert_response :created
   end
 
   test 'create user issue invalid request' do
     post "/users/#{@user.user_auth_token}/issues", params: {
-        latitude: 76.4,
-        longitude: 38.2, category: 'arbolada',
-        description: 'desc', picture: sample_image_hash,
-        risk: true, resolved_votes: 564
+      latitude: 76.4,
+      longitude: 38.2, category: 'arbolada',
+      description: 'desc', picture: sample_image_hash,
+      risk: true, resolved_votes: 564
     }, headers: authorization_header(@password, @user.username)
     assert_response :bad_request
-    body = JSON.parse(response.body)
-    assert_equal "Title can't be blank", body['message']
+    assert_response_body_message "Title can't be blank"
   end
 
   test 'destroy user issue valid request' do
@@ -86,13 +81,12 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     delete "/users/#{@user.user_auth_token}/issues/123",
            headers: authorization_header(@password, @user.username)
     assert_response :not_found
-    body = JSON.parse(response.body)
-    assert_equal 'Issue not found', body['message']
+    assert_response_body_message 'Issue not found'
   end
 
   test 'update user issue valid request' do
     patch "/users/#{@user.user_auth_token}/issues/#{@issue.issue_auth_token}", params: {
-        category: 'nuclear'
+      category: 'nuclear'
     }, headers: authorization_header(@password, @user.username)
     assert_response :ok
     @issue.reload
@@ -101,8 +95,8 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
 
   test 'update user issue valid request but ignored values' do
     patch "/users/#{@user.user_auth_token}/issues/#{@issue.issue_auth_token}", params: {
-        title: 'title updated',
-        titlefake: 'no'
+      title: 'title updated',
+      titlefake: 'no'
     }, headers: authorization_header(@password, @user.username)
     assert_response :ok
     @issue.reload
@@ -123,16 +117,14 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'destroy issue invalid request' do
-    delete '/issues/123',
-           headers: authorization_header(@password, @user.username)
+    delete '/issues/123', headers: authorization_header(@password, @user.username)
     assert_response :not_found
-    body = JSON.parse(response.body)
-    assert_equal 'Issue not found', body['message']
+    assert_response_body_message 'Issue not found'
   end
-  
+
   test 'update issue valid request' do
     patch "/issues/#{@issue.issue_auth_token}", params: {
-        category: 'nuclear'
+      category: 'nuclear'
     }, headers: authorization_header(@password, @user.username)
     assert_response :ok
     @issue.reload
@@ -141,8 +133,8 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
 
   test 'update issue valid request but ignored' do
     patch "/issues/#{@issue.issue_auth_token}", params: {
-        title: 'title updated',
-        titlefake: 'no'
+      title: 'title updated',
+      titlefake: 'no'
     }, headers: authorization_header(@password, @user.username)
     assert_response :ok
     @issue.reload
@@ -151,14 +143,13 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
 
   test 'create user issue image bad format' do
     post "/users/#{@user.user_auth_token}/issues", params: {
-        latitude: 76.4,
-        longitude: 38.2, category: 'arbolada',
-        description: 'desc', picture: 'nil',
-        risk: true, resolved_votes: 564
+      latitude: 76.4,
+      longitude: 38.2, category: 'arbolada',
+      description: 'desc', picture: 'nil',
+      risk: true, resolved_votes: 564
     }, headers: authorization_header(@password, @user.username)
     assert_response :bad_request
-    body = JSON.parse(response.body)
-    assert_equal 'Invalid attachment', body['message']
+    assert_response_body_message 'Invalid attachment'
   end
 
   test 'get user issue obtains confirmed by authenticated user' do
@@ -172,7 +163,6 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     get "/users/#{@user.user_auth_token}/issues/#{@issue.issue_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
-    body = JSON.parse(response.body)
-    assert body['confirmed_by_auth_user']
+    assert_response_body true, :confirmed_by_auth_user
   end
 end
