@@ -2,23 +2,24 @@
 class AwardsController < ApplicationController
   include Xattachable
   before_action :fetch_picture, only: [:create, :update]
-  before_action :check_business_or_admin, except: [:index, :show]
+  before_action -> { needs_admin_or_business('You are not allowed to manage awards') }, except: [:index, :show]
 
   # GET /awards
   # GET /users/:user_auth_token/offered_awards
   def index
-    if params[:user_auth_token]
-      set_user
-      json_response @user.offered_awards.where(visible: true)
-    else
-      json_response Award.all.where(visible: true)
-    end
+    result = if params[:user_auth_token]
+               set_user
+               @user.offered_awards.where(visible: true)
+             else
+               Award.all.where(visible: true)
+             end
+    render_from result
   end
 
   # GET /awards/:award_auth_token
   def show
     set_award
-    json_response @award
+    render_from @award
   end
 
   # POST /user/:user_auth_token/offered_awards
@@ -26,8 +27,7 @@ class AwardsController < ApplicationController
     set_user
     @award = @user.offered_awards.build(award_params)
     @award.picture = @picture if @picture
-    @award.save!
-    head :created
+    save_render! @award
   end
 
   # PUT /awards/:award_auth_token
@@ -35,15 +35,13 @@ class AwardsController < ApplicationController
   def update
     set_award
     @award.picture = @picture if @picture
-    @award.update!(award_params)
-    json_response @award
+    update_render!(@award, award_params)
   end
 
   # DELETE /awards/:award_auth_token
   def destroy
     set_award
-    @award.destroy
-    head :no_content
+    destroy_render! @award
   end
 
   private
@@ -58,9 +56,5 @@ class AwardsController < ApplicationController
 
   def set_award
     @award = Award.find_by!(award_auth_token: params[:award_auth_token])
-  end
-
-  def check_business_or_admin
-    render json: { message: 'You are not allowed to manage awards' }, status: :unauthorized if current_user.normal?
   end
 end

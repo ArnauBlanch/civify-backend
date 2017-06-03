@@ -26,10 +26,18 @@ Rails.application.routes.draw do
   resources :use, param: :exchange_auth_token, only: [:create], controller: 'uses'
 
   # Achievements
-  resources :achievements, param: :achievement_token
+  resources :achievements, param: :achievement_token do
+    member do
+      resources :claim, only: [:create], controller: 'claim'
+    end
+  end
 
   # Events
   resources :events, param: :event_token
+
+  # New achievements/events
+  resources :new_achievements_events, only: [:index], controller:
+      'new_achievements_events'
 
   post '/login', to: 'authentication#login'
   get '/me', to: 'authorized_request#me'

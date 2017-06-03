@@ -7,14 +7,14 @@ class IssuesController < ApplicationController
 
   def index
     set_user
-    json_response @user.issues
+    render_from @user.issues
   end
 
   def show
     set_user
     set_user_issue
     @issue.current_user = current_user
-    json_response @issue
+    render_from @issue
   end
 
   def create
@@ -22,49 +22,43 @@ class IssuesController < ApplicationController
     @issue = @user.issues.build(issue_params)
     @issue.picture = @picture
     @issue.current_user = current_user
-    @issue.save!
-    rewards = add_reward!(@user, COINS::ISSUE_CREATION, XP::ISSUE_CREATION)
-    json_response({ issue: @issue, rewards: rewards }, :created)
+    save_render!(@issue, user: @user, coins: COINS::ISSUE_CREATION, xp: XP::ISSUE_CREATION)
   end
 
   def update
     set_user
     set_user_issue
     @issue.picture = @picture if @picture
-    @issue.update!(issue_params)
     @issue.current_user = current_user
-    json_response @issue
+    update_render!(@issue, issue_params)
   end
 
   def destroy
     set_user
     set_user_issue
-    @issue.destroy
-    head :no_content
+    destroy_render! @issue
   end
 
   def index_issues
-    json_response Issue.all
+    render_from filter_issues(Issue.all)
   end
 
   def show_issue
     set_issue
     @issue.current_user = current_user
-    json_response @issue
+    render_from @issue
   end
 
   def update_issue
     set_issue
     @issue.picture = @picture if @picture
-    @issue.update!(issue_params)
     @issue.current_user = current_user
-    json_response @issue
+    update_render!(@issue, issue_params)
   end
 
   def destroy_issue
     set_issue
-    @issue.destroy
-    head :no_content
+    destroy_render! @issue
   end
 
   private
@@ -92,5 +86,16 @@ class IssuesController < ApplicationController
     if auth_command.success?
       @current_user = auth_command.result
     end
+  end
+
+  def filter_issues(issues)
+    issues = issues.where(category: params[:category]) if params.key?('category')
+    issues = issues.where(resolved: params[:resolved] == 'true') if params.key?('resolved')
+    issues = issues.where(risk: params[:risk] == 'true') if params.key?('risk')
+    issues = issues.where('latitude <= ?', params[:lat_max].to_f) if params.key?('lat_max')
+    issues = issues.where('longitude <= ?', params[:lon_max].to_f) if params.key?('lon_max')
+    issues = issues.where('latitude >= ?', params[:lat_min].to_f) if params.key?('lat_min')
+    issues = issues.where('longitude >= ?', params[:lon_min].to_f) if params.key?('lon_min')
+    issues
   end
 end
