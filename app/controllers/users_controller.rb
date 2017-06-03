@@ -29,7 +29,8 @@ class UsersController < ApplicationController
   end
 
   def create_user(params)
-    save_render!(User.new(params), status: :created)
+    @user = User.new(params)
+    save_render! @user
   end
 
   # DELETE /users/[:user_auth_token]

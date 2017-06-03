@@ -7,11 +7,11 @@ require 'rails/test_help'
 
 class ActiveSupport::TestCase
   include RewardsConstants
-  # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical
-  # order.
+  # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
-  # Add more helper methods to be used by all tests here...
+  # Add more helper methods to be used by all tests here
+
   def auth_token(password, username)
     auth_user = AuthenticateUser.call password, username
     assert auth_user.success?
@@ -55,12 +55,12 @@ class ActiveSupport::TestCase
 
   def setup_event
     @event = Event.create(title: 'title', description: 'desc', number: 288, coins: 288,
-                  xp: 288, kind: :confirm,  image: sample_file, start_date: '17-5-12 00:00:00',
-                  end_date: '17-5-12 00:00:01')
+                          xp: 288, kind: :confirm, image: sample_file,
+                          start_date: '17-5-12 00:00:00', end_date: '17-5-12 00:00:01')
     assert @event.valid?
   end
 
-  def setup_achievement()
+  def setup_achievement
     @achievement = Achievement.create(title: 'Title', description:
         'Description', number: 1, kind: :issue, coins: 10, xp: 100)
     @achievement.valid?
