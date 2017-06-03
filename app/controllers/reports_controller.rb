@@ -8,12 +8,12 @@ class ReportsController < ApplicationController
   def create
     if @user.reported_issues.exists? @issue.id
       @issue.users_reporting.destroy @user
-      render_from(message: "Issue with auth token #{@issue.issue_auth_token} "\
-      "unreported by User with auth token #{@user.user_auth_token}")
+      render_from "Issue with auth token #{@issue.issue_auth_token} "\
+      "unreported by User with auth token #{@user.user_auth_token}"
     else
       @issue.users_reporting << @user
-      render_from(message: "Issue with auth token #{@issue.issue_auth_token} "\
-      "reported by User with auth token #{@user.user_auth_token}")
+      render_from "Issue with auth token #{@issue.issue_auth_token} "\
+      "reported by User with auth token #{@user.user_auth_token}"
       if @issue.reports.size >= DELETE_IN
         destroy! @issue
       end

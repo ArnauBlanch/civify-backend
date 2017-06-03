@@ -10,7 +10,7 @@ class ResolveController < ApplicationController
       @issue.resolutions.delete(@user)
       @issue.resolved_votes -= 1
       save! @issue
-      render json: { message: 'Resolution deleted' }, status: :ok
+      render_from 'Resolution deleted'
     else
       if @issue.resolutions << @user
         @issue.resolved_votes += 1
@@ -18,7 +18,7 @@ class ResolveController < ApplicationController
           @issue.resolved = true
         end
         save! @issue
-        render_from(message: 'Resolution added')
+        render_from 'Resolution added'
       else
         render_from(message: 'Could not do the resolution', status: :bad_request)
       end

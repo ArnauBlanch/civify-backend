@@ -34,7 +34,7 @@ class UsersController < ApplicationController
   # DELETE /users/[:user_auth_token]
   def destroy
     destroy! @user
-    render_from(message: 'User deleted', status: :ok)
+    render_from 'User deleted'
   end
 
   private

@@ -6,7 +6,7 @@ class UsesController < ApplicationController
     if !@exchange.used
       @exchange.used = true
       @exchange.save!
-      render_from(message: 'Exchange used', status: :ok)
+      render_from 'Exchange used'
     else
       render_from(message: 'User has already used this award', status: :unauthorized) if @exchange.used
     end
