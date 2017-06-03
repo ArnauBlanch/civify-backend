@@ -24,4 +24,42 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
     assert_not Achievement.find_by(number: 5, kind: :issue)
   end
+
+  test 'get achievements' do
+    setup_achievement
+    get '/achievements', headers: authorization_header(@password,
+                                                       @user.username)
+    assert_response :ok
+  end
+
+  test 'get one achievement' do
+    setup_achievement
+    get "/achievements/#{@achievement.achievement_token}",
+        headers: authorization_header(@password,
+                                      @user.username)
+    assert_response :ok
+  end
+
+  test 'get achievements unauthorized' do
+    get '/achievements'
+    assert_response :unauthorized
+    body = JSON.parse(response.body)
+    assert_equal 'Missing Authorization Token', body['message']
+  end
+
+  test 'get one achievement unauthorized' do
+    setup_achievement
+    get "/achievements/#{@achievement.achievement_token}"
+    assert_response :unauthorized
+    body = JSON.parse(response.body)
+    assert_equal 'Missing Authorization Token', body['message']
+  end
+
+  test 'get one achievement not found' do
+    get '/achievements/1', headers: authorization_header(@password,
+                                                         @user.username)
+    assert_response :not_found
+    body = JSON.parse(response.body)
+    assert_equal 'Achievement does not exist', body['message']
+  end
 end
