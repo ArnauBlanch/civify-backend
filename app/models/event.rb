@@ -7,8 +7,7 @@ class Event < ApplicationRecord
   validates :number, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :coins, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :xp, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  has_attached_file :image, preserve_files: 'false',
-                    styles: { small: '450x450', med: '800x800' }
+  has_attached_file :image, preserve_files: 'false', styles: { small: '450x450', med: '800x800' }
   # Use large_url for original image size
   validates_attachment_content_type :image,
                                     content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
@@ -18,12 +17,8 @@ class Event < ApplicationRecord
   validates :kind, presence: true, inclusion: {in: kinds.keys}
 
   def as_json(options = nil)
-    json = super(options.reverse_merge(except: [:id, :user_id, :image_file_name,
-                                                :image_content_type,
-                                                :image_file_size,
-                                                :image_updated_at]))
-               .merge(picture_hash)
-    json
+    super(options.reverse_merge(except: [:id, :user_id, :image_file_name, :image_content_type,
+                                         :image_file_size, :image_updated_at])).merge(picture_hash)
   end
 
   def picture_hash
