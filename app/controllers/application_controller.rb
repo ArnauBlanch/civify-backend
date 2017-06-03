@@ -180,8 +180,11 @@ class ApplicationController < ActionController::API
   def merge!(hash, object, name = nil)
     name ||= name(object)
     key = name.to_sym
-    hash[key] = object if object
-    key
+    if object
+      hash[key] = object
+      return key
+    end
+    nil
   end
 
   def as_array(object)
@@ -190,9 +193,7 @@ class ApplicationController < ActionController::API
   end
 
   def collection?(object)
-    object.is_a?(Array) ||
-      object.is_a?(ActiveRecord::Relation) ||
-      object.is_a?(ActiveRecord::Associations::CollectionProxy)
+    object.respond_to?(:each)
   end
 
   private
@@ -222,14 +223,44 @@ class ApplicationController < ActionController::API
     attach_hash(options)
   end
 
+  def deep_exclude(object, keys = [])
+    if object.is_a?(Hash)
+      object.inject({}) do |res, (k, v)|
+        res[k] = deep_exclude(v, keys) unless keys.include?(k.to_sym)
+        res
+      end
+    elsif object.respond_to?(:attributes)
+      result = {}
+      parsed = JSON.parse(object.to_json)
+      parsed.keys.each do |k|
+        result[k] = deep_exclude(parsed[k], keys) unless keys.include?(k.to_sym)
+      end
+      result
+    elsif collection?(object)
+      result = []
+      object.each do |e|
+        result << deep_exclude(e, keys)
+      end
+      result
+    else
+      object
+    end
+  end
+
   def attach_hash(options = {})
     result = {}
     result[:message] = options[:message] unless options[:message].blank?
     foreign_options = options.except(:object, :message, :user, :coins, :xp, :except, :status)
-    return options[:object] || {} if foreign_options.empty? && result.empty?
-    merge!(result, options[:object])
-    result.merge!(foreign_options)
-    result.except(as_array(options[:except]))
+    key = nil
+    if foreign_options.empty? && result.empty?
+      result = options[:object] || {}
+    else
+      key = merge!(result, options[:object])
+      result.merge!(foreign_options)
+    end
+    result = deep_exclude(result, as_array(options[:except]))
+    result = result[key] if key && result.is_a?(Hash) && result.size == 1
+    result
   end
 
   def check_attach!(object, options = {})
