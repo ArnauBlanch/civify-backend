@@ -61,7 +61,6 @@ class ApplicationController < ActionController::API
   # xp: 0
   def save!(object, options = {})
     object.save!
-    check_attach!(object, options)
     apply(options)
   end
 
@@ -78,7 +77,6 @@ class ApplicationController < ActionController::API
   # xp: 0
   def update!(object, fields, options = {})
     object.update!(fields)
-    check_attach!(object, options)
     apply(options)
   end
 
@@ -248,6 +246,7 @@ class ApplicationController < ActionController::API
   end
 
   def attach_hash(options = {})
+    check_attach!(options[:object], options)
     result = {}
     result[:message] = options[:message] unless options[:message].blank?
     foreign_options = options.except(:object, :message, :user, :coins, :xp, :except, :status)
@@ -259,7 +258,7 @@ class ApplicationController < ActionController::API
       result.merge!(foreign_options)
     end
     result = deep_exclude(result, as_array(options[:except]))
-    result = result[key] if key && result.is_a?(Hash) && result.size == 1
+    result = result[key] if key && result.is_a?(Hash) && result.size == 1 && result.key?(key)
     result
   end
 
