@@ -22,7 +22,7 @@ class Users::SearchController < ApplicationController
   end
 
   def user_exists
-    render_from(message: 'User exists', status: :ok)
+    render_from 'User exists'
   end
 
   def user_not_exists
