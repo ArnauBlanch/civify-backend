@@ -37,7 +37,6 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
 
   test 'create user issue valid request' do
     create_issue_post_method
-    assert_response :created
     issue = Issue.find_by(title: 'sample issue')
     assert_not_nil issue
   end
@@ -61,6 +60,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
         description: 'desc', picture: sample_image_hash,
         risk: false, resolved_votes: 564
     }, headers: authorization_header(@password, @user.username)
+    assert_response :created
   end
 
   test 'create user issue invalid request' do
@@ -72,7 +72,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     }, headers: authorization_header(@password, @user.username)
     assert_response :bad_request
     body = JSON.parse(response.body)
-    assert_equal "Validation failed: Title can't be blank", body['message']
+    assert_equal "Title can't be blank", body['message']
   end
 
   test 'destroy user issue valid request' do

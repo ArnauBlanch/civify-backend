@@ -5,7 +5,7 @@ class AchievementsController < ApplicationController
 
   def create
     a = Achievement.new(achievement_params)
-    save_render(a, :created)
+    save_render! a
     create_achievement_progresses(a) if a.valid?
   end
 

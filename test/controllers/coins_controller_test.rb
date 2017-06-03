@@ -38,7 +38,7 @@ class CoinsControllerTest < ActionDispatch::IntegrationTest
          params: { coins: 5 }, as: :json
     assert_response :ok
     body = JSON.parse(response.body)
-    assert_equal before_coins + 5, body['coins']
+    assert_equal before_coins + 5, body['rewards']['coins']
     assert_equal before_coins + 5, User.find(@user.id).coins
   end
 

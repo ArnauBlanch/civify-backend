@@ -20,7 +20,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil Event.find_by(number: 288, kind: :issue)
   end
 
-  test 'Events are created only by admins' do
+  test 'events are created only by admins' do
     @user.update kind: :normal
     create_event
     assert_response :unauthorized
