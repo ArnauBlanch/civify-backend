@@ -73,14 +73,15 @@ ActiveRecord::Schema.define(version: 20170602173635) do
     t.integer  "number"
     t.integer  "coins"
     t.integer  "xp"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
     t.integer  "kind"
     t.string   "event_token"
     t.string   "image_file_name"
     t.string   "image_content_type"
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
+    t.boolean  "enabled",            default: true
     t.index ["event_token"], name: "index_events_on_event_token", unique: true, using: :btree
   end
 

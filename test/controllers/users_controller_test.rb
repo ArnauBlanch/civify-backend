@@ -6,8 +6,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     setup_user
     get '/users', headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal User.all.to_json(except: json_exclude),
-                 response.body
+    assert_equal User.all.to_json(except: json_exclude), response.body
   end
 
   test 'get user by auth token' do
@@ -15,8 +14,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     token = @user.user_auth_token
     get '/users/' + token, headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal @user.to_json(except: json_exclude),
-                 response.body
+    assert_equal @user.to_json(except: json_exclude), response.body
   end
 
   test 'valid create request' do
@@ -26,9 +24,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
       password: 'mypass', password_confirmation: 'mypass'
     }, as: :json
     assert_response :created # test status code
-    assert_not_nil User.find_by(username: 'foo') # test user creation
-    body = JSON.parse(response.body)
-    assert_equal 'User created', body['message']
+    user = User.find_by(username: 'foo') # test user creation
+    assert_not_nil user
+    assert_equal user.to_json, response.body
   end
 
   test 'valid business creation request with optional last name' do
@@ -41,8 +39,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     user = User.find_by(username: 'foo') # test user creation
     assert_not_nil user
     assert user.business?
-    body = JSON.parse(response.body)
-    assert_equal 'User created', body['message']
+    assert_equal user.to_json, response.body
   end
 
   test 'invalid create request' do
@@ -53,7 +50,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     }, as: :json
     assert_response :bad_request # test status code
     body = JSON.parse(response.body)
-    assert_equal 'User not created', body['message'] # test response body
+    assert_equal "Username can't be blank", body['message'] # test response body
   end
 
   test 'invalid admin create request' do
@@ -87,6 +84,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   def json_exclude
-    [:id, :password_digest, :email, :created_at, :updated_at]
+    [:id, :password_digest, :email, :created_at, :updated_at, :xp]
   end
 end

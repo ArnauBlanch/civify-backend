@@ -6,12 +6,12 @@ class UsersController < ApplicationController
   # GET /users
   def index
     @users = User.all
-    render json: @users.to_json(except: json_exclude), status: :ok
+    render_from @users.to_json(except: json_exclude)
   end
 
   # GET /users/[:user_auth_token]
   def show
-    render json: @user.to_json(except: json_exclude), status: :ok
+    render_from @user.to_json(except: json_exclude)
   end
 
   # POST /users
@@ -21,7 +21,7 @@ class UsersController < ApplicationController
       request_params[:last_name] = 'business'
     end
     if request_params[:kind] == :admin.to_s
-      render json: { message: 'Admin users cannot be created this way for security reasons' }, status: :unauthorized
+      render_from(message: 'Admin users cannot be created this way for security reasons', status: :unauthorized)
     else
       create_user request_params
       create_achievement_progresses(@user) unless @user.kind == :business.to_s
@@ -29,25 +29,13 @@ class UsersController < ApplicationController
   end
 
   def create_user(params)
-    @user = User.new(params)
-    if @user.save
-      render json: { message: 'User created' }, status: :created
-    else
-      render json: { message: 'User not created' }, status: :bad_request
-    end
-  rescue ActiveRecord::RecordNotUnique
-    render json: { message: 'Already exists' }, status: :bad_request
-  rescue
-    render json: @user.errors, status: :bad_request
+    save_render!(User.new(params), status: :created)
   end
 
   # DELETE /users/[:user_auth_token]
   def destroy
-    if @user.destroy
-      render json: { message: 'User deleted' }, status: :ok
-    else
-      render json: @user.errors, status: :bad_request
-    end
+    destroy! @user
+    render_from(message: 'User deleted', status: :ok)
   end
 
   private
@@ -62,7 +50,7 @@ class UsersController < ApplicationController
   end
 
   def json_exclude
-    [:id, :password_digest, :email, :created_at, :updated_at]
+    [:id, :password_digest, :email, :created_at, :updated_at, :xp]
   end
 
   def create_achievement_progresses(user)

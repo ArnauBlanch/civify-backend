@@ -24,7 +24,7 @@ class ActiveSupport::TestCase
 
   attr_reader :user, :password
 
-  # options = { username = 'test', kind: :normal }
+  # options = { username: 'test', kind: :normal }
   def setup_user(options = {})
     options[:username] ||= 'test'
     options[:kind] ||= :normal
@@ -36,15 +36,6 @@ class ActiveSupport::TestCase
                         kind: options[:kind], coins: options[:coins],
                         password: @password, password_confirmation: @password)
     assert @user.valid?
-
-    if options[:second_user]
-      @user2 = User.create(username: options[:username] + '2',
-                          email: "#{options[:username]}@test2.com",
-                          first_name: options[:username] + '2', last_name: options[:username],
-                          kind: options[:kind], coins: options[:coins],
-                          password: @password, password_confirmation: @password)
-      assert @user2.valid?
-    end
   end
 
   def setup_issue
@@ -64,8 +55,8 @@ class ActiveSupport::TestCase
 
   def setup_event
     @event = Event.create(title: 'title', description: 'desc', number: 288, coins: 288,
-                  xp: 288, kind: :confirm,  image: sample_file, start_date: '2017-5-12',
-                  end_date: '2017-5-12')
+                  xp: 288, kind: :confirm,  image: sample_file, start_date: '17-5-12 00:00:00',
+                  end_date: '17-5-12 00:00:01')
     assert @event.valid?
   end
 

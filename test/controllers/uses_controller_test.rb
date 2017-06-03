@@ -2,7 +2,10 @@ require 'test_helper'
 
 class UsesControllerTest < ActionDispatch::IntegrationTest
   def setup
-    setup_user second_user: true
+    setup_user
+    user1 = @user
+    setup_user username: '2'
+    @user2 = user1
     setup_award
     @user.exchanged_awards << @award
     @exchange = @user.exchanges.find_by!(award_id: @award.id)
@@ -31,14 +34,14 @@ class UsesControllerTest < ActionDispatch::IntegrationTest
          headers: authorization_header(@password, @user.username)
     body = JSON.parse(response.body)
     assert_response :unauthorized
-    assert_equal 'User has already used this buyed award', body['message']
+    assert_equal 'User has already used this award', body['message']
   end
 
   test 'exchange not found' do
-    post "/use?exchange_auth_token=fakeExchange",
+    post '/use?exchange_auth_token=fakeExchange',
          headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
-    assert_equal"Exchange not found", body['message']
+    assert_equal'Exchange not found', body['message']
   end
 end
