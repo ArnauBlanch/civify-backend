@@ -4,7 +4,7 @@ class Achievement < ApplicationRecord
               :resolve_received, :coins_spent, :issue_resolved, :level]
 
   # Users
-  has_many :achievement_progresses
+  has_many :achievement_progresses, dependent: :destroy
   has_many :users, through: :achievement_progresses
 
   validates :title, presence: true
@@ -15,16 +15,26 @@ class Achievement < ApplicationRecord
   validates :xp, presence: true
   validates_uniqueness_of :number, scope: :kind
 
-  attr_accessor :current_user
+  cattr_accessor :current_user
 
   def as_json(options = {})
-    super(options.reverse_merge(except: [:id, :updated_at]))
-      .merge(progress: current_user_progress)
+    json = super(options.reverse_merge(except: [:id, :updated_at]))
+
+    if current_user && current_user.kind == 'normal'
+      json = json.merge(current_user_achievement)
+    end
+
+    json
   end
 
   private
 
-  def current_user_progress
-    achievement_progresses.find_by(user_id: current_user.id).progress
+  def current_user_achievement
+    ap = achievement_progresses.find_by(user_id: current_user.id)
+    {
+      progress: ap.progress,
+      completed: ap.completed,
+      claimed: ap.claimed
+    }
   end
 end
