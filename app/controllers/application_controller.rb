@@ -48,30 +48,6 @@ class ApplicationController < ActionController::API
     render json: apply(options), status: get_status(options, :ok)
   end
 
-  # Adds a reward to the user and returns a hash with the reward
-  # and optionally a message and an attached object
-  # Options and their default values:
-  # user: @current_user
-  # coins: 0
-  # xp: 0
-  # message: a message to include in the result, none by default
-  # object: object to include in the result hash, none by default
-  # except: fields not to be attached, all included by default
-  def add_rewards!(options = {})
-    if present_some?(options, [:coins, :xp])
-      fill_defaults(options, user: @current_user, coins: 0, xp: 0)
-      user = options[:user]
-      user.coins += options[:coins]
-      user.xp += options[:xp]
-      user.save!
-      rewards = {}
-      rewards[:coins] = options[:coins] if options[:coins] != 0
-      rewards[:xp] = options[:xp] if options[:xp] != 0
-      options[:rewards] = rewards
-    end
-    attach_hash(options)
-  end
-
   # Tries to save the object, if fails raises ActiveRecord::RecordInvalid
   # If rewards are specified and the object is saved then adds the rewards
   # and returns a hash with the reward and the object or a message if it is specified
@@ -192,12 +168,18 @@ class ApplicationController < ActionController::API
     false
   end
 
-  def class_name(object)
-    object.class.name.demodulize.parameterize(separator: '_')
+  def name(object)
+    plural = collection?(object)
+    return request.path_parameters[:controller].to_s if plural && object.empty? && request.path_parameters[:controller]
+    instance = plural ? object[0] : object
+    name = instance.class.name.demodulize.parameterize(separator: '_')
+    name = name.pluralize if plural
+    name
   end
 
-  def merge!(hash, object)
-    key = class_name(object).to_sym
+  def merge!(hash, object, name = nil)
+    name ||= name(object)
+    key = name.to_sym
     hash[key] = object if object
     key
   end
@@ -207,27 +189,59 @@ class ApplicationController < ActionController::API
     object.is_a?(Array) ? object : [object]
   end
 
+  def collection?(object)
+    object.is_a?(Array) ||
+      object.is_a?(ActiveRecord::Relation) ||
+      object.is_a?(ActiveRecord::Associations::CollectionProxy)
+  end
+
   private
+
+  # @see apply(options)
+  # Adds a reward to the user and returns a hash with the reward
+  # and optionally a message and an attached object
+  # Options and their default values: (only if coins or xp specified)
+  # user: @current_user
+  # coins: 0
+  # xp: 0
+  # message: a message to include in the result, none by default
+  # object: object to include in the result hash, none by default
+  # except: fields not to be attached, all included by default
+  def add_rewards!(options = {})
+    if present_some?(options, [:coins, :xp])
+      fill_defaults(options, user: @current_user, coins: 0, xp: 0)
+      user = options[:user]
+      user.coins += options[:coins]
+      user.xp += options[:xp]
+      user.save!
+      rewards = {}
+      rewards[:coins] = options[:coins] if options[:coins] != 0
+      rewards[:xp] = options[:xp] if options[:xp] != 0
+      options[:rewards] = rewards
+    end
+    attach_hash(options)
+  end
 
   def attach_hash(options = {})
     result = {}
     result[:message] = options[:message] unless options[:message].blank?
-    result.merge!(options.except(:object, :message, :user, :coins, :xp, :except, :status))
-    return (options[:object] || {}) if result.empty?
+    foreign_options = options.except(:object, :message, :user, :coins, :xp, :except, :status)
+    return options[:object] || {} if foreign_options.empty? && result.empty?
     merge!(result, options[:object])
+    result.merge!(foreign_options)
     result.except(as_array(options[:except]))
   end
 
   def check_attach!(object, options = {})
     return unless object
-    if include_object(options)
+    if include_object?(options)
       options[:object] = object
     else
       options.delete(:object)
     end
   end
 
-  def include_object(options = {})
+  def include_object?(options = {})
     !as_array(options[:except]).include?(:object)
   end
 

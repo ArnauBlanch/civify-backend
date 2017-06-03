@@ -56,6 +56,8 @@ ActiveRecord::Schema.define(version: 20170602163943) do
   create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.string   "description"
+    t.datetime "start_date"
+    t.datetime "end_date"
     t.integer  "number"
     t.integer  "coins"
     t.integer  "xp"
@@ -67,8 +69,6 @@ ActiveRecord::Schema.define(version: 20170602163943) do
     t.string   "image_content_type"
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
-    t.datetime "start_date"
-    t.datetime "end_date"
     t.boolean  "enabled",            default: true
     t.index ["event_token"], name: "index_events_on_event_token", unique: true, using: :btree
   end
