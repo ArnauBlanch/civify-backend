@@ -16,6 +16,7 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
     create_achievement
     assert_response :created
     assert_not_nil Achievement.find_by(number: 5, kind: :issue)
+    assert 1, @user.achievement_progresses.size
   end
 
   test 'achievements are created only by admins' do
