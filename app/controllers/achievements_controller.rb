@@ -1,5 +1,7 @@
 class AchievementsController < ApplicationController
-  before_action :needs_admin, except: [:show, :index]
+  before_action :needs_admin, only: [:create]
+  before_action :set_current_user
+  before_action :set_achievement, only: [:show]
 
   def create
     a = Achievement.new(achievement_params)
@@ -8,11 +10,11 @@ class AchievementsController < ApplicationController
   end
 
   def index
-    achievements = Achievement.all
-    achievements.each do |a|
-      a.current_user = current_user
-    end
-    render json: achievements, status: :ok
+    render json: Achievement.all, status: :ok
+  end
+
+  def show
+    render json: @achievement, status: :ok unless @achievement.nil?
   end
 
   private
@@ -24,9 +26,19 @@ class AchievementsController < ApplicationController
 
   def create_achievement_progresses(achievement)
     User.all.each do |user|
-      if user.kind != 'admin'
-        user.achievements_in_progress << achievement
-      end
+      user.achievements_in_progress << achievement if user.kind == 'normal'
     end
+  end
+
+  def set_achievement
+    @achievement = Achievement.find_by(achievement_token:
+                                           params[:achievement_token])
+    if @achievement.nil?
+      render json: { message: 'Achievement does not exist' }, status: :not_found
+    end
+  end
+
+  def set_current_user
+    Achievement.current_user = current_user
   end
 end

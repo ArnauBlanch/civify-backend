@@ -24,6 +24,7 @@ class UsersController < ApplicationController
       render json: { message: 'Admin users cannot be created this way for security reasons' }, status: :unauthorized
     else
       create_user request_params
+      create_achievement_progresses(@user) unless @user.kind == :business.to_s
     end
   end
 
@@ -62,5 +63,11 @@ class UsersController < ApplicationController
 
   def json_exclude
     [:id, :password_digest, :email, :created_at, :updated_at]
+  end
+
+  def create_achievement_progresses(user)
+    Achievement.all.each do |a|
+      a.users << user
+    end
   end
 end
