@@ -22,6 +22,11 @@ module AuthorizationController
     unauthorize(message, !@current_user.admin? && !@current_user.business?)
   end
 
+  def needs_normal_user(message = 'You are not allowed to perform this action.')
+    return unless @current_user
+    unauthorize(message, !@current_user.normal?)
+  end
+
   def unauthorize(message, condition = true)
     render_from(message: message, status: :unauthorized) if condition
   end
