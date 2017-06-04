@@ -12,6 +12,18 @@
 
 ActiveRecord::Schema.define(version: 20170603164620) do
 
+  create_table "achievement_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+    t.integer  "user_id"
+    t.integer  "achievement_id"
+    t.integer  "progress",       default: 0
+    t.boolean  "completed",      default: false
+    t.boolean  "claimed",        default: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.index ["achievement_id"], name: "index_achievement_progresses_on_achievement_id", using: :btree
+    t.index ["user_id"], name: "index_achievement_progresses_on_user_id", using: :btree
+  end
+
   create_table "achievements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.string   "title"
     t.string   "description"
