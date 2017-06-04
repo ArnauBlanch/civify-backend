@@ -24,14 +24,14 @@ class UsersController < ApplicationController
       render_from(message: 'Admin users cannot be created this way for security reasons', status: :unauthorized)
     else
       create_user request_params
-      create_achievement_progresses(@user) unless @user.kind == :business.to_s
-      create_event_progress unless @user.kind == :business
     end
   end
 
   def create_user(params)
     @user = User.new(params)
     save_render! @user
+    create_achievement_progresses @user
+    create_event_progress
   end
 
   # DELETE /users/:user_auth_token
@@ -42,8 +42,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:username, :email, :first_name, :last_name,
-                  :password, :password_confirmation, :kind)
+    params.permit(:username, :email, :first_name, :last_name, :password, :password_confirmation, :kind)
   end
 
   def set_user

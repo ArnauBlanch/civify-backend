@@ -21,4 +21,8 @@ class ApplicationController < ActionController::API
   # PLEASE, DO NOT SKIP THIS
   before_action :verify_user_auth, :verify_issue_auth, :verify_award_auth
 
+  def set_current_user(model)
+    model.current_user = current_user
+  end
+
 end

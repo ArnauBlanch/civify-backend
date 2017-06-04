@@ -1,19 +1,12 @@
 # Issue model with validations
 class Issue < ApplicationRecord
   belongs_to :user
-  has_and_belongs_to_many :resolutions, join_table: 'resolutions',
-                          class_name: 'User'
+  has_and_belongs_to_many :resolutions, join_table: 'resolutions', class_name: 'User'
   has_many :confirmations, dependent: :destroy
   has_many :users_confirming, through: :confirmations, source: :user
   has_many :reports, dependent: :destroy
   has_many :users_reporting, through: :reports, source: :user
   has_secure_token :issue_auth_token
-  has_attached_file :picture, preserve_files: 'false',
-                    styles: { small: '450x450', med: '800x800' }
-  # Use large_url for original image size
-  validates_attachment_content_type :picture,
-                                    content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
-  validates_attachment :picture, size: { in: 0..5.megabytes }
   validates :picture, attachment_presence: true
   validates :user_id, presence: true
   validates :title, presence: true
@@ -23,6 +16,11 @@ class Issue < ApplicationRecord
   validates :picture, presence: true
   validates :description, presence: true
   validates_inclusion_of :risk, in: [true, false]
+
+  has_attached_file :picture, preserve_files: 'false', styles: { small: '450x450', med: '800x800' }
+  # Use large_url for original image size
+  validates_attachment_content_type :picture, content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
+  validates_attachment :picture, size: { in: 0..5.megabytes }
 
   attr_accessor :current_user
 
@@ -45,16 +43,6 @@ class Issue < ApplicationRecord
     end
   end
 
-  def picture_hash
-    { picture: { file_name: picture_file_name,
-                 content_type: picture_content_type,
-                 file_size: picture_file_size,
-                 updated_at: picture_updated_at,
-                 small_url: picture.url(:small),
-                 med_url: picture.url(:med),
-                 large_url: picture.url(:original) } }
-  end
-
   private
 
   def confirm_votes
@@ -74,6 +62,17 @@ class Issue < ApplicationRecord
   end
 
   def resolved_by_auth_user
-    resolutions.exists?(@current_user.id)
+    resolutions.exists? @current_user.id
   end
+
+  def picture_hash
+    { picture: { file_name: picture_file_name,
+                 content_type: picture_content_type,
+                 file_size: picture_file_size,
+                 updated_at: picture_updated_at,
+                 small_url: picture.url(:small),
+                 med_url: picture.url(:med),
+                 large_url: picture.url(:original) } }
+  end
+
 end

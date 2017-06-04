@@ -6,15 +6,6 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     setup_event
   end
 
-  def post_event
-    post '/events', params: {
-      title: 'sample event', description: 'desc',
-      image: sample_image_hash, start_date: '10-5-17 16:00:00',
-      end_date: '11-5-17 16:00:00', number: 288, coins: 288,
-      xp: 288, kind: :issue
-    }, headers: authorization_header(@password, @user.username)
-  end
-
   def get_one_event(token)
     get "/events/#{token}", headers: authorization_header(@password, @user.username)
   end
