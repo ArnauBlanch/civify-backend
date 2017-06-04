@@ -15,6 +15,8 @@ class Achievement < ApplicationRecord
   validates_inclusion_of :enabled, in: [true, false]
   validates_uniqueness_of :number, scope: :kind
 
+  scope :enabled, (->(enabled) { where(enabled: enabled) if enabled.present? })
+
   cattr_accessor :current_user
 
   def as_json(options = {})
