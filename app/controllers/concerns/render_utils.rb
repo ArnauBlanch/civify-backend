@@ -1,4 +1,7 @@
 module RenderUtils
+  # Prints the result of apply if enabled
+  DEBUG = false
+
   # If rewards are not specified returns a hash with an object and a message if they are specified
   # If rewards are specified then adds them and returns a hash with the reward with an object and a message if they are specified
   # If no options are specified then returns an empty hash
@@ -13,7 +16,9 @@ module RenderUtils
   def apply(options = {})
     options = parse(options)
     return options unless options.is_a?(Hash)
-    add_rewards!(options)
+    result = add_rewards!(options)
+    puts result.to_s if DEBUG
+    result
   end
 
   # If rewards are not specified renders a json with an object and a message if they are specified
@@ -94,7 +99,9 @@ module RenderUtils
   # coins: 0
   # xp: 0
   def save_render!(object, options = {})
-    render json: save!(object, options), status: get_status(options, :created)
+    result = save!(object, options)
+    render json: result, status: get_status(options, :created)
+    result
   end
 
   # Tries to update the object, if fails raises ActiveRecord::RecordInvalid
@@ -110,7 +117,9 @@ module RenderUtils
   # coins: 0
   # xp: 0
   def update_render!(object, fields, options = {})
-    render json: update!(object, fields, options), status: get_status(options, :ok)
+    result = update!(object, fields, options)
+    render json: result, status: get_status(options, :ok)
+    result
   end
 
   # Tries to destroy the object, if fails raises ActiveRecord::RecordInvalid
@@ -130,6 +139,7 @@ module RenderUtils
     else
       render json: result, status: :ok
     end
+    result
   end
 
   def fill_defaults(hash, defaults = {})
@@ -213,7 +223,7 @@ module RenderUtils
   end
 
   def merge_object!(hash, object, name = nil)
-    if object
+    unless object.nil?
       object = parse(object, false)
       name ||= name(object)
       key = name.to_sym

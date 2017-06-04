@@ -36,6 +36,7 @@ class ActiveSupport::TestCase
                         kind: options[:kind], coins: options[:coins],
                         password: @password, password_confirmation: @password)
     assert @user.valid?
+    @user
   end
 
   def setup_issue
@@ -43,7 +44,9 @@ class ActiveSupport::TestCase
                                  longitude: 38.2, category: 'arbolada',
                                  description: 'desc', picture: sample_file,
                                  risk: false, resolved_votes: 564)
+    puts
     assert @issue.valid?
+    @issue
   end
 
   def setup_award(price = 0)
@@ -51,6 +54,7 @@ class ActiveSupport::TestCase
     @award = @user.offered_awards.create!(title: 'award', description: 'desc',
                                           picture: @picture, price: price)
     assert @award.valid?
+    @award
   end
 
   def setup_event(options = {})
@@ -66,10 +70,29 @@ class ActiveSupport::TestCase
     @event
   end
 
+  def post_event(user = @user)
+    post '/events', params: {
+      title: 'sample event', description: 'desc',
+      image: sample_image_hash, start_date: '10-5-17 16:00:00',
+      end_date: '11-5-17 16:00:00', number: 288, coins: 288,
+      xp: 288, kind: :issue
+    }, headers: authorization_header(@password, user.username)
+    user.reload
+  end
+
   def setup_achievement
     @achievement = Achievement.create(title: 'Title', description:
         'Description', number: 1, kind: :issue, coins: 10, xp: 100)
     assert @achievement.valid?
+    @achievement
+  end
+
+  def post_achievement(user = @user)
+    post '/achievements', headers: authorization_header(@password, user.username), params: {
+      title: 'Title', description: 'Description',
+      number: 5, kind: :issue, coins: 10, xp: 100
+    }, as: :json
+    user.reload
   end
 
   def sample_file(filename = 'image.gif')
