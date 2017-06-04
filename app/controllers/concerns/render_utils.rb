@@ -6,7 +6,7 @@ module RenderUtils
   # message: a message to include in the result, none by default
   # object: object to include in the result hash
   # except: fields not to be attached, all included by default
-  # Rewards (only if coins or xp specified), none by default
+  # Rewards (only if coins or xp are specified)
   # user: @current_user
   # coins: 0
   # xp: 0
@@ -24,7 +24,7 @@ module RenderUtils
   # message: a message to include in the result, none by default
   # object: object to include in the result, none by default
   # except: fields not to be attached, all included by default
-  # Rewards (only if coins or xp specified)
+  # Rewards (only if coins or xp are specified)
   # user: @current_user
   # coins: 0
   # xp: 0
@@ -39,7 +39,7 @@ module RenderUtils
   # Options and their default values:
   # except: fields not to be attached, all included by default
   # message: a message to include in the result, none by default
-  # Rewards (only if coins or xp specified)
+  # Rewards (only if coins or xp are specified)
   # user: @current_user
   # coins: 0
   # xp: 0
@@ -56,7 +56,7 @@ module RenderUtils
   # Options and their default values:
   # except: fields not to be attached, all included by default
   # message: a message to include in the result, none by default
-  # Rewards (only if coins or xp specified)
+  # Rewards (only if coins or xp are specified)
   # user: @current_user
   # coins: 0
   # xp: 0
@@ -72,7 +72,7 @@ module RenderUtils
   # If neither rewards nor message are specified and the object is destroyed then returns an empty hash
   # Options and their default values:
   # message: a message to include in the result, none by default
-  # Rewards (only if coins or xp specified)
+  # Rewards (only if coins or xp are specified)
   # user: @current_user
   # coins: 0
   # xp: 0
@@ -89,7 +89,7 @@ module RenderUtils
   # status: status to render, defaults to :created
   # except: fields not to be attached, all included by default
   # message: a message to include in the result, none by default
-  # Rewards (only if coins or xp specified)
+  # Rewards (only if coins or xp are specified)
   # user: @current_user
   # coins: 0
   # xp: 0
@@ -105,7 +105,7 @@ module RenderUtils
   # status: status to render, defaults to :ok
   # except: fields not to be attached, all included by default
   # message: a message to include in the result, none by default
-  # Rewards (only if coins or xp specified)
+  # Rewards (only if coins or xp are specified)
   # user: @current_user
   # coins: 0
   # xp: 0
@@ -119,7 +119,7 @@ module RenderUtils
   # Otherwise the status is :ok
   # Options and their default values:
   # message: a message to include in the result, none by default
-  # Rewards (only if coins or xp specified)
+  # Rewards (only if coins or xp are specified)
   # user: @current_user
   # coins: 0
   # xp: 0
@@ -172,23 +172,6 @@ module RenderUtils
     object.class.name.demodulize.parameterize(separator: '_')
   end
 
-  def merge_object!(hash, object, name = nil)
-    object = parse(object, false)
-    name ||= name(object)
-    key = name.to_sym
-    if object
-      hash[key] = object
-      return key
-    end
-    nil
-  end
-
-  def merge!(hash, objects)
-    objects.each do |k, v|
-      merge_object!(hash, v, k)
-    end
-  end
-
   def as_array(object)
     return [] unless object
     object.is_a?(Array) ? object : [object]
@@ -229,6 +212,23 @@ module RenderUtils
     attach_hash(options)
   end
 
+  def merge_object!(hash, object, name = nil)
+    if object
+      object = parse(object, false)
+      name ||= name(object)
+      key = name.to_sym
+      hash[key] = object
+      return key
+    end
+    nil
+  end
+
+  def merge!(hash, objects)
+    objects.each do |k, v|
+      merge_object!(hash, v, k)
+    end
+  end
+
   def deep_exclude(object, keys = [])
     if object.is_a?(Hash)
       object.inject({}) do |res, (k, v)|
@@ -257,7 +257,7 @@ module RenderUtils
     check_attach!(options[:object], options)
     result = {}
     result[:message] = options[:message] unless options[:message].blank?
-    foreign_options = options.except(:object, :message, :user, :coins, :xp, :except, :status)
+    foreign_options = options.except(:object, :message, :user, :coins, :xp, :except, :status) # include rewards
     key = nil
     if foreign_options.empty? && result.empty?
       result = parse(options[:object]) || {}
@@ -266,7 +266,7 @@ module RenderUtils
       merge!(result, foreign_options)
     end
     result = deep_exclude(result, as_array(options[:except]))
-    result = result[key] if key && result.is_a?(Hash) && result.size == 1 && result.key?(key)
+    result = result[key] if key && result.is_a?(Hash) && result.size == 1 && result.key?(key) # compact attached object
     result
   end
 
@@ -292,10 +292,8 @@ module RenderUtils
   end
 
   def get_status(options, default)
-    return default unless options[:status]
+    return default if options.blank? || !options.respond_to?(:key?) || !options.key?(:status)
     options[:status]
-  rescue
-    default
   end
 
   def parse(object, to_message = true)
