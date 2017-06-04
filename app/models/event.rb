@@ -28,7 +28,7 @@ class Event < ApplicationRecord
                                                 :image_file_size,
                                                 :image_updated_at]))
            .merge(picture_hash)
-    if current_user && active_event && enabled
+    if current_user && active_event && enabled &  ['normal', 'admin'].include?(current_user.kind)
       hash.merge(user_event_progress)
     else
       hash
@@ -46,7 +46,7 @@ class Event < ApplicationRecord
   end
 
   def user_event_progress
-    event_progress = event_progresses.find_by_user_id current_user.id
+    event_progress = event_progresses.find_by_user_id! current_user.id
     event_progress_hash = JSON.parse event_progress.to_json
     event_progress_hash.delete "created_at"
     event_progress_hash.delete "updated_at"
@@ -57,6 +57,6 @@ class Event < ApplicationRecord
   end
 
   def active_event
-    self.start_date <= Date.today && Date.today <= self.end_date
+    start_date <= Date.today && Date.today <= end_date if start_date && end_date
   end
 end

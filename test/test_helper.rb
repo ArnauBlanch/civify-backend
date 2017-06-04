@@ -53,11 +53,19 @@ class ActiveSupport::TestCase
     assert @award.valid?
   end
 
-  def setup_event
-    @event = Event.create(title: 'title', description: 'desc', number: 288, coins: 288,
-                  xp: 288, kind: :confirm,  image: sample_file, start_date: "2016-05-14",
-                  end_date: "2018-05-12")
+  def setup_event(options = {})
+    options[:enabled] ||= true
+    options[:number] ||= 288
+    options[:start_date] ||= "2016-05-14"
+    options[:end_date] ||= "2018-05-12"
+    @event = Event.create(title: 'title', description: 'desc', number: options[:number], coins: 288,
+                  xp: 288, kind: :confirm,  image: sample_file, start_date: options[:start_date],
+                  end_date: options[:end_date], enabled: options[:enabled])
     assert @event.valid?
+    if @event.valid? && @user
+      @user.events_in_progress << @event
+    end
+    @event if @event.valid?
   end
 
   def setup_achievement

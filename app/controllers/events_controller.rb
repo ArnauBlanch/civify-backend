@@ -2,11 +2,12 @@ class EventsController < ApplicationController
   include Xattachable
   before_action :needs_admin, except: [:show, :index]
   before_action :fetch_picture, only: [:create, :update]
+  before_action :set_event, only: [:show]
 
   def index
     Event.current_user = current_user
     events = if params.key?('enabled')
-               Event.all.where(enabled: params[:enabled])
+               Event.all.where(enabled: params[:enabled] == 'true')
              else
                Event.all
              end
@@ -15,7 +16,6 @@ class EventsController < ApplicationController
 
   def show
     Event.current_user = current_user
-    set_event
     render_from @event
   end
 
@@ -29,7 +29,8 @@ class EventsController < ApplicationController
   private
 
   def set_event
-    @event = Event.find_by!(event_token: params[:event_token])
+    @event = Event.find_by(event_token: params[:event_token])
+    render_from message: 'Event does not exists', status: :not_found unless @event
   end
 
   def event_params
