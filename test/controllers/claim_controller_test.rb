@@ -12,7 +12,7 @@ class ClaimControllerTest < ActionDispatch::IntegrationTest
     assert_response_body_message 'Achievement does not exist'
   end
 
-  test 'achievement claimed succesfully' do
+  test 'achievement claimed successfully' do
     setup_user(kind: :admin, username: 'admin-user')
     create_achievement
     a = Achievement.find_by(number: 5, kind: 'issue')

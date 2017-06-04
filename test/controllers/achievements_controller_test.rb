@@ -61,6 +61,17 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
     get '/achievements/1', headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
-    assert_equal 'Achievement does not exists', body['message']
+    assert_equal 'Achievement does not exist', body['message']
+  end
+
+  test 'successful update' do
+    create_achievement
+    a = Achievement.find_by(kind: 'issue', number: 5)
+    patch "/achievements/#{a.achievement_token}", headers: authorization_header(@password, @user.username),
+                                                  params: { title: 'Modified title' }
+    assert_response :ok
+    a.reload
+    body = JSON.parse(response.body)
+    assert_equal body['title'], a.title
   end
 end
