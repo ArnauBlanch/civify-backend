@@ -23,7 +23,7 @@ class EventsController < ApplicationController
     @event = Event.new(event_params)
     @event.image = @picture
     save_render! @event
-    create_event_progress if @event.valid?
+    create_event_progress
   end
 
   private
