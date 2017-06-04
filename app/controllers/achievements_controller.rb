@@ -1,7 +1,7 @@
 class AchievementsController < ApplicationController
-  before_action :needs_admin, only: [:create]
+  before_action :needs_admin, only: [:create, :update]
   before_action :set_current_user
-  before_action :set_achievement, only: [:show]
+  before_action :set_achievement, only: [:show, :update]
 
   def create
     a = Achievement.new(achievement_params)
@@ -19,6 +19,10 @@ class AchievementsController < ApplicationController
     render_from @achievement
   end
 
+  def update
+    update_render! @achievement, achievement_params
+  end
+
   private
 
   def achievement_params
@@ -33,7 +37,7 @@ class AchievementsController < ApplicationController
 
   def set_achievement
     @achievement = Achievement.find_by(achievement_token: params[:achievement_token])
-    render_from message: 'Achievement does not exists', status: :not_found unless @achievement
+    render_from message: 'Achievement does not exist', status: :not_found unless @achievement
   end
 
   def set_current_user
