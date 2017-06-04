@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170603164620) do
+ActiveRecord::Schema.define(version: 20170604220418) do
 
   create_table "achievement_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
@@ -53,6 +53,15 @@ ActiveRecord::Schema.define(version: 20170603164620) do
     t.boolean  "visible",              default: true
     t.index ["award_auth_token"], name: "index_awards_on_award_auth_token", unique: true, using: :btree
     t.index ["offered_by"], name: "index_awards_on_offered_by", using: :btree
+  end
+
+  create_table "badges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+    t.string   "title"
+    t.string   "badgeable_type"
+    t.integer  "badgeable_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.index ["badgeable_type", "badgeable_id"], name: "index_badges_on_badgeable_type_and_badgeable_id", using: :btree
   end
 
   create_table "confirmations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
