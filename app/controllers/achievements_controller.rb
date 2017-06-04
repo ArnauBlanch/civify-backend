@@ -1,7 +1,9 @@
 class AchievementsController < ApplicationController
+  include Xattachable
   before_action :needs_admin, except: [:show, :index]
   before_action -> { set_current_user(Achievement) }, only: [:show, :index]
   before_action :set_achievement, only: [:show, :update]
+  before_action :fetch_picture, only: [:create, :update]
 
   def create
     @achievement = Achievement.new(achievement_params)
@@ -34,7 +36,7 @@ class AchievementsController < ApplicationController
   end
 
   def achievement_params
-    params.permit(:title, :description, :number, :kind, :coins, :xp, :enabled)
+    params.permit(:title, :description, :number, :kind, :coins, :xp, :enabled, :badge)
   end
 
   def create_achievement_progresses
@@ -42,5 +44,4 @@ class AchievementsController < ApplicationController
       user.achievements_in_progress << @achievement
     end
   end
-
 end
