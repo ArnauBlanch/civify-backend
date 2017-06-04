@@ -3,6 +3,7 @@ class Achievement < ApplicationRecord
   enum kind: [:issue, :confirm, :resolve, :reward, :use, :confirm_received,
               :resolve_received, :coins_spent, :issue_resolved, :level]
 
+  has_one :badge, as: :badgeable, dependent: :destroy
   has_many :achievement_progresses, dependent: :destroy
   has_many :users, through: :achievement_progresses
 
@@ -12,6 +13,8 @@ class Achievement < ApplicationRecord
   validates :kind, presence: true
   validates :coins, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :xp, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates_associated :badge
+  validates_presence_of :badge
   validates_inclusion_of :enabled, in: [true, false]
   validates_uniqueness_of :number, scope: :kind
 
