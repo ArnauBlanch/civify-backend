@@ -49,21 +49,27 @@ class ActiveSupport::TestCase
   def setup_award(price = 0)
     @picture = sample_file
     @award = @user.offered_awards.create!(title: 'award', description: 'desc',
-                                         picture: @picture, price: price)
+                                          picture: @picture, price: price)
     assert @award.valid?
   end
 
-  def setup_event
-    @event = Event.create(title: 'title', description: 'desc', number: 288, coins: 288,
-                          xp: 288, kind: :confirm, image: sample_file,
-                          start_date: '17-5-12 00:00:00', end_date: '17-5-12 00:00:01')
+  def setup_event(options = {})
+    options[:enabled] ||= true
+    options[:number] ||= 288
+    options[:start_date] ||= '2016-05-14'
+    options[:end_date] ||= '2018-05-12'
+    @event = Event.create(title: 'title', description: 'desc', number: options[:number], coins: 288,
+                          xp: 288, kind: :confirm,  image: sample_file, start_date: options[:start_date],
+                          end_date: options[:end_date], enabled: options[:enabled])
     assert @event.valid?
+    @user.events_in_progress << @event if @user
+    @event
   end
 
   def setup_achievement
     @achievement = Achievement.create(title: 'Title', description:
         'Description', number: 1, kind: :issue, coins: 10, xp: 100)
-    @achievement.valid?
+    assert @achievement.valid?
   end
 
   def sample_file(filename = 'image.gif')
@@ -71,7 +77,7 @@ class ActiveSupport::TestCase
   end
 
   def sample_image_hash
-    content = Base64.strict_encode64(File.binread sample_file)
+    content = Base64.strict_encode64(File.binread( sample_file))
     { filename: 'image.gif', content: content, content_type: 'image/gif' }
   end
 
@@ -102,6 +108,7 @@ class ActiveSupport::TestCase
   # assert_response_body(COINS::ISSUE_CREATION, response, [:rewards, :coins])
   # DO NOT DO .to_json on exp parameter
   # You can compare hashes if needed (even with the entire body without providing any key)
+  # keys can contain integers to represent array access
   def assert_response_body(exp, keys = [])
     return unless response
     act = find_in_path(JSON.parse(response.body), keys)
@@ -123,7 +130,8 @@ class ActiveSupport::TestCase
   def find_in_path(source, keys = [])
     keys = [keys] unless keys.is_a?(Array)
     keys.each do |key|
-      source = source[key.to_s]
+      key = key.to_s if key.is_a?(Symbol)
+      source = source[key]
     end
     source
   end
