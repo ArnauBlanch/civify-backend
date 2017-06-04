@@ -58,4 +58,14 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
     assert_response_body_message 'Achievement does not exists'
   end
+
+  test 'successful update' do
+    create_achievement
+    a = Achievement.find_by(kind: 'issue', number: 5)
+    patch "/achievements/#{a.achievement_token}", headers: authorization_header(@password, @user.username),
+          params: { title: 'Modified title' }
+    assert_response :ok
+    a.reload
+    assert_response_body a.title, :title
+  end
 end
