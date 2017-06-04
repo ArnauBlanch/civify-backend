@@ -62,6 +62,6 @@ class UsersController < ApplicationController
   end
 
   def create_event_progress
-    @user.events_in_progress << Event.all unless @user.kind == 'business'
+    @user.events_in_progress << Event.all
   end
 end
