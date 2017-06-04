@@ -25,6 +25,7 @@ class UsersController < ApplicationController
     else
       create_user request_params
       create_achievement_progresses(@user) unless @user.kind == :business.to_s
+      create_event_progress unless @user.kind == :business
     end
   end
 
@@ -58,5 +59,9 @@ class UsersController < ApplicationController
     Achievement.all.each do |a|
       a.users << user
     end
+  end
+
+  def create_event_progress
+    @user.events_in_progress << Event.all unless @user.kind == 'business'
   end
 end
