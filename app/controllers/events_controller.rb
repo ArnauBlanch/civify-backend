@@ -13,8 +13,11 @@ class EventsController < ApplicationController
   end
 
   def index
-    events = Event.all
-    events = events.where(enabled: params[:enabled] == 'true') if params.key?('enabled')
+    events = if params.key?('enabled')
+               Event.where(enabled: params[:enabled])
+             else
+               Event.all
+             end
     render_from events
   end
 
