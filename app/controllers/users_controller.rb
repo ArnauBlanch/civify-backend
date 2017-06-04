@@ -25,6 +25,7 @@ class UsersController < ApplicationController
     else
       create_user request_params
       create_achievement_progresses(@user) unless @user.kind == :business.to_s
+      create_event_progress unless @user.kind == :business
     end
   end
 
@@ -33,10 +34,9 @@ class UsersController < ApplicationController
     save_render! @user
   end
 
-  # DELETE /users/[:user_auth_token]
+  # DELETE /users/:user_auth_token
   def destroy
-    destroy! @user
-    render_from 'User deleted'
+    destroy_render!(@user, message: 'User deleted')
   end
 
   private
@@ -58,5 +58,9 @@ class UsersController < ApplicationController
     Achievement.all.each do |a|
       a.users << user
     end
+  end
+
+  def create_event_progress
+    @user.events_in_progress << Event.all
   end
 end

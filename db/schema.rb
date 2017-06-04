@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170602173635) do
+ActiveRecord::Schema.define(version: 20170603164620) do
 
   create_table "achievement_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
@@ -63,6 +63,17 @@ ActiveRecord::Schema.define(version: 20170602173635) do
     t.index ["issue_id", "user_id"], name: "index_confirmations_on_issue_id_and_user_id", unique: true, using: :btree
     t.index ["issue_id"], name: "index_confirmations_on_issue_id", using: :btree
     t.index ["user_id"], name: "index_confirmations_on_user_id", using: :btree
+  end
+
+  create_table "event_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "event_id"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.boolean  "completed",  default: false
+    t.boolean  "claimed",    default: false
+    t.integer  "progress",   default: 0
+    t.index ["event_id", "user_id"], name: "index_event_progresses_on_event_id_and_user_id", unique: true, using: :btree
   end
 
   create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
