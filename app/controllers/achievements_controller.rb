@@ -1,7 +1,7 @@
 class AchievementsController < ApplicationController
   before_action :needs_admin, except: [:show, :index]
   before_action -> { set_current_user(Achievement) }, only: [:show, :index]
-  before_action :set_achievement, only: [:show]
+  before_action :set_achievement, only: [:show, :update]
 
   def create
     @achievement = Achievement.new(achievement_params)
@@ -17,6 +17,10 @@ class AchievementsController < ApplicationController
 
   def show
     render_from @achievement
+  end
+
+  def update
+    update_render! @achievement, achievement_params
   end
 
   private
