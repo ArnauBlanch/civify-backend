@@ -44,7 +44,6 @@ class ActiveSupport::TestCase
                                  longitude: 38.2, category: 'arbolada',
                                  description: 'desc', picture: sample_file,
                                  risk: false, resolved_votes: 564)
-    puts
     assert @issue.valid?
     @issue
   end

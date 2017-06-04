@@ -10,8 +10,11 @@ class AchievementsController < ApplicationController
   end
 
   def index
-    achievements = Achievement.all
-    achievements = achievements.where(enabled: params[:enabled] == 'true') if params.key?('enabled')
+    achievements = if params.key?('enabled')
+                     Achievement.where(enabled: params[:enabled])
+                   else
+                     Achievement.all
+                   end
     render_from achievements
   end
 
