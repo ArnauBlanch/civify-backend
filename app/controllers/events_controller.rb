@@ -40,6 +40,6 @@ class EventsController < ApplicationController
   end
 
   def create_event_progress
-    @event.users << User.all.where(kind: [:normal, :admin])
+    @event.users << User.all
   end
 end

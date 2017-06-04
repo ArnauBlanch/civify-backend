@@ -93,17 +93,6 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     body = JSON.parse(response.body)
     assert_nil body['progress']
-
-    post '/users', params: {
-        username: 'foo', email: 'foo@bar.com',
-        first_name: 'Foo', kind: 'business',
-        password: 'mypass', password_confirmation: 'mypass'
-    }, as: :json
-
-    get "/events/#{e2.event_token}", headers: authorization_header('mypass', 'foo')
-    assert_response :ok
-    body = JSON.parse(response.body)
-    assert_nil body['progress']
   end
 
 end
