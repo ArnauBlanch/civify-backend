@@ -1,7 +1,4 @@
 class Badge < ApplicationRecord
-  include Xattachable
-  before_save :fetch_icon
-  before_create :set_title
   belongs_to :badgeable, polymorphic: true
   validates :title, presence: true
   has_attached_file :icon, styles: { thumb: '200x200' }
@@ -10,14 +7,24 @@ class Badge < ApplicationRecord
   validates_attachment :icon, size: { in: 0..5.megabytes }
   validates :icon, attachment_presence: true
 
-  private
+  def as_json(options = nil)
+    super(options.reverse_merge(except: [:id, :icon_file_name, :icon_content_type,
+                                         :icon_file_size, :icon_updated_at,
+                                         :badgeable_type, :badgeable_id]))
+    .merge(icon_hash)
 
-  def fetch_icon
-    fetch_picture
-    icon = @picture if @picture
   end
 
-  def set_title
-    title = badgeable.title
+  private
+
+  def icon_hash
+    {
+     content_type: icon_content_type,
+     file_size: icon_file_size,
+     updated_at: icon_updated_at,
+     small_url: icon.url(:small),
+     med_url: icon.url(:med),
+     large_url: icon.url(:original)
+    }
   end
 end

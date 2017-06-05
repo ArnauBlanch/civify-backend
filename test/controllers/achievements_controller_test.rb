@@ -60,7 +60,7 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'successful update' do
-    create_achievement
+    post_achievement
     a = Achievement.find_by(kind: 'issue', number: 5)
     patch "/achievements/#{a.achievement_token}", headers: authorization_header(@password, @user.username),
           params: { title: 'Modified title' }

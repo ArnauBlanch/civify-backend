@@ -3,10 +3,10 @@ class AchievementsController < ApplicationController
   before_action :needs_admin, except: [:show, :index]
   before_action -> { set_current_user(Achievement) }, only: [:show, :index]
   before_action :set_achievement, only: [:show, :update]
-  before_action :fetch_picture, only: [:create, :update]
 
   def create
     @achievement = Achievement.new(achievement_params)
+    @achievement.badge = create_badge if params[:badge]
     save_render! @achievement
     create_achievement_progresses
   end
@@ -25,6 +25,7 @@ class AchievementsController < ApplicationController
   end
 
   def update
+    @achievement.badge = create_badge if params[:badge]
     update_render! @achievement, achievement_params
   end
 
@@ -37,6 +38,14 @@ class AchievementsController < ApplicationController
 
   def achievement_params
     params.permit(:title, :description, :number, :kind, :coins, :xp, :enabled, :badge)
+  end
+
+  def create_badge
+    fetch_picture params[:badge]
+    b = Badge.new(title: params[:badge][:title])
+    b.icon = @picture
+    b.save!
+    b
   end
 
   def create_achievement_progresses

@@ -14,7 +14,7 @@ class ClaimControllerTest < ActionDispatch::IntegrationTest
 
   test 'achievement claimed successfully' do
     setup_user(kind: :admin, username: 'admin-user')
-    create_achievement
+    post_achievement
     a = Achievement.find_by(number: 5, kind: 'issue')
     user = User.find_by(kind: :normal)
     setup_reward user
@@ -30,7 +30,7 @@ class ClaimControllerTest < ActionDispatch::IntegrationTest
   test 'achievement already claimed' do
     setup_user(kind: :admin, username: 'admin-user')
     setup_reward
-    create_achievement
+    post_achievement
     a = Achievement.find_by(number: 5, kind: 'issue')
     user = User.find_by(kind: :normal)
     user.achievement_progresses
@@ -46,7 +46,7 @@ class ClaimControllerTest < ActionDispatch::IntegrationTest
   test 'achievement not completed' do
     setup_user(kind: :admin, username: 'admin-user')
     setup_reward
-    create_achievement
+    post_achievement
     a = Achievement.find_by(number: 5, kind: 'issue')
     user = User.find_by(kind: :normal)
     user.achievement_progresses
@@ -58,15 +58,4 @@ class ClaimControllerTest < ActionDispatch::IntegrationTest
     assert_response_body_message 'You haven\'t completed this achievement yet'
     assert_reward_not_given
   end
-
-  private
-
-  def create_achievement
-    post '/achievements', headers: authorization_header(@password, @user.username), params: {
-      title: 'Title', description: 'Description',
-      number: 5, kind: :issue, coins: 10, xp: 100
-    }, as: :json
-    assert_response :created
-  end
-
 end
