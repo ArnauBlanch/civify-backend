@@ -17,11 +17,13 @@ class BadgesControllerTest < ActionDispatch::IntegrationTest
     post "/achievements/#{@achievement.achievement_token}/claim",
          headers: authorization_header(@password, @user.username)
     assert_response :ok
+    assert_response_body @achievement.badge, :badge
     post "/events/#{@event.event_token}/claim",
          headers: authorization_header(@password, @user.username)
     assert_response :ok
+    assert_response_body @event.badge, :badge
     get "/users/#{@user.user_auth_token}/badges", headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_response_body [ap.achievement.badge, ep.event.badge], :badges
+    assert_response_body [ap.achievement.badge, ep.event.badge]
   end
 end
