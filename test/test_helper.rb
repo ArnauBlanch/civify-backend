@@ -91,7 +91,7 @@ class ActiveSupport::TestCase
     post '/events', params: {
       title: 'sample event', description: 'desc',
       image: sample_image_hash, start_date: '10-5-17 16:00:00',
-      end_date: '11-5-17 16:00:00', number: 288, coins: 288,
+      end_date: '11-5-17 16:00:00', number: 289, coins: 288,
       xp: 288, kind: :issue, badge: {
         title: 'Badge title',
         file_name: badge_image[:file_name],
