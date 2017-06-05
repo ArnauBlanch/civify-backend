@@ -157,9 +157,9 @@ class ActiveSupport::TestCase
   end
 
   # Example usage after setup_user plus call to GET /user/#{@user.user_auth_token}:
-  # assert_response_body(:normal, response, :kind)
+  # assert_response_body(:normal, :kind)
   # Example usage after call to POST /issues
-  # assert_response_body(COINS::ISSUE_CREATION, response, [:rewards, :coins])
+  # assert_response_body(COINS::ISSUE_CREATION, [:rewards, :coins])
   # DO NOT DO .to_json on exp parameter
   # You can compare hashes if needed (even with the entire body without providing any key)
   # keys can contain integers to represent array access
