@@ -69,20 +69,24 @@ module AuthorizationController
 
   def check_user_exists(user)
     return true if user
-    render_from(message: 'User not found', status: :not_found)
+    not_found 'User'
     false
   end
 
   def check_issue_exists(issue)
     return true if issue
-    render_from(message: 'Issue not found', status: :not_found)
+    not_found 'Issue'
     false
   end
 
   def check_award_exists(award)
     return true if award
-    render_from(message: 'Award not found', status: :not_found)
+    not_found 'Award'
     false
+  end
+
+  def not_found(resource)
+    render_from(message: "#{resource} not found", status: :not_found)
   end
 
   def verify_user
@@ -96,4 +100,5 @@ module AuthorizationController
   def verify_award
     @verify_award = true
   end
+
 end

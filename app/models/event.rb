@@ -26,7 +26,7 @@ class Event < ApplicationRecord
   validates_attachment_content_type :image, content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
   validates_attachment :image, size: { in: 0..5.megabytes }
 
-  scope :enabled, (->(enabled) { where(enabled: enabled) if enabled.present? })
+  scope :enabled, (->(enabled) { where(enabled: enabled.nil? ? true : enabled) })
 
   cattr_accessor :current_user
 
@@ -37,7 +37,7 @@ class Event < ApplicationRecord
                                                 :image_updated_at]))
     json.merge!(picture_hash)
     merge_user_event_progress!(json)
-    merge_badge(json)
+    merge_badge!(json)
     json
   end
 
@@ -50,9 +50,9 @@ class Event < ApplicationRecord
     json
   end
 
-  def merge_badge(json)
+  def merge_badge!(json)
     badge_hash = JSON.parse badge.to_json
-    json.merge!(badge: badge_hash )
+    json.merge!(badge: badge_hash)
   end
 
   def active_event
