@@ -29,14 +29,19 @@ class UsersController < ApplicationController
 
   def create_user(params)
     @user = User.new(params)
-    save_render! @user
-    create_achievement_progresses @user
+    save_render! @user, message: 'User created'
+    create_achievement_progresses
     create_event_progress
   end
 
   # DELETE /users/:user_auth_token
   def destroy
-    destroy_render!(@user, message: 'User deleted')
+    if @user.issues.empty?
+      destroy_render!(@user, message: 'User deleted', username: @user.username, user_auth_token: @user.user_auth_token)
+    else
+      render_from message: 'Cannot delete a user with created issues',
+                  username: @user.username, user_auth_token: @user.user_auth_token, status: :bad_request
+    end
   end
 
   private
@@ -53,10 +58,8 @@ class UsersController < ApplicationController
     [:id, :password_digest, :email, :created_at, :updated_at, :xp]
   end
 
-  def create_achievement_progresses(user)
-    Achievement.all.each do |a|
-      a.users << user
-    end
+  def create_achievement_progresses
+    @user.achievements_in_progress << Achievement.all
   end
 
   def create_event_progress

@@ -12,7 +12,7 @@ class AchievementsController < ApplicationController
   end
 
   def index
-    render_from Achievement.all.enabled(params[:enabled])
+    render_from enabled_from_param(params[:enabled])
   end
 
   def show
@@ -47,5 +47,9 @@ class AchievementsController < ApplicationController
     User.all.each do |user|
       user.achievements_in_progress << @achievement
     end
+  end
+
+  def enabled_from_param(enabled)
+    enabled.nil? ? Achievement.all : Achievement.enabled(enabled == 'true')
   end
 end

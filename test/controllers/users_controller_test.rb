@@ -26,20 +26,20 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :created # test status code
     user = User.find_by(username: 'foo') # test user creation
     assert_not_nil user
-    assert_equal user.to_json, response.body
+    assert_response_body({ message: 'User created', user: user })
   end
 
   test 'valid business creation request with optional last name' do
     post '/users', params: {
-        username: 'foo', email: 'foo@bar.com',
-        first_name: 'Foo', kind: 'business',
-        password: 'mypass', password_confirmation: 'mypass'
+      username: 'foo', email: 'foo@bar.com',
+      first_name: 'Foo', kind: 'business',
+      password: 'mypass', password_confirmation: 'mypass'
     }, as: :json
     assert_response :created # test status code
     user = User.find_by(username: 'foo') # test user creation
     assert_not_nil user
     assert user.business?
-    assert_equal user.to_json, response.body
+    assert_response_body({ message: 'User created', user: user })
   end
 
   test 'invalid create request' do
@@ -49,8 +49,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
       password: 'mypass', password_confirmation: 'mypass'
     }, as: :json
     assert_response :bad_request # test status code
-    body = JSON.parse(response.body)
-    assert_equal "Username can't be blank", body['message'] # test response body
+    assert_response_body_message "Username can't be blank"
   end
 
   test 'invalid admin create request' do
@@ -60,9 +59,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
         password: 'mypass', password_confirmation: 'mypass'
     }, as: :json
     assert_response :unauthorized # test status code
-    body = JSON.parse(response.body)
-    assert_equal 'Admin users cannot be created this way for security reasons',
-                 body['message'] # test response body
+    assert_response_body_message 'Admin users cannot be created this way for security reasons'
   end
 
   test 'valid destroy request' do
@@ -71,16 +68,14 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     delete '/users/' + token, headers: authorization_header(@password, @user.username)
     assert_response :ok
     assert_nil User.find_by(user_auth_token: token)
-    body = JSON.parse(response.body)
-    assert_equal 'User deleted', body['message']
+    assert_response_body_message 'User deleted'
   end
 
   test 'invalid destroy request' do
     setup_user
     delete '/users/123', headers: authorization_header(@password, @user.username)
     assert_response :not_found
-    body = JSON.parse(response.body)
-    assert_equal 'User not found', body['message']
+    assert_response_body_message 'User not found'
   end
 
   def json_exclude

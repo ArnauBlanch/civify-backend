@@ -40,20 +40,30 @@ class AchievementTest < ActiveSupport::TestCase
   end
 
   test 'number - kind uniqueness' do
-    aux = @achievement.dup
+    aux = dup_with_badge(@achievement)
     aux.achievement_token = 'aa'
-    aux.save
-    assert_not aux.valid?
+    assert_not aux.save
     aux.number = @achievement.number + 1
-    aux.save
-    assert aux.valid?
+    assert aux.save
     aux.number = @achievement.number
     aux.kind = :reward
-    aux.save
-    assert aux.valid?
+    assert aux.save
   end
 
   test 'token' do
     assert_not @achievement.achievement_token.nil?
   end
+
+  test 'enabled scope' do
+    previous = @achievement
+    setup_achievement(enabled: false, number: 1)
+    assert_not @achievement.enabled?
+    assert_not @achievement.enabled == previous.enabled
+    enableds = Achievement.where(enabled: true)
+    assert_equal enableds, Achievement.enabled
+    assert_equal enableds, Achievement.enabled(true)
+    assert_equal enableds, Achievement.enabled(nil)
+    assert_equal Achievement.where(enabled: false), Achievement.enabled(false)
+  end
+
 end
