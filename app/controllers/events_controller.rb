@@ -8,6 +8,7 @@ class EventsController < ApplicationController
   def create
     @event = Event.new(event_params)
     @event.image = @picture
+    @event.badge = create_badge if params[:badge]
     save_render! @event
     create_event_progress
   end
@@ -33,7 +34,15 @@ class EventsController < ApplicationController
   end
 
   def event_params
-    params.permit(:title, :start_date, :end_date, :description, :number, :coins, :xp, :kind, :image)
+    params.permit(:title, :start_date, :end_date, :description, :number, :coins, :xp, :kind, :image, :badge)
+  end
+
+  def create_badge
+    fetch_picture params[:badge]
+    b = Badge.new(title: params[:badge][:title])
+    b.icon = @picture
+    b.save!
+    b
   end
 
   def create_event_progress

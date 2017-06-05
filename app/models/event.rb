@@ -35,6 +35,7 @@ class Event < ApplicationRecord
                                                 :image_updated_at]))
     json.merge!(picture_hash)
     merge_user_event_progress!(json)
+    merge_badge(json)
     json
   end
 
@@ -45,6 +46,11 @@ class Event < ApplicationRecord
     ep = event_progresses.find_by_user_id current_user.id
     json.merge!(progress: ep.progress, completed: ep.completed, claimed: ep.claimed) if ep
     json
+  end
+
+  def merge_badge(json)
+    badge_hash = JSON.parse badge.to_json
+    json.merge!(badge: badge_hash )
   end
 
   def active_event

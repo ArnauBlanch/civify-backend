@@ -1,12 +1,12 @@
 module Xattachable
   extend ActiveSupport::Concern
-  def fetch_picture
-    @picture = if params[:picture]
+  def fetch_picture(picture = nil)
+    @picture = if picture
+                 parse_image_data picture
+               elsif params[:picture]
                  parse_image_data params[:picture]
                elsif params[:image]
                  parse_image_data params[:image]
-               elsif params[:badge]
-                 parse_image_data params[:badge]
                end
   end
 

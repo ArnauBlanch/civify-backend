@@ -23,6 +23,7 @@ class Achievement < ApplicationRecord
   def as_json(options = {})
     json = super(options.reverse_merge(except: [:id, :user_id]))
     merge_user_achievement_progress!(json)
+    merge_badge(json)
     json
   end
 
@@ -33,6 +34,11 @@ class Achievement < ApplicationRecord
     ap = achievement_progresses.find_by_user_id current_user.id
     json.merge!(progress: ap.progress, completed: ap.completed, claimed: ap.claimed) if ap
     json
+  end
+
+  def merge_badge(json)
+    badge_hash = JSON.parse badge.to_json
+    json.merge!(badge: badge_hash )
   end
 
 end
