@@ -22,9 +22,7 @@ class Badge < ApplicationRecord
      content_type: icon_content_type,
      file_size: icon_file_size,
      updated_at: icon_updated_at,
-     small_url: icon.url(:small),
-     med_url: icon.url(:med),
-     large_url: icon.url(:original)
+     icon_url: icon.url(:thumb)
     }
   end
 end
