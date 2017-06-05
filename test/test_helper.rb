@@ -56,20 +56,23 @@ class ActiveSupport::TestCase
     @award
   end
 
-  def setup_achievement
-    @achievement = Achievement.create(title: 'Title', description:
-        'Description', number: 1, kind: :issue, coins: 10, xp: 100, badge: setup_badge )
+  def setup_achievement(options = {})
+    options[:enabled] = true if options[:enabled].nil?
+    options[:number] ||= 288
+    @achievement = Achievement.create(title: 'title', description: 'desc', number: options[:number],
+                                      coins: 288, xp: 288, kind: :issue, enabled: options[:enabled], badge: setup_badge)
     assert @achievement.valid?
+    @user.achievements_in_progress << @achievement if @user
     @achievement
   end
 
   def setup_event(options = {})
-    options[:enabled] ||= true
+    options[:enabled] = true if options[:enabled].nil?
     options[:number] ||= 288
     options[:start_date] ||= '2016-05-14'
     options[:end_date] ||= '2018-05-12'
     @event = Event.create(title: 'title', description: 'desc', number: options[:number], coins: 288,
-                          xp: 288, kind: :confirm,  image: sample_file, start_date: options[:start_date],
+                          xp: 288, kind: :issue, image: sample_file, start_date: options[:start_date],
                           end_date: options[:end_date], enabled: options[:enabled], badge: setup_badge)
     assert @event.valid?
     @user.events_in_progress << @event if @user
@@ -90,11 +93,11 @@ class ActiveSupport::TestCase
       image: sample_image_hash, start_date: '10-5-17 16:00:00',
       end_date: '11-5-17 16:00:00', number: 288, coins: 288,
       xp: 288, kind: :issue, badge: {
-            title: 'Badge title',
-            file_name: badge_image[:file_name],
-            content: badge_image[:content],
-            content_type: badge_image[:content_type]
-        }
+        title: 'Badge title',
+        file_name: badge_image[:file_name],
+        content: badge_image[:content],
+        content_type: badge_image[:content_type]
+      }
     }, headers: authorization_header(@password, user.username)
     user.reload
   end
@@ -104,13 +107,23 @@ class ActiveSupport::TestCase
     post '/achievements', headers: authorization_header(@password, user.username), params: {
       title: 'Title', description: 'Description',
       number: 5, kind: :issue, coins: 10, xp: 100, badge: {
-            title: 'Badge title',
-            file_name: badge_image[:file_name],
-            content: badge_image[:content],
-            content_type: badge_image[:content_type]
-        }
+        title: 'Badge title',
+        file_name: badge_image[:file_name],
+        content: badge_image[:content],
+        content_type: badge_image[:content_type]
+      }
     }, as: :json
     user.reload
+  end
+
+  def dup_with_badge(model)
+    a = model.dup
+    a.badge = model.badge
+    a
+  end
+
+  def set_current_user(model, user = @user)
+    model.current_user = user
   end
 
   def sample_file(filename = 'image.gif')

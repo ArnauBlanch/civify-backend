@@ -18,14 +18,14 @@ class Achievement < ApplicationRecord
   validates_inclusion_of :enabled, in: [true, false]
   validates_uniqueness_of :number, scope: :kind
 
-  scope :enabled, (->(enabled) { where(enabled: enabled) if enabled.present? })
+  scope :enabled, (->(enabled) { where(enabled: enabled.nil? ? true : enabled) })
 
   cattr_accessor :current_user
 
   def as_json(options = {})
     json = super(options.reverse_merge(except: [:id, :user_id]))
     merge_user_achievement_progress!(json)
-    merge_badge(json)
+    merge_badge!(json)
     json
   end
 
@@ -38,9 +38,9 @@ class Achievement < ApplicationRecord
     json
   end
 
-  def merge_badge(json)
+  def merge_badge!(json)
     badge_hash = JSON.parse badge.to_json
-    json.merge!(badge: badge_hash )
+    json.merge!(badge: badge_hash)
   end
 
 end

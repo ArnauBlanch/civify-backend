@@ -7,7 +7,7 @@ class IssuesController < ApplicationController
 
   def index
     set_user
-    render_from @user.issues
+    render_from filter_issues(@user.issues)
   end
 
   def show
