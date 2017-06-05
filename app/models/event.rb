@@ -26,6 +26,8 @@ class Event < ApplicationRecord
   validates_attachment_content_type :image, content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
   validates_attachment :image, size: { in: 0..5.megabytes }
 
+  scope :enabled, (->(enabled) { where(enabled: enabled) if enabled.present? })
+
   cattr_accessor :current_user
 
   def as_json(options = nil)

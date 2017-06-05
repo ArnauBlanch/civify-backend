@@ -83,9 +83,7 @@ class IssuesController < ApplicationController
 
   def set_current_user
     auth_command = AuthorizeApiRequest.call(request.headers)
-    if auth_command.success?
-      @current_user = auth_command.result
-    end
+    @current_user = auth_command.result if auth_command.success?
   end
 
   def filter_issues(issues)
@@ -93,9 +91,9 @@ class IssuesController < ApplicationController
     issues = issues.where(resolved: params[:resolved] == 'true') if params.key?('resolved')
     issues = issues.where(risk: params[:risk] == 'true') if params.key?('risk')
     issues = issues.where('latitude <= ?', params[:lat_max].to_f) if params.key?('lat_max')
-    issues = issues.where('longitude <= ?', params[:lon_max].to_f) if params.key?('lon_max')
+    issues = issues.where('longitude <= ?', params[:lng_max].to_f) if params.key?('lng_max')
     issues = issues.where('latitude >= ?', params[:lat_min].to_f) if params.key?('lat_min')
-    issues = issues.where('longitude >= ?', params[:lon_min].to_f) if params.key?('lon_min')
+    issues = issues.where('longitude >= ?', params[:lng_min].to_f) if params.key?('lng_min')
     issues
   end
 end
