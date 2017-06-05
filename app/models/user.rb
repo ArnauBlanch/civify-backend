@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :achievements_in_progress, through: :achievement_progresses, source: :achievement
   has_many :event_progresses, dependent: :destroy
   has_many :events_in_progress, through: :event_progresses, source: :event
+  has_and_belongs_to_many :badges
   enum kind: [:normal, :business, :admin]
   validates :kind, presence: true, inclusion: {in: kinds.keys}
   validates :username, presence: true, uniqueness: { case_sensitive: false }

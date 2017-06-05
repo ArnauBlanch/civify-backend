@@ -6,7 +6,9 @@ class ClaimController < ApplicationController
     ap = current_user.achievement_progresses.find_by(achievement_id: @achievement.id)
     if ap.completed && !ap.claimed
       ap.update(claimed: true)
-      render_from(coins: @achievement.coins, xp: @achievement.xp)
+      badge = ap.achievement.badge
+      current_user.badges << badge
+      render_from(coins: @achievement.coins, xp: @achievement.xp, badge: badge)
     elsif ap.claimed
       render_from(message: 'You have already claimed this achievement', status: :bad_request)
     else
@@ -18,7 +20,9 @@ class ClaimController < ApplicationController
     ep = current_user.event_progresses.find_by(event_id: @event.id)
     if ep.completed && !ep.claimed
       ep.update(claimed: true)
-      render_from(coins: @event.coins, xp: @event.xp)
+      badge = ep.event.badge
+      current_user.badges << badge
+      render_from(coins: @event.coins, xp: @event.xp, badge: badge)
     elsif ep.claimed
       render_from(message: 'You have already claimed this event', status: :bad_request)
     else

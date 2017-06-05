@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170604231230) do
+ActiveRecord::Schema.define(version: 20170605163509) do
 
   create_table "achievement_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
@@ -66,6 +66,13 @@ ActiveRecord::Schema.define(version: 20170604231230) do
     t.integer  "icon_file_size"
     t.datetime "icon_updated_at"
     t.index ["badgeable_type", "badgeable_id"], name: "index_badges_on_badgeable_type_and_badgeable_id", using: :btree
+  end
+
+  create_table "badges_users", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "badge_id"
+    t.integer "user_id"
+    t.index ["badge_id"], name: "index_badges_users_on_badge_id", using: :btree
+    t.index ["user_id"], name: "index_badges_users_on_user_id", using: :btree
   end
 
   create_table "confirmations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
