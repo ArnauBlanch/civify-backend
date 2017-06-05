@@ -3,7 +3,7 @@ require 'test_helper'
 class EventsControllerTest < ActionDispatch::IntegrationTest
   def setup
     setup_user(kind: :admin)
-    setup_event
+    setup_event(enabled: true)
   end
 
   def get_one_event(token)
@@ -37,20 +37,24 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'get enabled events' do
-    setup_event(enabled: 'false', number: 5)
+    setup_event(enabled: false, number: 5)
     get '/events?enabled=true', headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_response_body Event.all.where(enabled: true)
-    assert_not Event.find_by_number(5).enabled
+    assert_response_body Event.enabled(true)
   end
 
   test 'get disabled events' do
-    setup_event(enabled: 'false', number: 5)
+    setup_event(enabled: false, number: 5)
     get '/events?enabled=false', headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_response_body Event.all.where(enabled: false)
-    assert_response_body false, [0, :enabled]
-    assert_not Event.find_by_number(5).enabled
+    assert_response_body Event.enabled(false)
+  end
+
+  test 'get all events' do
+    setup_event(enabled: false, number: 5)
+    get '/events', headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    assert_response_body Event.all
   end
 
   test 'get event' do

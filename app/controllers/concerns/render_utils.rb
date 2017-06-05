@@ -34,7 +34,9 @@ module RenderUtils
   # coins: 0
   # xp: 0
   def render_from(options = {})
-    render json: apply(options), status: get_status(options, :ok)
+    result = apply(options)
+    render json: result, status: get_status(options, :ok)
+    result
   end
 
   # Tries to save the object, if fails raises ActiveRecord::RecordInvalid
@@ -240,6 +242,7 @@ module RenderUtils
   end
 
   def deep_exclude(object, keys = [])
+    return object if keys.empty?
     if object.is_a?(Hash)
       object.inject({}) do |res, (k, v)|
         res[k] = deep_exclude(v, keys) unless keys.include?(k.to_sym)

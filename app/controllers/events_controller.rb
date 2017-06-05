@@ -14,7 +14,7 @@ class EventsController < ApplicationController
   end
 
   def index
-    render_from Event.all.enabled(params[:enabled])
+    render_from enabled_from_param(params[:enabled])
   end
 
   def show
@@ -49,6 +49,10 @@ class EventsController < ApplicationController
     User.all.each do |user|
       user.events_in_progress << @event
     end
+  end
+
+  def enabled_from_param(enabled)
+    enabled.nil? ? Event.all : Event.enabled(enabled == 'true')
   end
 
 end

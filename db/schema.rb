@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 20170604231230) do
     t.index ["offered_by"], name: "index_awards_on_offered_by", using: :btree
   end
 
-  create_table "badges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "badges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.string   "badgeable_type"
     t.integer  "badgeable_id"
