@@ -3,7 +3,7 @@ class EventsController < ApplicationController
   before_action :needs_admin, except: [:show, :index]
   before_action -> { set_current_user(Event) }, only: [:show, :index]
   before_action :fetch_picture, only: [:create, :update]
-  before_action :set_event, only: [:show]
+  before_action :set_event, only: [:show, :update]
 
   def create
     @event = Event.new(event_params)
@@ -19,6 +19,11 @@ class EventsController < ApplicationController
 
   def show
     render_from @event
+  end
+
+  def update
+    @event.badge = create_badge if params[:badge]
+    update_render! @event, event_params
   end
 
   private
