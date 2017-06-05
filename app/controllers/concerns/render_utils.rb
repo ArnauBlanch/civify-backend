@@ -267,7 +267,7 @@ module RenderUtils
     check_attach!(options[:object], options)
     result = {}
     result[:message] = options[:message] unless options[:message].blank?
-    foreign_options = options.except(:object, :message, :user, :coins, :xp, :except, :status) # include rewards
+    foreign_options = foreign(options)
     key = nil
     if foreign_options.empty? && result.empty?
       result = parse(options[:object]) || {}
@@ -314,6 +314,10 @@ module RenderUtils
     JSON.parse(object)
   rescue
     to_message ? { message: object } : object
+  end
+
+  def foreign(options = {})
+    options.except(:object, :message, :user, :coins, :xp, :except, :status) # include rewards
   end
 
 end
