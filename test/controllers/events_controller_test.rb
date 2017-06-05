@@ -23,7 +23,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     @user.update kind: :normal
     post_event
     assert_response :unauthorized
-    assert_not Event.find_by(number: 288, kind: :issue)
+    assert_not Event.find_by(number: 289, kind: :issue)
   end
 
   test 'create event invalid request' do
