@@ -11,6 +11,7 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
     achievement = Achievement.find_by(number: 5, kind: :issue)
     assert_not_nil achievement
     assert_equal achievement.to_json, response.body
+    assert_equal achievement.badge, Badge.find_by_badgeable_id(achievement.id)
     assert 1, @user.achievement_progresses.size
   end
 
@@ -61,11 +62,18 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
 
   test 'successful update' do
     post_achievement
+    badge_image = sample_image_hash
     a = Achievement.find_by(kind: 'issue', number: 5)
     patch "/achievements/#{a.achievement_token}", headers: authorization_header(@password, @user.username),
-          params: { title: 'Modified title' }
+          params: { title: 'Modified title' , badge: {
+              title: 'Modified Badge title',
+              file_name: badge_image[:file_name],
+              content: badge_image[:content],
+              content_type: badge_image[:content_type]
+          }}
     assert_response :ok
     a.reload
     assert_response_body a.title, :title
+    assert_response_body a.badge.title, [:badge, :title]
   end
 end
