@@ -13,7 +13,10 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   test 'create events' do
     post_event
     assert_response :created
-    assert_not_nil Event.find_by(number: 288, kind: :issue)
+    event = Event.find_by(number: 288, kind: :issue)
+    assert_not_nil event
+    assert_equal event.badge, Badge.find_by_badgeable_id(event.id)
+    assert 1, @user.event_progresses.size
   end
 
   test 'events are created only by admins' do
