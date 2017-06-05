@@ -1,5 +1,6 @@
 class Badge < ApplicationRecord
   belongs_to :badgeable, polymorphic: true
+  has_and_belongs_to_many :users
   validates :title, presence: true
   has_attached_file :icon, styles: { thumb: '200x200' }
   validates_attachment_content_type :icon, content_type:
