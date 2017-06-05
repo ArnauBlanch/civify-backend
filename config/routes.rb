@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       resources :offered_awards, only: [:index, :create], param: :award_auth_token, controller: 'awards'
       resources :exchanged_awards, only: [:index], param: :award_auth_token, controller: 'exchanges'
       resources :coins, only: [:create]
+      resources :badges, only: [:index]
     end
   end
   resources :issues, param: :issue_auth_token, only: [] do
