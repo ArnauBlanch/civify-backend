@@ -14,7 +14,7 @@ class EventsController < ApplicationController
   end
 
   def index
-    render_from enabled_from_param(params[:enabled])
+    render_from enabled_from_param(params[:enabled]).order(start_date: :desc)
   end
 
   def show
