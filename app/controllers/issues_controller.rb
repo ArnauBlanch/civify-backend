@@ -87,7 +87,7 @@ class IssuesController < ApplicationController
   end
 
   def filter_issues(issues)
-    issues = issues.where(category: params[:category]) if params.key?('category')
+    issues = issues.where(category: params[:categories]) if params.key?('categories')
     issues = issues.where(resolved: params[:resolved] == 'true') if params.key?('resolved')
     issues = issues.where(risk: params[:risk] == 'true') if params.key?('risk')
     issues = issues.where('latitude <= ?', params[:lat_max].to_f) if params.key?('lat_max')
