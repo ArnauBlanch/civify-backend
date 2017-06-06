@@ -34,7 +34,7 @@ class EventsController < ApplicationController
   end
 
   def event_params
-    params.permit(:title, :start_date, :end_date, :description, :number, :coins, :xp, :kind, :image, :badge)
+    params.permit(:title, :start_date, :end_date, :description, :number, :coins, :xp,:enabled, :kind, :image, :badge)
   end
 
   def create_badge

@@ -91,7 +91,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     badge_image = sample_image_hash
     e = Event.find_by(kind: 'issue', number: 289)
     patch "/events/#{e.event_token}", headers: authorization_header(@password, @user.username),
-          params: { title: 'Modified title' , badge: {
+          params: { title: 'Modified title', enabled: false , badge: {
               title: 'Modified Badge title',
               file_name: badge_image[:file_name],
               content: badge_image[:content],
@@ -99,6 +99,8 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
           }}
     assert_response :ok
     e.reload
+    assert_not e.enabled
+    assert_response_body e.enabled, :enabled
     assert_response_body e.title, :title
     assert_response_body e.badge.title, [:badge, :title]
     patch "/events/#{e.event_token}", headers: authorization_header(@password, @user.username),
