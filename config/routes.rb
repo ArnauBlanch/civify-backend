@@ -37,6 +37,9 @@ Rails.application.routes.draw do
   # New achievements/events
   resources :new_achievements_events, only: [:index], controller: 'new_achievements_events'
 
+  # Password reset
+  resources :password_resets, only: [:create, :update]
+
   post '/login', to: 'authentication#login'
   get '/me', to: 'authorized_request#me'
   get '/issues', to: 'issues#index_issues'
