@@ -53,9 +53,6 @@ group :development do
     gem 'capistrano-passenger', require: false
 end
 
-
-
-
 gem 'nokogiri', platforms: :ruby
 gem 'mini_portile2'
 
