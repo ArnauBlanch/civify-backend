@@ -13,4 +13,11 @@ class AchievementProgress < ApplicationRecord
     update(progress: progress + 1)
     update(completed: true) unless progress < achievement.number
   end
+
+  def increase_progress_by(number)
+    update(progress: progress + number)
+    if progress >= achievement.number
+      update(completed: true, progress: achievement.number)
+    end
+  end
 end
