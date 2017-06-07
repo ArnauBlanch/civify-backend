@@ -56,6 +56,7 @@ class User < ApplicationRecord
       .merge(lv: level)
       .merge(xp: current_xp)
       .merge(xp_max: max_xp)
+      .merge(num_badges: badges.size)
   end
 
   # PASSWORD RESET

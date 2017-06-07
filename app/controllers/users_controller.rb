@@ -11,7 +11,7 @@ class UsersController < ApplicationController
 
   # GET /users/[:user_auth_token]
   def show
-    render_from @user.to_json(except: json_exclude)
+    render_from @user.as_json(except: json_exclude)
   end
 
   # POST /users
