@@ -50,7 +50,7 @@ class User < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.reverse_merge(except: [:id, :password_digest, :xp]))
+    super(options.reverse_merge(except: [:id, :password_digest, :xp, :reset_digest, :reset_sent_at]))
       .merge(lv: level)
       .merge(xp: current_xp)
       .merge(xp_max: max_xp)
@@ -92,6 +92,13 @@ class User < ApplicationRecord
     digest = send("#{attribute}_digest")
     return false if digest.nil?
     BCrypt::Password.new(digest).is_password?(token)
+  end
+
+  # Get achievement progresses by kind
+  def increase_achievement_progress(kind)
+    achievement_progresses.where(completed: false, claimed: false).each do |ap|
+      ap.increase_progress if ap.achievement.kind == kind
+    end
   end
 
 end

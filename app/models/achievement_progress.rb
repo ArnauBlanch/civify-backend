@@ -8,4 +8,9 @@ class AchievementProgress < ApplicationRecord
   def as_json(options = nil)
     achievement.as_json(options)
   end
+
+  def increase_progress
+    update(progress: progress + 1)
+    update(completed: true) unless progress < achievement.number
+  end
 end
