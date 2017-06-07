@@ -156,6 +156,10 @@ class ActiveSupport::TestCase
     assert_not response_body_has_key?(:rewards)
   end
 
+  def assert_badge_not_given
+    assert_not response_body_has_key?(:badge)
+  end
+
   # Example usage after setup_user plus call to GET /user/#{@user.user_auth_token}:
   # assert_response_body(:normal, :kind)
   # Example usage after call to POST /issues
