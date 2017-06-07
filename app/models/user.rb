@@ -95,7 +95,7 @@ class User < ApplicationRecord
   end
 
   # Get achievement progresses by kind
-  def increase_achievement_progress(kind)
+  def increase_achievements_progress(kind)
     achievement_progresses.where(completed: false, claimed: false).each do |ap|
       ap.increase_progress if ap.achievement.kind == kind
     end
