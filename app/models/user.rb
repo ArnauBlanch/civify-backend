@@ -23,6 +23,8 @@ class User < ApplicationRecord
   validates :xp, numericality: { greater_than_or_equal_to: 0 }
   has_secure_password # method to implement the secure password
   has_secure_token :user_auth_token
+  enum profile_icon: [:admin_icon, :business_icon, :user_icon, :boy, :boy1,
+                      :girl, :girl1, :man, :man1, :man2, :man3, :man4]
 
   XP_CURVE_CONSTANT = 0.1
   MIN_LEVEL = 1
@@ -50,7 +52,7 @@ class User < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.reverse_merge(except: [:id, :password_digest, :xp]))
+    super(options.reverse_merge(except: [:id, :password_digest, :xp, :reset_digest, :reset_sent_at]))
       .merge(lv: level)
       .merge(xp: current_xp)
       .merge(xp_max: max_xp)

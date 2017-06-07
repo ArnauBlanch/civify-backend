@@ -47,7 +47,8 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:username, :email, :first_name, :last_name, :password, :password_confirmation, :kind)
+    params.permit(:username, :email, :first_name, :last_name, :password, :password_confirmation, :kind,
+                  :profile_icon)
   end
 
   def set_user
@@ -55,7 +56,7 @@ class UsersController < ApplicationController
   end
 
   def json_exclude
-    [:id, :password_digest, :email, :created_at, :updated_at, :xp]
+    [:id, :password_digest, :email, :created_at, :updated_at, :xp, :reset_digest, :reset_sent_at]
   end
 
   def create_achievement_progresses
