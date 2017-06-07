@@ -4,6 +4,7 @@ class BadgesController < ApplicationController
   # GET /user/:user_auth_token/badges
   def index
     set_user
+    Badge.current_user = @user
     render_from @user.badges
   end
 
