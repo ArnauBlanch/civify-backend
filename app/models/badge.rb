@@ -16,7 +16,7 @@ class Badge < ApplicationRecord
                                          :badgeable_type, :badgeable_id]))
     json.merge!(icon_hash)
     merge_optained_date(json)
-
+    merge_badgeable_type_token(json)
   end
 
   private
@@ -35,6 +35,12 @@ class Badge < ApplicationRecord
     json.merge!(optained_date: @user_progress.updated_at )
   end
 
+  def merge_badgeable_type_token(json)
+    type = badgeable_type.downcase
+    token_name = type << '_token'
+    return json unless badgeable.respond_to? token_name
+    json.merge!(corresponds_to_type: badgeable_type, corresponds_to_token: badgeable.public_send(token_name) )
+  end
 
   def badgeable_user_progress
     type = badgeable_type.downcase
