@@ -32,10 +32,11 @@ class Badge < ApplicationRecord
 
   def merge_optained_date(json)
     return json unless current_user && badgeable_user_progress
-    json.merge!(optained_date: @user_progress.updated_at )
+    json.merge!(obtained_date: @user_progress.updated_at )
   end
 
   def merge_badgeable_type_token(json)
+    return json unless badgeable
     type = badgeable_type.downcase
     token_name = type << '_token'
     return json unless badgeable.respond_to? token_name
@@ -43,6 +44,7 @@ class Badge < ApplicationRecord
   end
 
   def badgeable_user_progress
+    return false unless badgeable
     type = badgeable_type.downcase
     progresses_name = type << '_progresses'
     return false unless badgeable.respond_to? progresses_name
