@@ -38,8 +38,8 @@ class BadgesControllerTest < ActionDispatch::IntegrationTest
     assert_response_body @event.badge, :badge
     get_badges
     assert_response_body [ap.achievement.badge, ep.event.badge]
-    assert_response_body ap.updated_at, [0, :optained_date]
-    assert_response_body ep.updated_at, [1, :optained_date]
+    assert_response_body ap.updated_at, [0, :obtained_date]
+    assert_response_body ep.updated_at, [1, :obtained_date]
     assert_response_body "Achievement", [0, :corresponds_to_type]
     assert_response_body "Event", [1, :corresponds_to_type]
     assert_response_body @achievement.achievement_token, [0, :corresponds_to_token]
