@@ -20,13 +20,14 @@ class ClaimControllerTest < ActionDispatch::IntegrationTest
     a = Achievement.find_by(number: 5, kind: 'issue')
     user = User.find_by(kind: :normal)
     setup_reward user
-    user.achievement_progresses
+    ap = user.achievement_progresses
         .find_by(achievement_id: a.id)
-        .update(completed: true, claimed: false)
+    ap.update(completed: true, claimed: false)
     post "/achievements/#{a.achievement_token}/claim",
          headers: authorization_header(@password, user.username)
     assert_response :ok
     assert_reward a.coins, a.xp, user
+    assert_response_body ap.achievement.badge, [:badge]
   end
 
   test 'achievement already claimed' do
@@ -43,6 +44,7 @@ class ClaimControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
     assert_response_body_message 'You have already claimed this achievement'
     assert_reward_not_given
+    assert_badge_not_given
   end
 
   test 'achievement not completed' do
@@ -59,6 +61,7 @@ class ClaimControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
     assert_response_body_message 'You haven\'t completed this achievement yet'
     assert_reward_not_given
+    assert_badge_not_given
   end
 
   test 'event does not exist' do
@@ -71,16 +74,16 @@ class ClaimControllerTest < ActionDispatch::IntegrationTest
   test 'event claimed successfully' do
     setup_user(kind: :admin, username: 'admin-user')
     post_event
-    e = Event.find_by(number: 5, kind: 'issue')
+    e = Event.find_by(number: 289, kind: 'issue')
     user = User.find_by(kind: :normal)
     setup_reward user
-    user.event_progresses
-        .find_by(event_id: e.id)
-        .update(completed: true, claimed: false)
+    ep = user.event_progresses.find_by(event_id: e.id)
+    ep.update(completed: true, claimed: false)
     post "/events/#{e.event_token}/claim",
          headers: authorization_header(@password, user.username)
     assert_response :ok
     assert_reward e.coins, e.xp, user
+    assert_response_body ep.event.badge, [:badge]
   end
 
   test 'event already claimed' do
@@ -97,6 +100,7 @@ class ClaimControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
     assert_response_body_message 'You have already claimed this event'
     assert_reward_not_given
+    assert_badge_not_given
   end
 
   test 'event not completed' do
@@ -113,5 +117,6 @@ class ClaimControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
     assert_response_body_message 'You haven\'t completed this event yet'
     assert_reward_not_given
+    assert_badge_not_given
   end
 end

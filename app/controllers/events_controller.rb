@@ -14,7 +14,7 @@ class EventsController < ApplicationController
   end
 
   def index
-    render_from enabled_from_param(params[:enabled])
+    render_from enabled_from_param(params[:enabled]).order(start_date: :desc)
   end
 
   def show
@@ -22,7 +22,7 @@ class EventsController < ApplicationController
   end
 
   def update
-    @event.badge = create_badge if params[:badge]
+    update_badge if params[:badge]
     update_render! @event, event_params
   end
 
@@ -34,7 +34,7 @@ class EventsController < ApplicationController
   end
 
   def event_params
-    params.permit(:title, :start_date, :end_date, :description, :number, :coins, :xp, :kind, :image, :badge)
+    params.permit(:title, :start_date, :end_date, :description, :number, :coins, :xp,:enabled, :kind, :image, :badge)
   end
 
   def create_badge
@@ -43,6 +43,13 @@ class EventsController < ApplicationController
     b.icon = @picture
     b.save!
     b
+  end
+
+  def update_badge
+    b = @event.badge
+    b.title = params[:badge][:title] if params[:badge][:title]
+    b.icon = fetch_picture params[:badge] if params[:badge][:content]
+    b.save!
   end
 
   def create_event_progress

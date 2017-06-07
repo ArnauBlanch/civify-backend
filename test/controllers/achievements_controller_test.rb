@@ -75,5 +75,21 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
     a.reload
     assert_response_body a.title, :title
     assert_response_body a.badge.title, [:badge, :title]
+    patch "/achievements/#{a.achievement_token}", headers: authorization_header(@password, @user.username),
+          params: { title: 'Modified title' , badge: { title: 'Modified Badge title2' } }
+    assert_response :ok
+    a.reload
+    assert_response_body a.title, :title
+    assert_response_body a.badge.title, [:badge, :title]
+    patch "/achievements/#{a.achievement_token}", headers: authorization_header(@password, @user.username),
+          params: { title: 'Modified title' , badge: {
+              file_name: badge_image[:file_name],
+              content: badge_image[:content],
+              content_type: badge_image[:content_type]
+          }}
+    assert_response :ok
+    a.reload
+    assert_response_body a.title, :title
+    assert_response_body a.badge.title, [:badge, :title]
   end
 end

@@ -20,7 +20,7 @@ class AchievementsController < ApplicationController
   end
 
   def update
-    @achievement.badge = create_badge if params[:badge]
+    update_badge if params[:badge]
     update_render! @achievement, achievement_params
   end
 
@@ -41,6 +41,13 @@ class AchievementsController < ApplicationController
     b.icon = @picture
     b.save!
     b
+  end
+
+  def update_badge
+    b = @achievement.badge
+    b.title = params[:badge][:title] if params[:badge][:title]
+    b.icon = fetch_picture params[:badge] if params[:badge][:content]
+    b.save!
   end
 
   def create_achievement_progresses

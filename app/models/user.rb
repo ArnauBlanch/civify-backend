@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :achievements_in_progress, through: :achievement_progresses, source: :achievement
   has_many :event_progresses, dependent: :destroy
   has_many :events_in_progress, through: :event_progresses, source: :event
+  has_and_belongs_to_many :badges
   enum kind: [:normal, :business, :admin]
   validates :kind, presence: true, inclusion: {in: kinds.keys}
   validates :username, presence: true, uniqueness: { case_sensitive: false }
@@ -22,6 +23,8 @@ class User < ApplicationRecord
   validates :xp, numericality: { greater_than_or_equal_to: 0 }
   has_secure_password # method to implement the secure password
   has_secure_token :user_auth_token
+  enum profile_icon: [:admin_icon, :business_icon, :user_icon, :boy, :boy1,
+                      :girl, :girl1, :man, :man1, :man2, :man3, :man4]
 
   XP_CURVE_CONSTANT = 0.1
   MIN_LEVEL = 1
@@ -49,10 +52,48 @@ class User < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.reverse_merge(except: [:id, :password_digest, :xp]))
+    super(options.reverse_merge(except: [:id, :password_digest, :xp, :reset_digest, :reset_sent_at]))
       .merge(lv: level)
       .merge(xp: current_xp)
       .merge(xp_max: max_xp)
+  end
+
+  # PASSWORD RESET
+  attr_accessor :reset_token
+
+  # Sets the password reset attributes.
+  def create_reset_digest
+    self.reset_token = User.new_token
+    update_attribute :reset_digest, User.digest(reset_token)
+    update_attribute :reset_sent_at, Time.zone.now
+  end
+
+  # Sends password reset email.
+  def send_password_reset_email
+    UserMailer.password_reset(self).deliver_now
+  end
+
+  # Returns true if a password reset has expired.
+  def password_reset_expired?
+    reset_sent_at < 2.hours.ago
+  end
+
+  # Returns a random token.
+  def User.new_token
+    SecureRandom.urlsafe_base64
+  end
+
+  # Returns the hash digest of the given string.
+  def User.digest(string)
+    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
+    BCrypt::Password.create(string, cost: cost)
+  end
+
+  # Returns true if the given token matches the digest.
+  def authenticated?(attribute, token)
+    digest = send("#{attribute}_digest")
+    return false if digest.nil?
+    BCrypt::Password.new(digest).is_password?(token)
   end
 
 end

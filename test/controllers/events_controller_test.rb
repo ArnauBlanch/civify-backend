@@ -86,4 +86,39 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     assert_not response_body_has_key?(:progress)
   end
 
+  test 'successful update' do
+    post_event
+    badge_image = sample_image_hash
+    e = Event.find_by(kind: 'issue', number: 289)
+    patch "/events/#{e.event_token}", headers: authorization_header(@password, @user.username),
+          params: { title: 'Modified title', enabled: false , badge: {
+              title: 'Modified Badge title',
+              file_name: badge_image[:file_name],
+              content: badge_image[:content],
+              content_type: badge_image[:content_type]
+          }}
+    assert_response :ok
+    e.reload
+    assert_not e.enabled
+    assert_response_body e.enabled, :enabled
+    assert_response_body e.title, :title
+    assert_response_body e.badge.title, [:badge, :title]
+    patch "/events/#{e.event_token}", headers: authorization_header(@password, @user.username),
+          params: { title: 'Modified title' , badge: { title: 'Modified Badge title2' } }
+    assert_response :ok
+    e.reload
+    assert_response_body e.title, :title
+    assert_response_body e.badge.title, [:badge, :title]
+    patch "/events/#{e.event_token}", headers: authorization_header(@password, @user.username),
+          params: { title: 'Modified title' , badge: {
+              file_name: badge_image[:file_name],
+              content: badge_image[:content],
+              content_type: badge_image[:content_type]
+          }}
+    assert_response :ok
+    e.reload
+    assert_response_body e.title, :title
+    assert_response_body e.badge.title, [:badge, :title]
+  end
+
 end
