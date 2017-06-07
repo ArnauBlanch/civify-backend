@@ -8,4 +8,8 @@ class EventProgress < ApplicationRecord
   def as_json(options = nil)
     event.as_json(options)
   end
+
+  def increase_progress
+    update!(progress + 1)
+  end
 end

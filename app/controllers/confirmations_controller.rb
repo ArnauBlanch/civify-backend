@@ -11,6 +11,7 @@ class ConfirmationsController < ApplicationController
       @issue.users_confirming << @user
       render_from "Issue with auth token #{@issue.issue_auth_token} "\
       "confirmed by User with auth token #{@user.user_auth_token}"
+      increase_progresses
     end
   end
 
@@ -23,5 +24,9 @@ class ConfirmationsController < ApplicationController
             else
               current_user
             end
+  end
+
+  def increase_progresses
+    @user.increase_events_progress 'confirm'
   end
 end

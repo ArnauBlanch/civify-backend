@@ -94,4 +94,11 @@ class User < ApplicationRecord
     BCrypt::Password.new(digest).is_password?(token)
   end
 
+  # Get achievement progresses by kind
+  def increase_events_progress(kind)
+    event_progresses.where(completed: false, claimed: false).each do |ep|
+      ep.increase_progress if ep.achievement.kind == kind
+    end
+  end
+
 end
