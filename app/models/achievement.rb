@@ -1,7 +1,7 @@
 class Achievement < ApplicationRecord
   has_secure_token :achievement_token
   enum kind: [:issue, :confirm, :resolve, :reward, :use, :confirm_received,
-              :resolve_received, :coins_spent, :issue_resolved, :level]
+              :resolve_received, :coins_spent, :issues_resolved, :level]
 
   has_one :badge, as: :badgeable, dependent: :destroy
   has_many :achievement_progresses, dependent: :destroy

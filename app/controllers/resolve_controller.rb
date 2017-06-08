@@ -12,13 +12,15 @@ class ResolveController < ApplicationController
       save! @issue
       render_from 'Resolution deleted'
     else
-      if @issue.resolutions << @user
+      if !@issue.resolved && @issue.resolutions << @user
         @issue.resolved_votes += 1
         if @issue.resolved_votes >= RESOLVE_IN
           @issue.resolved = true
+          @issue.user.increase_achievements_progress 'issues_resolved'
         end
         save! @issue
         render_from 'Resolution added'
+        increase_progresses
       else
         render_from(message: 'Could not do the resolution', status: :bad_request)
       end
@@ -31,5 +33,10 @@ class ResolveController < ApplicationController
     @issue = Issue.find_by(issue_auth_token: params[:issue_auth_token])
     @user = User.find_by(user_auth_token: params[:user])
     check_user_exists @user
+  end
+
+  def increase_progresses
+    @user.increase_achievements_progress 'resolve'
+    @issue.user.increase_achievements_progress 'resolve_received'
   end
 end

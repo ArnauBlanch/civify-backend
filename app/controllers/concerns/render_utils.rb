@@ -213,6 +213,7 @@ module RenderUtils
     if present_some?(options, [:coins, :xp])
       fill_defaults(options, user: @current_user, coins: 0, xp: 0)
       user = options[:user]
+      before_level = user.level
       user.coins += options[:coins]
       user.xp += options[:xp]
       user.save!
@@ -220,6 +221,9 @@ module RenderUtils
       rewards[:coins] = options[:coins] if options[:coins] != 0
       rewards[:xp] = options[:xp] if options[:xp] != 0
       options[:rewards] = rewards
+      after_level = user.reload.level
+      user.increase_achievements_progress 'level' if before_level < after_level
+      user.increase_coins_spent_progress(-1 * options[:coins]) if options[:coins] < 0
     end
     attach_hash(options)
   end
