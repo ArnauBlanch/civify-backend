@@ -100,5 +100,6 @@ class IssuesController < ApplicationController
   
   def increase_progresses
     @user.increase_events_progress 'issue'
+    @user.increase_achievements_progress 'issue'
   end
 end

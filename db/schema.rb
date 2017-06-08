@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170606104530) do
+ActiveRecord::Schema.define(version: 20170607110012) do
 
   create_table "achievement_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.integer  "user_id"
@@ -181,6 +181,7 @@ ActiveRecord::Schema.define(version: 20170606104530) do
     t.bigint   "xp",              default: 0
     t.string   "reset_digest"
     t.datetime "reset_sent_at"
+    t.integer  "profile_icon",    default: 2
     t.index ["user_auth_token"], name: "index_users_on_user_auth_token", unique: true, using: :btree
   end
 
