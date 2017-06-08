@@ -10,6 +10,7 @@ class EventProgress < ApplicationRecord
   end
 
   def increase_progress
-    update!(progress + 1)
+    update(progress: progress + 1)
+    update(completed: true) unless progress < event.number
   end
 end
