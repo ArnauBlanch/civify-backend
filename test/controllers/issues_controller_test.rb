@@ -36,7 +36,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'create user issue valid request' do
-    create_issue_post_method
+    post_issue
     issue = Issue.find_by(title: 'sample issue')
     assert_not_nil issue
     issue.current_user = @user
@@ -45,18 +45,8 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
 
   test 'create an issue gives rewards' do
     setup_reward
-    create_issue_post_method
+    post_issue
     assert_reward COINS::ISSUE_CREATION, XP::ISSUE_CREATION
-  end
-
-  def create_issue_post_method
-    post "/users/#{@user.user_auth_token}/issues", params: {
-      title: 'sample issue', latitude: 76.4,
-      longitude: 38.2, category: 'arbolada',
-      description: 'desc', picture: sample_image_hash,
-      risk: false, resolved_votes: 564
-    }, headers: authorization_header(@password, @user.username)
-    assert_response :created
   end
 
   test 'create user issue invalid request' do

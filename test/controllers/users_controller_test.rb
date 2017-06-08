@@ -78,6 +78,42 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response_body_message 'User not found'
   end
 
+  test 'increase progress and complete achievement and event kinds' do
+    setup_user
+    setup_issue
+    progress_increase_and_complete :post_issue, :issue
+    progress_increase_and_complete :post_confirm_issue, :confirm
+    progress_increase_and_complete :post_resolve, :resolve
+  end
+
+  def assert_n_progress(value, a_progress, e_progress)
+    assert_equal value, a_progress.progress
+    assert_equal value, e_progress.progress
+  end
+
+  def progress_increase_and_complete(call, kind)
+    ach = setup_achievement(number: 2, kind: kind)
+    eve = setup_event(number: 2, kind: kind)
+    ep = @user.event_progresses.find_by_event_id eve.id
+    ap = @user.achievement_progresses.find_by_achievement_id ach.id
+    assert_n_progress 0, ap, ep
+    self.send call
+    ep.reload
+    ap.reload
+    assert_n_progress 1, ap, ep
+    self.send call
+    self.send call if kind != :issue
+    ap.reload
+    ep.reload
+    assert_n_progress 2, ap, ep
+    assert ep.completed
+    assert ap.completed
+    self.send call
+    assert_n_progress 2, ap, ep
+    assert ep.completed
+    assert ap.completed
+  end
+
   def json_exclude
     [:id, :password_digest, :email, :created_at, :updated_at, :xp]
   end
