@@ -40,6 +40,8 @@ Rails.application.routes.draw do
   # Password reset
   resources :password_resets, only: [:create, :update]
 
+  resources :can_create_issue, only: [:index]
+
   post '/login', to: 'authentication#login'
   get '/me', to: 'authorized_request#me'
   get '/issues', to: 'issues#index_issues'
