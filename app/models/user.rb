@@ -23,6 +23,8 @@ class User < ApplicationRecord
   validates :xp, numericality: { greater_than_or_equal_to: 0 }
   has_secure_password # method to implement the secure password
   has_secure_token :user_auth_token
+  enum profile_icon: [:admin_icon, :business_icon, :user_icon, :boy, :boy1,
+                      :girl, :girl1, :man, :man1, :man2, :man3, :man4]
 
   XP_CURVE_CONSTANT = 0.1
   MIN_LEVEL = 1
@@ -54,6 +56,7 @@ class User < ApplicationRecord
       .merge(lv: level)
       .merge(xp: current_xp)
       .merge(xp_max: max_xp)
+      .merge(num_badges: badges.size)
   end
 
   # PASSWORD RESET
