@@ -43,7 +43,7 @@ class ActiveSupport::TestCase
     @issue = @user.issues.create(title: 'issue', latitude: 76.4,
                                  longitude: 38.2, category: 'arbolada',
                                  description: 'desc', picture: sample_file,
-                                 risk: false, resolved_votes: 564)
+                                 risk: false, resolved_votes: 8)
     assert @issue.valid?
     @issue
   end
@@ -59,8 +59,9 @@ class ActiveSupport::TestCase
   def setup_achievement(options = {})
     options[:enabled] = true if options[:enabled].nil?
     options[:number] ||= 288
+    options[:kind] ||= :issue
     @achievement = Achievement.create(title: 'title', description: 'desc', number: options[:number],
-                                      coins: 288, xp: 288, kind: :issue, enabled: options[:enabled], badge: setup_badge)
+                                      coins: 288, xp: 288, kind: options[:kind], enabled: options[:enabled], badge: setup_badge)
     assert @achievement.valid?
     @user.achievements_in_progress << @achievement if @user
     @achievement
@@ -71,8 +72,9 @@ class ActiveSupport::TestCase
     options[:number] ||= 288
     options[:start_date] ||= '2016-05-14'
     options[:end_date] ||= '2018-05-12'
+    options[:kind] ||= :issue
     @event = Event.create(title: 'title', description: 'desc', number: options[:number], coins: 288,
-                          xp: 288, kind: :issue, image: sample_file, start_date: options[:start_date],
+                          xp: 288, kind: options[:kind], image: sample_file, start_date: options[:start_date],
                           end_date: options[:end_date], enabled: options[:enabled], badge: setup_badge)
     assert @event.valid?
     @user.events_in_progress << @event if @user
@@ -84,6 +86,32 @@ class ActiveSupport::TestCase
     @badge.icon = sample_file
     assert @badge.valid?
     @badge
+  end
+
+  def post_issue
+    post "/users/#{@user.user_auth_token}/issues", params: {
+        title: 'sample issue', latitude: 76.4,
+        longitude: 38.2, category: 'arbolada',
+        description: 'desc', picture: sample_image_hash,
+        risk: false, resolved_votes: 564
+    }, headers: authorization_header(@password, @user.username)
+    assert_response :created
+  end
+
+  def post_confirm_issue(user = nil)
+    if user
+      post "/issues/#{@issue.issue_auth_token}/confirm?user_auth_token=#{@user.user_auth_token}",
+           headers: authorization_header(@password, @user.username)
+    else
+      post "/issues/#{@issue.issue_auth_token}/confirm",
+           headers: authorization_header(@password, @user.username)
+    end
+  end
+
+  def post_resolve
+    post "/issues/#{@issue.issue_auth_token}/resolve",
+         headers: authorization_header(@password, @user.username),
+         params: { user: @user.user_auth_token }
   end
 
   def post_event(user = @user)
