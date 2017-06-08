@@ -104,10 +104,16 @@ class User < ApplicationRecord
     end
   end
 
+   # Increase achievement progresses by kind
+  def increase_events_progress(kind)
+    event_progresses.where(completed: false, claimed: false).each do |ep|
+      ep.increase_progress if ep.event.kind == kind
+    end
+  end
+
   def increase_coins_spent_progress(coins)
     achievement_progresses.where(completed: false, claimed: false).each do |ap|
       ap.increase_progress_by coins if ap.achievement.kind == 'coins_spent'
     end
   end
-
 end

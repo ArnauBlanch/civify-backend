@@ -37,6 +37,7 @@ class ResolveController < ApplicationController
 
   def increase_progresses
     @user.increase_achievements_progress 'resolve'
+    @user.increase_events_progress 'resolve'
     @issue.user.increase_achievements_progress 'resolve_received'
   end
 end

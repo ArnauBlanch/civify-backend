@@ -8,8 +8,7 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'confirm issue by auth user' do
-    post "/issues/#{@issue.issue_auth_token}/confirm",
-         headers: authorization_header(@password, @user.username)
+    post_confirm_issue
     assert_response :ok
     body = JSON.parse(response.body)
     assert_equal "Issue with auth token #{@issue.issue_auth_token} "\
@@ -25,8 +24,7 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'confirm issue by user param' do
-    post "/issues/#{@issue.issue_auth_token}/confirm?user_auth_token=#{@user.user_auth_token}",
-         headers: authorization_header(@password, @user.username)
+    post_confirm_issue @user
     assert_response :ok
     body = JSON.parse(response.body)
     assert_equal "Issue with auth token #{@issue.issue_auth_token} "\
@@ -43,8 +41,7 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
 
   test "one user can confirm other's user issue" do
     setup_user(username: 'self')
-    post "/issues/#{@issue.issue_auth_token}/confirm",
-         headers: authorization_header(@password, @user.username)
+    post_confirm_issue
     assert_response :ok
     body = JSON.parse(response.body)
     assert_equal "Issue with auth token #{@issue.issue_auth_token} "\
@@ -52,10 +49,8 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'unconfirm issue by auth user' do
-    post "/issues/#{@issue.issue_auth_token}/confirm",
-         headers: authorization_header(@password, @user.username)
-    post "/issues/#{@issue.issue_auth_token}/confirm",
-         headers: authorization_header(@password, @user.username)
+    post_confirm_issue
+    post_confirm_issue
     assert_response :ok
     body = JSON.parse(response.body)
     assert_equal "Issue with auth token #{@issue.issue_auth_token} "\
@@ -71,10 +66,8 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'unconfirm issue by user param' do
-    post "/issues/#{@issue.issue_auth_token}/confirm?user_auth_token=#{@user.user_auth_token}",
-         headers: authorization_header(@password, @user.username)
-    post "/issues/#{@issue.issue_auth_token}/confirm?user_auth_token=#{@user.user_auth_token}",
-         headers: authorization_header(@password, @user.username)
+    post_confirm_issue @user
+    post_confirm_issue @user
     assert_response :ok
     body = JSON.parse(response.body)
     assert_equal "Issue with auth token #{@issue.issue_auth_token} "\
