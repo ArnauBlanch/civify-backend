@@ -212,8 +212,8 @@ module RenderUtils
   def add_rewards!(options = {})
     if present_some?(options, [:coins, :xp])
       fill_defaults(options, user: @current_user, coins: 0, xp: 0)
-      before_level = user.level
       user = options[:user]
+      before_level = user.level
       user.coins += options[:coins]
       user.xp += options[:xp]
       user.save!
