@@ -16,6 +16,7 @@ class ResolveController < ApplicationController
         @issue.resolved_votes += 1
         if @issue.resolved_votes >= RESOLVE_IN
           @issue.resolved = true
+          @issue.user.increase_achievements_progress 'issues_resolved'
         end
         save! @issue
         render_from 'Resolution added'
@@ -35,6 +36,8 @@ class ResolveController < ApplicationController
   end
 
   def increase_progresses
+    @user.increase_achievements_progress 'resolve'
     @user.increase_events_progress 'resolve'
+    @issue.user.increase_achievements_progress 'resolve_received'
   end
 end

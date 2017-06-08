@@ -25,8 +25,9 @@ class ConfirmationsController < ApplicationController
               current_user
             end
   end
-
   def increase_progresses
+    @user.increase_achievements_progress 'confirm'
     @user.increase_events_progress 'confirm'
+    @issue.user.increase_achievements_progress 'confirm_received'
   end
 end
