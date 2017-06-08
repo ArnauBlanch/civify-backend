@@ -116,4 +116,14 @@ class User < ApplicationRecord
       ap.increase_progress_by coins if ap.achievement.kind == 'coins_spent'
     end
   end
+
+  def can_create_issue
+    issues_created_24_hours < (1.5 * level).ceil
+  end
+
+  private
+
+  def issues_created_24_hours
+    issues.where('created_at >= ?', Time.now - 24.hours).size
+  end
 end
