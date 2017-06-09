@@ -44,7 +44,6 @@ class Event < ApplicationRecord
   private
 
   def merge_user_event_progress!(json)
-    return json unless current_user && enabled && active_event
     ep = event_progresses.find_by_user_id current_user.id
     json.merge!(progress: ep.progress, completed: ep.completed, claimed: ep.claimed) if ep
     json
