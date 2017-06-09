@@ -11,12 +11,12 @@ class ReportsController < ApplicationController
         render_from "Issue with auth token #{@issue.issue_auth_token} " \
         "reported/unreported by User with auth token #{@user.user_auth_token}"
       else
-        render_from(message: 'Report was done less than 24 hours ago', status: :bad_request)
+        render_from(message: "Report was done less than 24 hours ago : #{@wait_time}", status: :bad_request)
       end
     else
       @issue.users_reporting << @user
       render_from "Issue with auth token #{@issue.issue_auth_token} "\
-      "reported by User with auth token #{@user.user_auth_token}"
+      "reported/unreported by User with auth token #{@user.user_auth_token}"
       check_reports
     end
   end
@@ -34,7 +34,8 @@ class ReportsController < ApplicationController
 
   def secure_togle
     @report = @user.reports.find_by_issue_id @issue.id
-    next_day = Time.parse((@report.updated_at + 60).strftime("%Y-%m-%dT%H:%M:%S"))
+    next_day = Time.parse((@report.updated_at + WAITING_TIME).strftime("%Y-%m-%dT%H:%M:%S"))
+    @wait_time = (next_day - Time.now).to_i
     return false if Time.now < next_day
     @report.marked_reported = !@report.marked_reported
     @report.save!
