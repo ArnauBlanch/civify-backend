@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   include Xattachable
   before_action :needs_admin, except: [:show, :index]
-  before_action -> { set_current_user(Event) }, only: [:show, :index]
+  before_action -> { set_current_user(Event) }, only: [:show, :index, :create, :update]
   before_action :fetch_picture, only: [:create, :update]
   before_action :set_event, only: [:show, :update]
 
