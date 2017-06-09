@@ -34,6 +34,10 @@ gem 'simple_command'
 # cross-origin AJAX possible
 gem 'rack-cors'
 
+# validates :data, :date: options
+gem 'date_validator'
+gem 'timecop'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger
   # console
@@ -48,9 +52,6 @@ group :development do
     gem 'capistrano-rails',   require: false
     gem 'capistrano-passenger', require: false
 end
-
-
-
 
 gem 'nokogiri', platforms: :ruby
 gem 'mini_portile2'

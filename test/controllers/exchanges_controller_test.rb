@@ -45,7 +45,7 @@ class ExchangesControllerTest < ActionDispatch::IntegrationTest
          headers: authorization_header(@password, @user.username)
     assert_response :bad_request
     body = JSON.parse(response.body)
-    assert_equal'Validation failed: Award has already been taken', body['message']
+    assert_equal'Award has already been taken', body['message']
   end
 
   test 'get all exchanged awards' do

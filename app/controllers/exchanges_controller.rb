@@ -4,7 +4,7 @@ class ExchangesController < ApplicationController
   # GET /users/:user_auth_token/exchanged_awards
   def index
     set_user
-    json_response @user.exchanges
+    render_from @user.exchanges
   end
 
   # POST /awards/:award_auth_token/exchange
@@ -12,13 +12,16 @@ class ExchangesController < ApplicationController
     set_user
     set_award_to_exchange
     if @user.coins < @award.price
-      render json: { message: "You do not have enough coins (needed $#{@award.price} but have $#{@user.coins})" },
-             status: :unauthorized
+      render_from(message: "You do not have enough coins (needed $#{@award.price} but have $#{@user.coins})",
+                  status: :unauthorized)
     else
-      rewards = add_reward! @user, -@award.price, XP.exchange_reward(@award.price)
       @user.exchanged_awards << @award
-      render json: { rewards: rewards }, status: :ok
+      render_from(user: @user, coins: -@award.price, xp: XP.exchange_reward(@award.price), add_rewards: true)
+      @user.increase_achievements_progress 'reward'
     end
+  rescue ActiveRecord::RecordInvalid => e
+    @user.exchanged_awards.delete!(@award)
+    raise e
   end
 
   private

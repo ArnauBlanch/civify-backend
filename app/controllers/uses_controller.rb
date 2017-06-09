@@ -6,9 +6,10 @@ class UsesController < ApplicationController
     if !@exchange.used
       @exchange.used = true
       @exchange.save!
-      render json: { message: 'Exchange used' }, status: :ok
+      render_from 'Exchange used'
+      @user.increase_achievements_progress 'use'
     else
-      render json: { message: 'User has already used this buyed award' }, status: :unauthorized if @exchange.used
+      render_from(message: 'User has already used this award', status: :unauthorized) if @exchange.used
     end
   end
 
@@ -32,9 +33,9 @@ class UsesController < ApplicationController
     get_commerce if @exchange
     return true if @exchange and current_user.id == @commerce.id
     if !@exchange
-      render json: { message: 'Exchange not found' }, status: :not_found
+      render_from(message: 'Exchange not found', status: :not_found)
     else
-      render json: { message: "This award doesn't belong to this commerce" }, status: :unauthorized
+      render_from(message: "This award doesn't belong to this commerce", status: :unauthorized)
     end
     false
   end

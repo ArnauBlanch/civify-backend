@@ -9,17 +9,17 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
     setup_award
   end
 
-  # test 'get all awards request' do
-  #   get '/awards', headers: authorization_header(@password, @user.username)
-  #   assert_response :ok
-  #   assert_equal response.body, Award.all.to_json
-  # end
+  test 'get all awards request' do
+    get '/awards', headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    assert_equal Award.all.to_json, response.body
+  end
 
   test 'get all commerce offered awards request' do
     get "/users/#{@user.user_auth_token}/offered_awards",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal response.body, @user.offered_awards.to_json
+    assert_equal @user.offered_awards.to_json, response.body
   end
 
   test 'create commerce offered award valid request' do
@@ -31,12 +31,22 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
 
   test 'create commerce offered award invalid request' do
     post "/users/#{@user.user_auth_token}/offered_awards", params: {
-        description: 'desc', picture: sample_image_hash,
-        price: 564
+      description: 'desc', picture: sample_image_hash,
+      price: 564
     }, headers: authorization_header(@password, @user.username)
     assert_response :bad_request
     body = JSON.parse(response.body)
-    assert_equal "Validation failed: Title can't be blank", body['message']
+    assert_equal "Title can't be blank", body['message']
+  end
+
+  test 'create commerce offered award invalid request no image' do
+    post "/users/#{@user.user_auth_token}/offered_awards", params: {
+      description: 'desc',
+      price: 564, title: 'turtle'
+    }, headers: authorization_header(@password, @user.username)
+    assert_response :bad_request
+    body = JSON.parse(response.body)
+    assert_equal "Picture can't be blank", body['message']
   end
 
 
@@ -44,7 +54,7 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
     get "/awards/#{@award.award_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal response.body, @award.to_json
+    assert_equal @award.to_json, response.body
   end
 
   test 'destroy award valid request' do
@@ -59,12 +69,12 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
            headers: authorization_header(@password, @user.username)
     assert_response :not_found
     body = JSON.parse(response.body)
-    assert_equal "Award not found", body['message']
+    assert_equal 'Award not found', body['message']
   end
 
   test 'update award valid request' do
     patch "/awards/#{@award.award_auth_token}", params: {
-        description: 'new desc'
+      description: 'new desc'
     }, headers: authorization_header(@password, @user.username)
     assert_response :ok
     @award.reload
@@ -73,22 +83,22 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
 
   test 'update award valid request but ignored' do
     patch "/awards/#{@award.award_auth_token}", params: {
-        title: 'title updated',
-        titlefake: 'no'
+      title: 'title updated',
+      titlefake: 'no'
     }, headers: authorization_header(@password, @user.username)
     assert_response :ok
     @award.reload
-    assert_equal @award.title, "title updated"
+    assert_equal @award.title, 'title updated'
   end
 
   test 'create commerce offered award image bad format' do
     post "/users/#{@user.user_auth_token}/offered_awards", params: {
-        description: 'desc', picture: 'nil',
-        price: 564
+      description: 'desc', picture: 'nil',
+      price: 564
     }, headers: authorization_header(@password, @user.username)
     assert_response :bad_request
     body = JSON.parse(response.body)
-    assert_equal 'Image bad format', body['message']
+    assert_equal 'Invalid attachment', body['message']
   end
 
   test 'normal users cannot manage awards' do
@@ -101,9 +111,9 @@ class AwardsControllerTest < ActionDispatch::IntegrationTest
 
   def create_award_post_method
     post "/users/#{@user.user_auth_token}/offered_awards", params: {
-        title: 'sample award',
-        description: 'desc', picture: sample_image_hash,
-        price: 564
+      title: 'sample award',
+      description: 'desc', picture: sample_image_hash,
+      price: 564
     }, headers: authorization_header(@password, @user.username)
   end
 end

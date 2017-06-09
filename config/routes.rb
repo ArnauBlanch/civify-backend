@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       resources :offered_awards, only: [:index, :create], param: :award_auth_token, controller: 'awards'
       resources :exchanged_awards, only: [:index], param: :award_auth_token, controller: 'exchanges'
       resources :coins, only: [:create]
+      resources :badges, only: [:index]
     end
   end
   resources :issues, param: :issue_auth_token, only: [] do
@@ -22,8 +23,24 @@ Rails.application.routes.draw do
       resources :exchange, only: [:create], controller: 'exchanges'
     end
   end
-  
-  resources :use , param: :exchange_auth_token, only: [:create], controller: 'uses'
+
+  resources :use, param: :exchange_auth_token, only: [:create], controller: 'uses'
+
+  # Achievements
+  resources :achievements, param: :achievement_token
+  post 'achievements/:achievement_token/claim', to: 'claim#claim_achievement'
+
+  # Events
+  resources :events, param: :event_token
+  post 'events/:event_token/claim', to: 'claim#claim_event'
+
+  # New achievements/events
+  resources :new_achievements_events, only: [:index], controller: 'new_achievements_events'
+
+  # Password reset
+  resources :password_resets, only: [:create, :update]
+
+  resources :can_create_issue, only: [:index]
 
   post '/login', to: 'authentication#login'
   get '/me', to: 'authorized_request#me'

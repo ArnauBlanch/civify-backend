@@ -10,7 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170518171120) do
+ActiveRecord::Schema.define(version: 20170609001722) do
+
+  create_table "achievement_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "achievement_id"
+    t.integer  "progress",       default: 0
+    t.boolean  "completed",      default: false
+    t.boolean  "claimed",        default: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.index ["achievement_id"], name: "index_achievement_progresses_on_achievement_id", using: :btree
+    t.index ["user_id"], name: "index_achievement_progresses_on_user_id", using: :btree
+  end
+
+  create_table "achievements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "title"
+    t.string   "description"
+    t.integer  "number"
+    t.integer  "kind"
+    t.integer  "coins"
+    t.integer  "xp"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.string   "achievement_token"
+    t.boolean  "enabled",           default: true
+    t.index ["achievement_token"], name: "index_achievements_on_achievement_token", unique: true, using: :btree
+  end
 
   create_table "awards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
@@ -29,14 +55,66 @@ ActiveRecord::Schema.define(version: 20170518171120) do
     t.index ["offered_by"], name: "index_awards_on_offered_by", using: :btree
   end
 
+  create_table "badges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "title"
+    t.string   "badgeable_type"
+    t.integer  "badgeable_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.string   "icon_file_name"
+    t.string   "icon_content_type"
+    t.integer  "icon_file_size"
+    t.datetime "icon_updated_at"
+    t.index ["badgeable_type", "badgeable_id"], name: "index_badges_on_badgeable_type_and_badgeable_id", using: :btree
+  end
+
+  create_table "badges_users", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+    t.integer "badge_id"
+    t.integer "user_id"
+    t.index ["badge_id"], name: "index_badges_users_on_badge_id", using: :btree
+    t.index ["user_id"], name: "index_badges_users_on_user_id", using: :btree
+  end
+
   create_table "confirmations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "issue_id"
     t.integer  "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.boolean  "confirmed",  default: true
     t.index ["issue_id", "user_id"], name: "index_confirmations_on_issue_id_and_user_id", unique: true, using: :btree
     t.index ["issue_id"], name: "index_confirmations_on_issue_id", using: :btree
     t.index ["user_id"], name: "index_confirmations_on_user_id", using: :btree
+  end
+
+  create_table "event_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "event_id"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.boolean  "completed",  default: false
+    t.boolean  "claimed",    default: false
+    t.integer  "progress",   default: 0
+    t.index ["event_id", "user_id"], name: "index_event_progresses_on_event_id_and_user_id", unique: true, using: :btree
+  end
+
+  create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "title"
+    t.string   "description"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.integer  "number"
+    t.integer  "coins"
+    t.integer  "xp"
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.integer  "kind"
+    t.string   "event_token"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
+    t.boolean  "enabled",            default: true
+    t.index ["event_token"], name: "index_events_on_event_token", unique: true, using: :btree
   end
 
   create_table "exchanges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -76,16 +154,20 @@ ActiveRecord::Schema.define(version: 20170518171120) do
   create_table "reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "issue_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.boolean  "marked_reported", default: true
     t.index ["issue_id", "user_id"], name: "index_reports_on_issue_id_and_user_id", unique: true, using: :btree
     t.index ["issue_id"], name: "index_reports_on_issue_id", using: :btree
     t.index ["user_id"], name: "index_reports_on_user_id", using: :btree
   end
 
-  create_table "resolutions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "user_id"
-    t.integer "issue_id"
+  create_table "resolutions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+    t.integer  "user_id"
+    t.integer  "issue_id"
+    t.boolean  "marked_resolved", default: true
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.index ["issue_id"], name: "index_resolutions_on_issue_id", using: :btree
     t.index ["user_id"], name: "index_resolutions_on_user_id", using: :btree
   end
@@ -102,6 +184,9 @@ ActiveRecord::Schema.define(version: 20170518171120) do
     t.integer  "coins",           default: 0
     t.integer  "kind",            default: 0
     t.bigint   "xp",              default: 0
+    t.string   "reset_digest"
+    t.datetime "reset_sent_at"
+    t.integer  "profile_icon",    default: 2
     t.index ["user_auth_token"], name: "index_users_on_user_auth_token", unique: true, using: :btree
   end
 
