@@ -7,7 +7,7 @@ class CoinsController < ApplicationController
     if params[:coins].nil?
       render_from(message: 'Specify the number of coins', status: :bad_request)
     else
-      save_render!(@user, coins: params[:coins], status: :ok)
+      save_render!(@user, coins: params[:coins], status: :ok, add_rewards: true)
     end
   end
 

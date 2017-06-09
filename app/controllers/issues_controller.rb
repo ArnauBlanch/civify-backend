@@ -22,7 +22,8 @@ class IssuesController < ApplicationController
     @issue = @user.issues.build(issue_params)
     @issue.picture = @picture
     @issue.current_user = current_user
-    result = save_render!(@issue, user: @user, coins: COINS::ISSUE_CREATION, xp: XP::ISSUE_CREATION)
+    result = save_render!(@issue, user: @user, coins: COINS::ISSUE_CREATION, xp: XP::ISSUE_CREATION,
+                          add_rewards: true)
     increase_progresses if result
   end
 
