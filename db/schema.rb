@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170607110012) do
+ActiveRecord::Schema.define(version: 20170609001722) do
 
   create_table "achievement_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.integer  "user_id"
@@ -78,8 +78,9 @@ ActiveRecord::Schema.define(version: 20170607110012) do
   create_table "confirmations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.integer  "issue_id"
     t.integer  "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.boolean  "confirmed",  default: true
     t.index ["issue_id", "user_id"], name: "index_confirmations_on_issue_id_and_user_id", unique: true, using: :btree
     t.index ["issue_id"], name: "index_confirmations_on_issue_id", using: :btree
     t.index ["user_id"], name: "index_confirmations_on_user_id", using: :btree
@@ -153,16 +154,20 @@ ActiveRecord::Schema.define(version: 20170607110012) do
   create_table "reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.integer  "user_id"
     t.integer  "issue_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.boolean  "marked_reported", default: true
     t.index ["issue_id", "user_id"], name: "index_reports_on_issue_id_and_user_id", unique: true, using: :btree
     t.index ["issue_id"], name: "index_reports_on_issue_id", using: :btree
     t.index ["user_id"], name: "index_reports_on_user_id", using: :btree
   end
 
   create_table "resolutions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
-    t.integer "user_id"
-    t.integer "issue_id"
+    t.integer  "user_id"
+    t.integer  "issue_id"
+    t.boolean  "marked_resolved", default: true
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.index ["issue_id"], name: "index_resolutions_on_issue_id", using: :btree
     t.index ["user_id"], name: "index_resolutions_on_user_id", using: :btree
   end

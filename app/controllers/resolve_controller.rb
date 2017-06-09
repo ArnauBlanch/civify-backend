@@ -6,24 +6,21 @@ class ResolveController < ApplicationController
 
   # POST /issues/:issue_auth_token/resolve
   def create
-    if @issue.resolutions.exists?(@user.id)
-      @issue.resolutions.delete(@user)
-      @issue.resolved_votes -= 1
-      save! @issue
-      render_from 'Resolution deleted'
-    else
-      if !@issue.resolved && @issue.resolutions << @user
-        @issue.resolved_votes += 1
-        if @issue.resolved_votes >= RESOLVE_IN
-          @issue.resolved = true
-          @issue.user.increase_achievements_progress 'issues_resolved'
+    if @issue.resolved
+      render_from(message: 'Could not do the resolution', status: :bad_request)
+    elsif @user.resolved_issues.exists? @issue.id
+      if secure_togle
+        if @resolution.marked_resolved
+          increase_resolved_votes
+        else
+          decrease_resolved_votes
         end
-        save! @issue
-        render_from 'Resolution added'
-        increase_progresses
       else
-        render_from(message: 'Could not do the resolution', status: :bad_request)
+        render_from(message: 'Confirmation was done less than 24 hours ago', status: :bad_request)
       end
+    else
+      @issue.users_resolving << @user
+      increase_resolved_votes
     end
   end
 
@@ -39,5 +36,31 @@ class ResolveController < ApplicationController
     @user.increase_achievements_progress 'resolve'
     @user.increase_events_progress 'resolve'
     @issue.user.increase_achievements_progress 'resolve_received'
+  end
+
+  def secure_togle
+    @resolution = @user.resolutions.find_by_issue_id @issue.id
+    next_day = Time.parse((@resolution.updated_at + 60).strftime("%Y-%m-%dT%H:%M:%S"))
+    return false if Time.now < next_day
+    @resolution.marked_resolved = !@resolution.marked_resolved
+    @resolution.save!
+    return true
+  end
+
+  def increase_resolved_votes
+    @issue.resolved_votes += 1
+    increase_progresses
+    if @issue.resolved_votes >= RESOLVE_IN
+      @issue.resolved = true
+      @issue.user.increase_achievements_progress 'issues_resolved'
+    end
+    save! @issue
+    render_from 'Resolution added'
+  end
+
+  def decrease_resolved_votes
+    @issue.resolved_votes -= 1
+    save! @issue
+    render_from 'Resolution deleted'
   end
 end

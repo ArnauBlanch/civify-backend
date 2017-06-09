@@ -8,6 +8,8 @@ class User < ApplicationRecord
   has_many :confirmed_issues, through: :confirmations, source: :issue
   has_many :reports, dependent: :destroy
   has_many :reported_issues, through: :reports, source: :issue
+  has_many :resolutions, dependent: :destroy
+  has_many :resolved_issues, through: :resolutions, source: :issue
   has_many :achievement_progresses, dependent: :destroy
   has_many :achievements_in_progress, through: :achievement_progresses, source: :achievement
   has_many :event_progresses, dependent: :destroy

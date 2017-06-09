@@ -142,7 +142,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response_body_message 'Invalid attachment'
   end
 
-  test 'get user issue obtains confirmed by authenticated user' do
+  test 'get user issue obtains confirmed, resolved and reported by authenticated user' do
     get "/users/#{@user.user_auth_token}/issues/#{@issue.issue_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
@@ -150,9 +150,19 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_not body['confirmed_by_auth_user']
     post "/issues/#{@issue.issue_auth_token}/confirm",
          headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    post "/issues/#{@issue.issue_auth_token}/resolve",
+         headers: authorization_header(@password, @user.username),
+         params: { user: @user.user_auth_token }
+    assert_response :ok
+    post "/issues/#{@issue.issue_auth_token}/report",
+         headers: authorization_header(@password, @user.username)
+    assert_response :ok
     get "/users/#{@user.user_auth_token}/issues/#{@issue.issue_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
     assert_response_body true, :confirmed_by_auth_user
+    assert_response_body true, :reported_by_auth_user
+    assert_response_body true, :resolved_by_auth_user
   end
 end

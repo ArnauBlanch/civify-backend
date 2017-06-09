@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'timecop'
 # Confirmations controller test
 class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
 
@@ -48,15 +49,28 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
     "confirmed by User with auth token #{@user.user_auth_token}", body['message']
   end
 
+  test 'unconfirm in less than 1 minute' do
+    post_confirm_issue
+    post_confirm_issue
+    assert_response :bad_request
+    body = JSON.parse(response.body)
+    assert_equal "Confirmation was done less than 24 hours ago", body['message']
+    get "/issues/#{@issue.issue_auth_token}",
+        headers: authorization_header(@password, @user.username)
+    assert_response :ok
+    body = JSON.parse(response.body)
+    assert body['confirmed_by_auth_user']
+    assert_equal 1, body['confirm_votes']
+  end
+
   test 'unconfirm issue by auth user' do
     post_confirm_issue
+    Timecop.freeze(Date.today + 60)
     post_confirm_issue
     assert_response :ok
     body = JSON.parse(response.body)
     assert_equal "Issue with auth token #{@issue.issue_auth_token} "\
-    "unconfirmed by User with auth token #{@user.user_auth_token}", body['message']
-    assert_not @issue.users_confirming.exists?(@user.id)
-    assert_not@user.confirmed_issues.exists?(@issue.id)
+    "confirmed/unconfirmed by User with auth token #{@user.user_auth_token}", body['message']
     get "/issues/#{@issue.issue_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :ok
@@ -67,13 +81,12 @@ class ConfirmationsControllerTest < ActionDispatch::IntegrationTest
 
   test 'unconfirm issue by user param' do
     post_confirm_issue @user
+    Timecop.freeze(Date.today + 60)
     post_confirm_issue @user
     assert_response :ok
     body = JSON.parse(response.body)
     assert_equal "Issue with auth token #{@issue.issue_auth_token} "\
-    "unconfirmed by User with auth token #{@user.user_auth_token}",body['message']
-    assert_not @issue.users_confirming.exists?(@user.id)
-    assert_not@user.confirmed_issues.exists?(@issue.id)
+    "confirmed/unconfirmed by User with auth token #{@user.user_auth_token}",body['message']
     get "/issues/#{@issue.issue_auth_token}",
         headers: authorization_header(@password, @user.username)
     assert_response :ok

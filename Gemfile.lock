@@ -150,6 +150,7 @@ GEM
       net-ssh (>= 2.8.0)
     thor (0.19.4)
     thread_safe (0.3.6)
+    timecop (0.8.1)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
     tzinfo-data (1.2017.2)
@@ -180,6 +181,7 @@ DEPENDENCIES
   rails (~> 5.0.2)
   simple_command
   simplecov
+  timecop
   tzinfo-data
 
 BUNDLED WITH

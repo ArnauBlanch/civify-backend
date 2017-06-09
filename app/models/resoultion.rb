@@ -1,0 +1,2 @@
+class Resoultion < ApplicationRecord
+end

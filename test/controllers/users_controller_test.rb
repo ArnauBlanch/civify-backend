@@ -1,5 +1,5 @@
 require 'test_helper'
-
+require 'timecop'
 # Tests user controller
 class UsersControllerTest < ActionDispatch::IntegrationTest
   test 'get all users' do
@@ -101,14 +101,20 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     ep.reload
     ap.reload
     assert_n_progress 1, ap, ep
+    Timecop.freeze(Date.today + 60) if kind != :issue
     self.send call
+    Timecop.return
+    Timecop.freeze(Date.today + 120) if kind != :issue
     self.send call if kind != :issue
+    Timecop.return
     ap.reload
     ep.reload
     assert_n_progress 2, ap, ep
     assert ep.completed
     assert ap.completed
+    Timecop.freeze(Date.today + 180)
     self.send call
+    Timecop.return
     assert_n_progress 2, ap, ep
     assert ep.completed
     assert ap.completed
