@@ -211,7 +211,6 @@ module RenderUtils
   # except: fields not to be attached, all included by default
   def add_rewards!(options = {})
     if present_some?(options, [:add_rewards]) && options[:add_rewards] == true
-      debugger
       fill_defaults(options, user: @current_user, coins: 0, xp: 0)
       user = options[:user]
       before_level = user.level
