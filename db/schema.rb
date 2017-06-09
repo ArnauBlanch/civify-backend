@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 20170609001722) do
 
-  create_table "achievement_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "achievement_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "achievement_id"
     t.integer  "progress",       default: 0
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 20170609001722) do
     t.index ["user_id"], name: "index_achievement_progresses_on_user_id", using: :btree
   end
 
-  create_table "achievements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "achievements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.string   "description"
     t.integer  "number"
@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 20170609001722) do
     t.index ["achievement_token"], name: "index_achievements_on_achievement_token", unique: true, using: :btree
   end
 
-  create_table "awards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "awards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.string   "description"
     t.integer  "price"
@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 20170609001722) do
     t.index ["offered_by"], name: "index_awards_on_offered_by", using: :btree
   end
 
-  create_table "badges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "badges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.string   "badgeable_type"
     t.integer  "badgeable_id"
@@ -75,7 +75,7 @@ ActiveRecord::Schema.define(version: 20170609001722) do
     t.index ["user_id"], name: "index_badges_users_on_user_id", using: :btree
   end
 
-  create_table "confirmations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "confirmations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "issue_id"
     t.integer  "user_id"
     t.datetime "created_at",                null: false
@@ -86,7 +86,7 @@ ActiveRecord::Schema.define(version: 20170609001722) do
     t.index ["user_id"], name: "index_confirmations_on_user_id", using: :btree
   end
 
-  create_table "event_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "event_progresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "event_id"
     t.datetime "created_at",                 null: false
@@ -97,7 +97,7 @@ ActiveRecord::Schema.define(version: 20170609001722) do
     t.index ["event_id", "user_id"], name: "index_event_progresses_on_event_id_and_user_id", unique: true, using: :btree
   end
 
-  create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.string   "description"
     t.datetime "start_date"
@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(version: 20170609001722) do
     t.index ["event_token"], name: "index_events_on_event_token", unique: true, using: :btree
   end
 
-  create_table "exchanges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "exchanges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "award_id"
     t.datetime "created_at",                          null: false
@@ -151,7 +151,7 @@ ActiveRecord::Schema.define(version: 20170609001722) do
     t.index ["user_id"], name: "index_issues_on_user_id", using: :btree
   end
 
-  create_table "reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "issue_id"
     t.datetime "created_at",                     null: false
@@ -172,7 +172,7 @@ ActiveRecord::Schema.define(version: 20170609001722) do
     t.index ["user_id"], name: "index_resolutions_on_user_id", using: :btree
   end
 
-  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "username"
     t.string   "email"
     t.string   "first_name"
