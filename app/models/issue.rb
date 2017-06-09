@@ -1,19 +1,13 @@
 # Issue model with validations
 class Issue < ApplicationRecord
   belongs_to :user
-  has_and_belongs_to_many :resolutions, join_table: 'resolutions',
-                          class_name: 'User'
+  has_many :resolutions, dependent: :destroy
+  has_many :users_resolving, through: :resolutions, source: :user
   has_many :confirmations, dependent: :destroy
   has_many :users_confirming, through: :confirmations, source: :user
   has_many :reports, dependent: :destroy
   has_many :users_reporting, through: :reports, source: :user
   has_secure_token :issue_auth_token
-  has_attached_file :picture, preserve_files: 'false',
-                    styles: { small: '450x450', med: '800x800' }
-  # Use large_url for original image size
-  validates_attachment_content_type :picture,
-                                    content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
-  validates_attachment :picture, size: { in: 0..5.megabytes }
   validates :picture, attachment_presence: true
   validates :user_id, presence: true
   validates :title, presence: true
@@ -23,6 +17,11 @@ class Issue < ApplicationRecord
   validates :picture, presence: true
   validates :description, presence: true
   validates_inclusion_of :risk, in: [true, false]
+
+  has_attached_file :picture, preserve_files: 'false', styles: { small: '450x450', med: '800x800' }
+  # Use large_url for original image size
+  validates_attachment_content_type :picture, content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
+  validates_attachment :picture, size: { in: 0..5.megabytes }
 
   attr_accessor :current_user
 
@@ -45,6 +44,34 @@ class Issue < ApplicationRecord
     end
   end
 
+  private
+
+  def confirm_votes
+    confirmations.where(confirmed: true).size
+  end
+
+  def num_reports
+    reports.where(marked_reported: true).size
+  end
+
+  def reported_by_auth_user
+    r = reports.find_by_user_id @current_user.id
+    return false unless r
+    r.marked_reported
+  end
+
+  def confirmed_by_auth_user
+    c = confirmations.find_by_user_id @current_user.id
+    return false unless c
+    c.confirmed
+  end
+
+  def resolved_by_auth_user
+    r = resolutions.find_by_user_id @current_user.id
+    return false unless r
+    r.marked_resolved
+  end
+
   def picture_hash
     { picture: { file_name: picture_file_name,
                  content_type: picture_content_type,
@@ -55,25 +82,4 @@ class Issue < ApplicationRecord
                  large_url: picture.url(:original) } }
   end
 
-  private
-
-  def confirm_votes
-    users_confirming.size
-  end
-
-  def num_reports
-    users_reporting.size
-  end
-
-  def reported_by_auth_user
-    users_reporting.exists? @current_user.id
-  end
-
-  def confirmed_by_auth_user
-    users_confirming.exists? @current_user.id
-  end
-
-  def resolved_by_auth_user
-    resolutions.exists?(@current_user.id)
-  end
 end

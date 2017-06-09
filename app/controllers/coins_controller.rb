@@ -1,19 +1,13 @@
 class CoinsController < ApplicationController
+  before_action -> { needs_admin('Cannot give money to yourself') }
   before_action :set_user
 
   # POST /users/:user_auth_token/coins
   def create
-    if !@current_user.admin?
-      render json: { message: 'Cannot give money to yourself' }, status: :unauthorized
-    elsif params[:coins].nil?
-      render json: { message: 'Specify the number of coins' }, status: :bad_request
+    if params[:coins].nil?
+      render_from(message: 'Specify the number of coins', status: :bad_request)
     else
-      @user.coins += params[:coins]
-      if @user.save
-        render json: @user, status: :ok
-      else
-        render json: { message: @user.errors.full_messages[0] }, status: :bad_request
-      end
+      save_render!(@user, coins: params[:coins], status: :ok, add_rewards: true)
     end
   end
 

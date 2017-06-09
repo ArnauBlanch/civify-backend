@@ -1,9 +1,13 @@
 # ApplicationController global controller configurations
 class ApplicationController < ActionController::API
+  # Handles some exceptions with common handling
   include ExceptionHandler
-  include Response
+  # Constants utils for using with rewards
   include RewardsConstants
+  # Authorization controller with common and security verifications
   include AuthorizationController
+  # Utilities to render results, give rewards and manage objects
+  include RenderUtils
 
   # Requires authentication token before requesting resources
   # Skip if route does not require Authorization header
@@ -17,13 +21,10 @@ class ApplicationController < ActionController::API
   # PLEASE, DO NOT SKIP THIS
   before_action :verify_user_auth, :verify_issue_auth, :verify_award_auth
 
-  def add_reward!(user, coins = 0, xp = 0)
-    user.coins += coins
-    user.xp += xp
-    user.save!
-    rewards = {}
-    rewards[:coins] = coins if coins != 0
-    rewards[:xp] = xp if xp != 0
-    rewards
+  WAITING_TIME = 60
+
+  def set_current_user(model)
+    model.current_user = current_user
   end
+
 end

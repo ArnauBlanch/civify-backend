@@ -32,12 +32,19 @@ module CivifyAPI
     config.time_zone = 'Madrid'
     config.active_record.default_timezone = :local
 
-    config.middleware.insert_before 0, "Rack::Cors" do
+    config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
         resource '*', :headers => :any, :methods => :any
       end
     end
+
+    # Fixtures => disabled
+    config.generators do |g|
+      g.test_framework :test_unit, fixture: false
+    end
+
+    config.action_mailer.default_url_options = { host: 'localhost:3000' }
 
   end
 end
