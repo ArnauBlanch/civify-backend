@@ -7,16 +7,17 @@ class ReportsController < ApplicationController
 
   def create
     if @user.reported_issues.exists? @issue.id
-      @issue.users_reporting.destroy @user
-      render_from "Issue with auth token #{@issue.issue_auth_token} "\
-      "unreported by User with auth token #{@user.user_auth_token}"
+      if secure_togle
+        render_from "Issue with auth token #{@issue.issue_auth_token} " \
+        "reported/unreported by User with auth token #{@user.user_auth_token}"
+      else
+        render_from(message: 'Report was done less than 24 hours ago', status: :bad_request)
+      end
     else
       @issue.users_reporting << @user
       render_from "Issue with auth token #{@issue.issue_auth_token} "\
       "reported by User with auth token #{@user.user_auth_token}"
-      if @issue.reports.size >= DELETE_IN
-        destroy! @issue
-      end
+      check_reports
     end
   end
 
@@ -29,5 +30,21 @@ class ReportsController < ApplicationController
             else
               current_user
             end
+  end
+
+  def secure_togle
+    @report = @user.reports.find_by_issue_id @issue.id
+    next_day = Time.parse((@report.updated_at + 60).strftime("%Y-%m-%dT%H:%M:%S"))
+    return false if Time.now < next_day
+    @report.marked_reported = !@report.marked_reported
+    @report.save!
+    check_reports if @report.marked_reported
+    return true
+  end
+
+  def check_reports
+    if @issue.reports.size >= DELETE_IN
+      destroy! @issue
+    end
   end
 end

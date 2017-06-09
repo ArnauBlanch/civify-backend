@@ -36,7 +36,7 @@ gem 'rack-cors'
 
 # validates :data, :date: options
 gem 'date_validator'
-
+gem 'timecop'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger

@@ -1,7 +1,8 @@
 # Issue model with validations
 class Issue < ApplicationRecord
   belongs_to :user
-  has_and_belongs_to_many :resolutions, join_table: 'resolutions', class_name: 'User'
+  has_many :resolutions, dependent: :destroy
+  has_many :users_resolving, through: :resolutions, source: :user
   has_many :confirmations, dependent: :destroy
   has_many :users_confirming, through: :confirmations, source: :user
   has_many :reports, dependent: :destroy
@@ -46,23 +47,29 @@ class Issue < ApplicationRecord
   private
 
   def confirm_votes
-    users_confirming.size
+    confirmations.where(confirmed: true).size
   end
 
   def num_reports
-    users_reporting.size
+    reports.where(marked_reported: true).size
   end
 
   def reported_by_auth_user
-    users_reporting.exists? @current_user.id
+    r = reports.find_by_user_id @current_user.id
+    return false unless r
+    r.marked_reported
   end
 
   def confirmed_by_auth_user
-    users_confirming.exists? @current_user.id
+    c = confirmations.find_by_user_id @current_user.id
+    return false unless c
+    c.confirmed
   end
 
   def resolved_by_auth_user
-    resolutions.exists? @current_user.id
+    r = resolutions.find_by_user_id @current_user.id
+    return false unless r
+    r.marked_resolved
   end
 
   def picture_hash
