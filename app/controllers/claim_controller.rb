@@ -8,7 +8,7 @@ class ClaimController < ApplicationController
       ap.update(claimed: true)
       badge = ap.achievement.badge
       current_user.badges << badge
-      render_from(add_rewards: true, coins: @achievement.coins, xp: @achievement.xp, badge: badge)
+      render_from(coins: @achievement.coins, xp: @achievement.xp, badge: badge)
     elsif ap.claimed
       render_from(message: 'You have already claimed this achievement', status: :bad_request)
     else
@@ -22,7 +22,7 @@ class ClaimController < ApplicationController
       ep.update(claimed: true)
       badge = ep.event.badge
       current_user.badges << badge
-      render_from(add_rewards: true, coins: @event.coins, xp: @event.xp, badge: badge)
+      render_from(coins: @event.coins, xp: @event.xp, badge: badge)
     elsif ep.claimed
       render_from(message: 'You have already claimed this event', status: :bad_request)
     else

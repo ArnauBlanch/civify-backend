@@ -97,15 +97,15 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     ep = @user.event_progresses.find_by_event_id eve.id
     ap = @user.achievement_progresses.find_by_achievement_id ach.id
     assert_n_progress 0, ap, ep
-    self.send call
+    send call
     ep.reload
     ap.reload
     assert_n_progress 1, ap, ep
     Timecop.freeze(Date.today + 60) if kind != :issue
-    self.send call
+    send call
     Timecop.return
     Timecop.freeze(Date.today + 120) if kind != :issue
-    self.send call if kind != :issue
+    send call if kind != :issue
     Timecop.return
     ap.reload
     ep.reload
@@ -113,7 +113,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert ep.completed
     assert ap.completed
     Timecop.freeze(Date.today + 180)
-    self.send call
+    send call
     Timecop.return
     assert_n_progress 2, ap, ep
     assert ep.completed
@@ -121,6 +121,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   def json_exclude
-    [:id, :password_digest, :email, :created_at, :updated_at, :xp]
+    [:id, :password_digest, :reset_digest, :reset_sent_at, :email, :created_at, :updated_at, :xp]
   end
 end

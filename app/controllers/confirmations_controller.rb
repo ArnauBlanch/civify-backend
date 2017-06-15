@@ -4,11 +4,11 @@ class ConfirmationsController < ApplicationController
 
   def create
     if @user.confirmed_issues.exists? @issue.id
-      if secure_togle
+      if secure_toggle
         render_from "Issue with auth token #{@issue.issue_auth_token} " \
         "confirmed/unconfirmed by User with auth token #{@user.user_auth_token}"
       else
-        render_from(message: "Confirmation was done less than 24 hours ago : #{@wait_time}", status: :bad_request)
+        render_from(message: "Confirmation was done less than 24 hours ago: #{@wait_time}", status: :bad_request)
       end
     else
       @issue.users_confirming << @user
@@ -35,14 +35,14 @@ class ConfirmationsController < ApplicationController
     @issue.user.increase_achievements_progress 'confirm_received'
   end
 
-  def secure_togle
+  def secure_toggle
     @confirmation = @user.confirmations.find_by_issue_id @issue.id
-    next_day = Time.parse((@confirmation.updated_at + WAITING_TIME).strftime("%Y-%m-%dT%H:%M:%S"))
-    @wait_time = (next_day - Time.now).to_i
-    return false if Time.now < next_day
+    next_time_available = Time.parse((@confirmation.updated_at + WAITING_TIME).strftime('%Y-%m-%dT%H:%M:%S'))
+    @wait_time = (next_time_available - Time.now).to_i
+    return false if Time.now < next_time_available
     @confirmation.confirmed = !@confirmation.confirmed
     @confirmation.save!
     increase_progresses if @confirmation.confirmed
-    return true
+    true
   end
 end
