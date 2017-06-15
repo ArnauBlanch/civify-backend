@@ -16,7 +16,7 @@ class ExchangesController < ApplicationController
                   status: :unauthorized)
     else
       @user.exchanged_awards << @award
-      render_from(user: @user, coins: -@award.price, xp: XP.exchange_reward(@award.price), add_rewards: true)
+      render_from(user: @user, coins: -@award.price, xp: XP.exchange_reward(@award.price))
       @user.increase_achievements_progress 'reward'
     end
   rescue ActiveRecord::RecordInvalid => e

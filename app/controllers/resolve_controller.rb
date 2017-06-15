@@ -9,7 +9,7 @@ class ResolveController < ApplicationController
     if @issue.resolved
       render_from(message: 'Could not do the resolution', status: :bad_request)
     elsif @user.resolved_issues.exists? @issue.id
-      if secure_togle
+      if secure_toggle
         if @resolution.marked_resolved
           increase_resolved_votes
         else
@@ -38,14 +38,14 @@ class ResolveController < ApplicationController
     @issue.user.increase_achievements_progress 'resolve_received'
   end
 
-  def secure_togle
+  def secure_toggle
     @resolution = @user.resolutions.find_by_issue_id @issue.id
-    next_day = Time.parse((@resolution.updated_at + WAITING_TIME).strftime("%Y-%m-%dT%H:%M:%S"))
-    @wait_time = (next_day - Time.now).to_i
-    return false if Time.now < next_day
+    next_time_available = Time.parse((@resolution.updated_at + WAITING_TIME).strftime('%Y-%m-%dT%H:%M:%S'))
+    @wait_time = (next_time_available - Time.now).to_i
+    return false if Time.now < next_time_available
     @resolution.marked_resolved = !@resolution.marked_resolved
     @resolution.save!
-    return true
+    true
   end
 
   def increase_resolved_votes

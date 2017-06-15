@@ -68,7 +68,7 @@ ActiveRecord::Schema.define(version: 20170609001722) do
     t.index ["badgeable_type", "badgeable_id"], name: "index_badges_on_badgeable_type_and_badgeable_id", using: :btree
   end
 
-  create_table "badges_users", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "badges_users", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "badge_id"
     t.integer "user_id"
     t.index ["badge_id"], name: "index_badges_users_on_badge_id", using: :btree
@@ -162,7 +162,7 @@ ActiveRecord::Schema.define(version: 20170609001722) do
     t.index ["user_id"], name: "index_reports_on_user_id", using: :btree
   end
 
-  create_table "resolutions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+  create_table "resolutions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "issue_id"
     t.boolean  "marked_resolved", default: true

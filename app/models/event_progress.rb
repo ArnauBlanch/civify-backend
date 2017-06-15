@@ -4,13 +4,15 @@ class EventProgress < ApplicationRecord
   validates_uniqueness_of :user_id, scope: :event_id
 
   scope :unclaimed, (-> { where(completed: true, claimed: false) })
+  scope :in_progress, (-> { where(completed: false) })
 
   def as_json(options = nil)
     event.as_json(options)
   end
 
-  def increase_progress
-    update(progress: progress + 1)
-    update(completed: true) unless progress < event.number
+  def increase_progress(increment = 1)
+    new_progress = progress + increment
+    update(progress: new_progress)
+    update(completed: true, progress: event.number) if new_progress >= event.number
   end
 end

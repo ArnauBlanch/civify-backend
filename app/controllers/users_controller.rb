@@ -5,13 +5,12 @@ class UsersController < ApplicationController
 
   # GET /users
   def index
-    @users = User.all
-    render_from @users
+    render_from User.all.to_json(except: json_exclude)
   end
 
   # GET /users/[:user_auth_token]
   def show
-    render_from @user
+    render_from @user.to_json(except: json_exclude)
   end
 
   # POST /users
@@ -61,5 +60,9 @@ class UsersController < ApplicationController
 
   def create_event_progress
     @user.events_in_progress << Event.all
+  end
+
+  def json_exclude
+    [:id, :password_digest, :reset_digest, :reset_sent_at, :email, :created_at, :updated_at, :xp]
   end
 end

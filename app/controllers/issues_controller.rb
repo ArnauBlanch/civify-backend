@@ -22,8 +22,7 @@ class IssuesController < ApplicationController
     @issue = @user.issues.build(issue_params)
     @issue.picture = @picture
     @issue.current_user = current_user
-    result = save_render!(@issue, user: @user, coins: COINS::ISSUE_CREATION, xp: XP::ISSUE_CREATION,
-                          add_rewards: true)
+    result = save_render!(@issue, user: @user, coins: COINS::ISSUE_CREATION, xp: XP::ISSUE_CREATION)
     increase_progresses if result
   end
 
@@ -67,8 +66,8 @@ class IssuesController < ApplicationController
 
   def issue_params
     params.permit(:title, :latitude, :longitude,
-                   :category, :picture, :description,
-                   :risk, :coins)
+                  :category, :picture, :description,
+                  :risk, :coins)
   end
 
   def set_user
@@ -98,7 +97,7 @@ class IssuesController < ApplicationController
     issues = issues.where('longitude >= ?', params[:lng_min].to_f) if params.key?('lng_min')
     issues
   end
-  
+
   def increase_progresses
     @user.increase_events_progress 'issue'
     @user.increase_achievements_progress 'issue'
