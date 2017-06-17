@@ -53,6 +53,8 @@ class AchievementsController < ApplicationController
   def create_achievement_progresses
     User.all.each do |user|
       user.achievements_in_progress << @achievement
+      progress = user.achievement_progresses.where(achievement_id: @achievement.id)
+      progress.set_initial_progress if progress
     end
   end
 

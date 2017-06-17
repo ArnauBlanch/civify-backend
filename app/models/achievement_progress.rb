@@ -1,6 +1,4 @@
 class AchievementProgress < ApplicationRecord
-  after_create :set_initial_progress
-
   belongs_to :user
   belongs_to :achievement
   validates_uniqueness_of :user_id, scope: :achievement_id
@@ -18,20 +16,18 @@ class AchievementProgress < ApplicationRecord
     update(completed: true, progress: achievement.number) if new_progress >= achievement.number
   end
 
-  private
-
   def set_initial_progress
     case achievement.kind
-    when :issue
-      increase_progress(user.issues.size)
-    when :reward
-      increase_progress(user.exchanged_awards.size)
-    when :use
-      increase_progress(user.exchanges.where(used: true).size)
-    when :level
-      increase_progress(user.level)
-    else
-      # We don't know the historic of other kinds
+      when :issue
+        increase_progress(user.issues.size)
+      when :reward
+        increase_progress(user.exchanged_awards.size)
+      when :use
+        increase_progress(user.exchanges.where(used: true).size)
+      when :level
+        increase_progress(user.level)
+      else
+        # We don't know the historic of other kinds
     end
   end
 end
