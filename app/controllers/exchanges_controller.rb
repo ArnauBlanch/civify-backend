@@ -17,7 +17,7 @@ class ExchangesController < ApplicationController
     else
       @user.exchanged_awards << @award
       render_from(user: @user, coins: -@award.price, xp: XP.exchange_reward(@award.price))
-      @user.increase_achievements_progress 'reward'
+      @user.increase_progress 'reward'
     end
   rescue ActiveRecord::RecordInvalid => e
     @user.exchanged_awards.delete!(@award)

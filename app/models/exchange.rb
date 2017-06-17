@@ -6,9 +6,8 @@ class Exchange < ApplicationRecord
 
   def as_json(options = nil)
     super(options.merge(except: [:id, :user_id, :award_id]))
-        .merge(award_hash)
+      .merge(award_hash)
   end
-
 
   def award_hash
     award_hash = JSON.parse award.to_json

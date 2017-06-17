@@ -17,4 +17,6 @@ class EventProgress < ApplicationRecord
     update(progress: new_progress)
     update(completed: true, progress: event.number) if new_progress >= event.number
   end
+
+  # Events doesn't have initial progress (always start at 0 even for old users)
 end

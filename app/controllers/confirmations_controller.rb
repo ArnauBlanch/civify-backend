@@ -30,9 +30,8 @@ class ConfirmationsController < ApplicationController
   end
 
   def increase_progresses
-    @user.increase_achievements_progress 'confirm'
-    @user.increase_events_progress 'confirm'
-    @issue.user.increase_achievements_progress 'confirm_received'
+    @user.increase_progress 'confirm'
+    @issue.user.increase_progress 'confirm_received'
   end
 
   def secure_toggle
