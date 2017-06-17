@@ -17,17 +17,14 @@ class AchievementProgress < ApplicationRecord
   end
 
   def set_initial_progress
-    puts 'set_initial_progress'
-    puts "USER #{user.username}, ACHIEVEMENT #{achievement.title}"
     case achievement.kind
-      when :issue
+      when 'issue'
         increase_progress(user.issues.size)
-      when :reward
+      when 'reward'
         increase_progress(user.exchanged_awards.size)
-      when :use
+      when 'use'
         increase_progress(user.exchanges.where(used: true).size)
-      when :level
-        puts "TYPE level, INITIAL VALUE: #{user.level}"
+      when 'level'
         increase_progress(user.level)
       else
         # We don't know the historic of other kinds

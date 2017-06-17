@@ -136,7 +136,7 @@ class ActiveSupport::TestCase
     badge_image = sample_image_hash
     post '/achievements', headers: authorization_header(@password, user.username), params: {
       title: 'Title', description: 'Description',
-      number: 5, kind: :issue, coins: 10, xp: 100, badge: {
+      number: 5, kind: :level, coins: 10, xp: 100, badge: {
         title: 'Badge title',
         file_name: badge_image[:file_name],
         content: badge_image[:content],
