@@ -29,11 +29,13 @@ class ActiveSupport::TestCase
     options[:username] ||= 'test'
     options[:kind] ||= :normal
     options[:coins] ||= 0
+    options[:lv] ||= 1
+    xp = User.get_min_xp_from_lv options[:lv]
     @password = '1234'
     @user = User.create(username: options[:username],
                         email: "#{options[:username]}@test.com",
                         first_name: options[:username], last_name: options[:username],
-                        kind: options[:kind], coins: options[:coins],
+                        kind: options[:kind], coins: options[:coins], xp: xp,
                         password: @password, password_confirmation: @password)
     assert @user.valid?
     @user

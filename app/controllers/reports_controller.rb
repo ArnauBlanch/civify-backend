@@ -7,7 +7,7 @@ class ReportsController < ApplicationController
 
   def create
     if @user.reported_issues.exists? @issue.id
-      if secure_togle
+      if secure_toggle
         render_from "Issue with auth token #{@issue.issue_auth_token} " \
         "reported/unreported by User with auth token #{@user.user_auth_token}"
       else
@@ -32,20 +32,18 @@ class ReportsController < ApplicationController
             end
   end
 
-  def secure_togle
+  def secure_toggle
     @report = @user.reports.find_by_issue_id @issue.id
-    next_day = Time.parse((@report.updated_at + WAITING_TIME).strftime("%Y-%m-%dT%H:%M:%S"))
-    @wait_time = (next_day - Time.now).to_i
-    return false if Time.now < next_day
+    next_time_available = Time.parse((@report.updated_at + WAITING_TIME).strftime('%Y-%m-%dT%H:%M:%S'))
+    @wait_time = (next_time_available - Time.now).to_i
+    return false if Time.now < next_time_available
     @report.marked_reported = !@report.marked_reported
     @report.save!
     check_reports if @report.marked_reported
-    return true
+    true
   end
 
   def check_reports
-    if @issue.reports.size >= DELETE_IN
-      destroy! @issue
-    end
+    destroy! @issue if @issue.reports.size >= DELETE_IN
   end
 end

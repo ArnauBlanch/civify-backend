@@ -210,7 +210,7 @@ module RenderUtils
   # object: object to include in the result hash, none by default
   # except: fields not to be attached, all included by default
   def add_rewards!(options = {})
-    if present_some?(options, [:add_rewards]) && options[:add_rewards] == true
+    if present_some?(options, [:xp, :coins])
       fill_defaults(options, user: @current_user, coins: 0, xp: 0)
       user = options[:user]
       before_level = user.level
@@ -221,10 +221,10 @@ module RenderUtils
       rewards[:coins] = options[:coins] if options[:coins] != 0
       rewards[:xp] = options[:xp] if options[:xp] != 0
       options[:rewards] = rewards
-      options.delete(:add_rewards)
       after_level = user.reload.level
-      user.increase_achievements_progress 'level' if before_level < after_level
-      user.increase_coins_spent_progress(-1 * options[:coins]) if options[:coins] < 0
+      diff_level = after_level - before_level
+      user.increase_achievements_progress('level', diff_level) if diff_level != 0
+      user.increase_achievements_progress('coins_spent', -options[:coins]) if options[:coins] < 0
     end
     attach_hash(options)
   end
