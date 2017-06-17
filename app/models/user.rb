@@ -29,6 +29,7 @@ class User < ApplicationRecord
                       :girl, :girl1, :man, :man1, :man2, :man3, :man4]
 
   XP_CURVE_CONSTANT = 0.1
+  ISSUE_CREATION_CURVE_CONSTANT = 1.5
   MIN_LEVEL = 1
   MAX_LEVEL = 100
 
@@ -82,12 +83,12 @@ class User < ApplicationRecord
   end
 
   # Returns a random token.
-  def User.new_token
+  def self.new_token
     SecureRandom.urlsafe_base64
   end
 
   # Returns the hash digest of the given string.
-  def User.digest(string)
+  def self.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
     BCrypt::Password.create(string, cost: cost)
   end
@@ -99,28 +100,20 @@ class User < ApplicationRecord
     BCrypt::Password.new(digest).is_password?(token)
   end
 
-  # Increase achievement progresses by kind
-  def increase_achievements_progress(kind)
-    achievement_progresses.where(completed: false, claimed: false).each do |ap|
-      ap.increase_progress if ap.achievement.kind == kind
+  def increase_achievements_progress(kind, increment = 1)
+    achievement_progresses.in_progress.each do |ap|
+      ap.increase_progress increment if ap.achievement.kind == kind
     end
   end
 
-   # Increase achievement progresses by kind
-  def increase_events_progress(kind)
-    event_progresses.where(completed: false, claimed: false).each do |ep|
-      ep.increase_progress if ep.event.kind == kind
-    end
-  end
-
-  def increase_coins_spent_progress(coins)
-    achievement_progresses.where(completed: false, claimed: false).each do |ap|
-      ap.increase_progress_by coins if ap.achievement.kind == 'coins_spent'
+  def increase_events_progress(kind, increment = 1)
+    event_progresses.in_progress.each do |ep|
+      ep.increase_progress increment if ep.event.kind == kind
     end
   end
 
   def can_create_issue
-    issues_created_24_hours < (1.5 * level).ceil
+    issues_created_24_hours < (ISSUE_CREATION_CURVE_CONSTANT * level).ceil
   end
 
   private

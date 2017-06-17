@@ -9,9 +9,11 @@ class AuthorizeApiRequestTest < ActionDispatch::IntegrationTest
   end
 
   test 'request authorized with valid token' do
+    setup_reward
     get '/me', headers: authorization_header(@password, @user.username)
     assert_response :ok
-    assert_equal @user.to_json(except: [:id, :password_digest, :xp]), response.body
+    assert_equal @user.to_json(except: [:id, :password_digest, :xp, :reset_digest, :reset_sent_at]), response.body
+    assert_reward_not_given
   end
 
   test 'request unauthorized with invalid token' do

@@ -21,7 +21,8 @@ class ApplicationController < ActionController::API
   # PLEASE, DO NOT SKIP THIS
   before_action :verify_user_auth, :verify_issue_auth, :verify_award_auth
 
-  WAITING_TIME = 60
+  # Waiting time between confirms/reports/resolves by the same user (in seconds)
+  WAITING_TIME = 86_400
 
   def set_current_user(model)
     model.current_user = current_user
