@@ -54,7 +54,7 @@ class AchievementsController < ApplicationController
     User.all.each do |user|
       user.achievements_in_progress << @achievement
       progress = user.achievement_progresses.where(achievement_id: @achievement.id)
-      progress.set_initial_progress if progress
+      progress[0].set_initial_progress if progress.size > 0
     end
   end
 
