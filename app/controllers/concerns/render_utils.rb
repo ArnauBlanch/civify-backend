@@ -223,8 +223,8 @@ module RenderUtils
       options[:rewards] = rewards
       after_level = user.reload.level
       diff_level = after_level - before_level
-      user.increase_achievements_progress('level', diff_level) if diff_level != 0
-      user.increase_achievements_progress('coins_spent', -options[:coins]) if options[:coins] < 0
+      user.increase_progress('level', diff_level) if diff_level != 0
+      user.increase_progress('coins_spent', -options[:coins]) if options[:coins] < 0
     end
     attach_hash(options)
   end

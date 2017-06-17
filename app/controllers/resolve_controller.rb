@@ -33,9 +33,8 @@ class ResolveController < ApplicationController
   end
 
   def increase_progresses
-    @user.increase_achievements_progress 'resolve'
-    @user.increase_events_progress 'resolve'
-    @issue.user.increase_achievements_progress 'resolve_received'
+    @user.increase_progress 'resolve'
+    @issue.user.increase_progress 'resolve_received'
   end
 
   def secure_toggle
@@ -53,7 +52,7 @@ class ResolveController < ApplicationController
     increase_progresses
     if @issue.resolved_votes >= RESOLVE_IN
       @issue.resolved = true
-      @issue.user.increase_achievements_progress 'issues_resolved'
+      @issue.user.increase_progress 'issues_resolved'
     end
     save! @issue
     render_from 'Resolution added'

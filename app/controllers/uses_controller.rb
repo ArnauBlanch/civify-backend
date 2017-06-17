@@ -7,7 +7,7 @@ class UsesController < ApplicationController
       @exchange.used = true
       @exchange.save!
       render_from 'Exchange used'
-      @user.increase_achievements_progress 'use'
+      @user.increase_progress 'use'
     else
       render_from(message: 'User has already used this award', status: :unauthorized) if @exchange.used
     end

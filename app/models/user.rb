@@ -100,13 +100,10 @@ class User < ApplicationRecord
     BCrypt::Password.new(digest).is_password?(token)
   end
 
-  def increase_achievements_progress(kind, increment = 1)
+  def increase_progress(kind, increment = 1)
     achievement_progresses.in_progress.each do |ap|
       ap.increase_progress increment if ap.achievement.kind == kind
     end
-  end
-
-  def increase_events_progress(kind, increment = 1)
     event_progresses.in_progress.each do |ep|
       ep.increase_progress increment if ep.event.kind == kind
     end
