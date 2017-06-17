@@ -11,6 +11,8 @@ class EventProgress < ApplicationRecord
   end
 
   def increase_progress(increment = 1)
+    now = Time.now
+    return if event.start_date > now || event.end_date < now
     new_progress = progress + increment
     update(progress: new_progress)
     update(completed: true, progress: event.number) if new_progress >= event.number
