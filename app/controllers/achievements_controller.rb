@@ -53,7 +53,9 @@ class AchievementsController < ApplicationController
   def create_achievement_progresses
     User.all.each do |user|
       user.achievements_in_progress << @achievement
+      puts "Added #{@achievement.title} for user #{user.username}"
       progress = user.achievement_progresses.where(achievement_id: @achievement.id).first
+      puts "Progress found #{progress}"
       progress.set_initial_progress
     end
   end
