@@ -2,17 +2,20 @@ require 'test_helper'
 
 class AchievementsControllerTest < ActionDispatch::IntegrationTest
   def setup
-    setup_user(kind: :admin)
+    setup_user(kind: :admin, level: 2)
   end
 
   test 'create achievement' do
     post_achievement
     assert_response :created
-    achievement = Achievement.find_by(number: 5, kind: :issue)
+    achievement = Achievement.find_by(number: 5, kind: :level)
     assert_not_nil achievement
     assert_equal achievement.to_json, response.body
     assert_equal achievement.badge, Badge.find_by_badgeable_id(achievement.id)
     assert 1, @user.achievement_progresses.size
+    progress = @user.achievement_progresses.first
+    progress.reload
+    assert progress.progress == @user.level
   end
 
   test 'achievements are created only by admins' do
@@ -63,7 +66,7 @@ class AchievementsControllerTest < ActionDispatch::IntegrationTest
   test 'successful update' do
     post_achievement
     badge_image = sample_image_hash
-    a = Achievement.find_by(kind: 'issue', number: 5)
+    a = Achievement.find_by(kind: 'level', number: 5)
     patch "/achievements/#{a.achievement_token}", headers: authorization_header(@password, @user.username),
           params: { title: 'Modified title' , badge: {
               title: 'Modified Badge title',
