@@ -8,14 +8,11 @@
 
 ## Features
 * Issues: create, update, delete, get issues (info & photo) with filters (by location, user...), confirm, mark as resolved & report
-* Users: registration, login, get user info, update info
-* Achievements & Rewards: create, update, get, delete
-* 
-* Bussiness' rewards management
-* Bussiness' rewards validation using computer/smartphone camera & QR codes
-* Multi-language support
+* Users: registration, login, get user info, update info, get coins + rewards + badges, password recovery (e-mail with web link)
+* Achievements & Events: create, update, get, delete, claim reward
+* Rewards: create, update, get, delete, exchange reward
 
-This web was developed using Ruby on Rails (ActiveModel, ActionMailer, Paperclip, Capistrano...). It interacted with the [Civify app](https://github.com/ArnauBlanch/civify-app) and [Civify web](https://github.com/ArnauBlanch/civify-web). It is tested with Rubocop.
+This REST API was developed using Ruby on Rails (ActiveModel, ActionMailer, Paperclip, Capistrano...). It interacted with the [Civify app](https://github.com/ArnauBlanch/civify-app) and [Civify web](https://github.com/ArnauBlanch/civify-web). It is tested with Rubocop.
 
 
 ---
