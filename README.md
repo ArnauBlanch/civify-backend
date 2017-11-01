@@ -10,7 +10,7 @@
 * Achievements & Events: create, update, get, delete, claim reward
 * Rewards: create, update, get, delete, exchange reward
 
-This REST API was developed using Ruby on Rails (ActiveModel, ActionMailer, Paperclip, Capistrano...). It interacted with the [Civify app](https://github.com/ArnauBlanch/civify-app) and [Civify web](https://github.com/ArnauBlanch/civify-web). It is tested with Rubocop.
+This REST API was developed using Ruby on Rails (ActiveModel, ActionMailer, Paperclip, Capistrano...). It interacted with the [Civify app](https://github.com/ArnauBlanch/civify-app) and [Civify web](https://github.com/ArnauBlanch/civify-web). It is tested with Minitest and Rubocop.
 
 ---
 **App repo:** https://github.com/ArnauBlanch/civify-app
